@@ -1,0 +1,6 @@
+{
+  "name": "Lux Electronics",
+  "description": "Premium electronics landing page with support for Korean and Vietnamese, multi-stage layout, dynamic full-screen detail view, and customizable external media assets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
