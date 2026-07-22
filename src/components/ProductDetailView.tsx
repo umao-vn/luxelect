@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Shield, Award, CheckCircle2, MessageSquare, Star, ShoppingCart, CreditCard, Edit } from 'lucide-react';
 import { Product, UserSession } from '../types';
+import { DEFAULT_FALLBACK_IMAGE } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface ProductDetailViewProps {
@@ -179,7 +180,7 @@ export default function ProductDetailView({
                 alt={name}
                 referrerPolicy="no-referrer"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80';
+                  (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
                 }}
                 className="w-full h-full object-cover opacity-90"
               />

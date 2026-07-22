@@ -47,7 +47,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 142,
     // [사용자 변경 영역 - Image URL Placeholder] 임시로 세련된 고대비 테크 일러스트 느낌의 고품질 언스플래시를 할당해두었습니다. 나중에 본인의 ImgBB 링크로 수정하세요!
-    imageUrl: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://i.postimg.cc/s2sHdhjD/jadongbium1(1).png",
     // [사용자 변경 영역 - MP4 Video URL Placeholder] 원격 MP4 예시 파일 링크입니다. 본인의 MP4 주소로 수정 시 상세페이지의 비디오 플레이어에서 재생됩니다.
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     specsKO: {

@@ -1,6 +1,7 @@
 import { X, Trash2, ShoppingBag, Plus, Minus, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartItem, UserSession } from '../types';
+import { DEFAULT_FALLBACK_IMAGE } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface CartModalProps {
@@ -105,7 +106,7 @@ export default function CartModal({
                             alt={name}
                             referrerPolicy="no-referrer"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80';
+                              (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
                             }}
                             className="w-full h-full object-cover opacity-90"
                           />

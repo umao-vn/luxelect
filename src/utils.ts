@@ -1,3 +1,5 @@
+export const DEFAULT_FALLBACK_IMAGE = 'https://i.postimg.cc/s2sHdhjD/jadongbium1(1).png';
+
 /**
  * Clean and convert image/video URLs from common image hosts, share links,
  * embed tags (<img src="...">), or markdown tags (![alt](url)).
@@ -22,9 +24,16 @@ export function cleanAndConvertImageUrl(rawUrl: string): string {
   // Remove surrounding quotes or angle brackets
   url = url.replace(/^["'<>]+|["'<>]+$/g, '').trim();
 
-  // Prepend https:// if starts with i.ibb.co or i.imgur.com or images.unsplash.com without protocol
-  if (/^(i\.ibb\.co|i\.imgur\.com|images\.unsplash\.com|drive\.google\.com|lh3\.googleusercontent\.com|dropbox\.com)/i.test(url)) {
+  // Prepend https:// if protocol is missing for known image hosting domains
+  if (/^(i\.postimg\.cc|postimg\.cc|postimages\.org|i\.ibb\.co|i\.imgur\.com|images\.unsplash\.com|drive\.google\.com|lh3\.googleusercontent\.com|dropbox\.com)/i.test(url)) {
     url = 'https://' + url;
+  }
+
+  // PostImg page links:
+  // https://postimg.cc/xxxx or https://postimages.org/xxxx -> https://i.postimg.cc/xxxx/image.png
+  const postImgMatch = url.match(/(?:postimg\.cc|postimages\.org)\/([a-zA-Z0-9]+)$/i);
+  if (postImgMatch && postImgMatch[1]) {
+    return `https://i.postimg.cc/${postImgMatch[1]}/image.png`;
   }
 
   // Google Drive share/view links:

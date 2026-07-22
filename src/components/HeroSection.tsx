@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Play, Sparkles, ChevronDown, Award, Zap, ShieldCheck } from 'lucide-react';
 import { Product } from '../types';
+import { DEFAULT_FALLBACK_IMAGE } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface HeroSectionProps {
@@ -198,7 +199,7 @@ export default function HeroSection({
                     alt={name}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80';
+                      (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
                     }}
                     className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
                   />

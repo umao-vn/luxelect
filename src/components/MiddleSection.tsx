@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2 } from 'lucide-react';
 import { Product, CategoryType, UserSession } from '../types';
+import { DEFAULT_FALLBACK_IMAGE } from '../utils';
 import { TranslationSet } from '../translations';
 import { useState } from 'react';
 
@@ -233,7 +234,7 @@ export default function MiddleSection({
                     alt={name}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80';
+                      (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
                     }}
                     className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                   />
