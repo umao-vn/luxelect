@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { X, Upload, Image as ImageIcon, Video, Save, AlertCircle, Sparkles } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, Upload, Image as ImageIcon, Video, Save, AlertCircle, Sparkles, CheckCircle, Wand2, RefreshCw } from 'lucide-react';
 import { Product, CategoryType } from '../types';
+import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
 
 interface AdminProductModalProps {
   isOpen: boolean;
@@ -35,37 +36,84 @@ export default function AdminProductModal({
   const [isImgDragActive, setIsImgDragActive] = useState(false);
   const [isVideoDragActive, setIsVideoDragActive] = useState(false);
 
-  // Error/Success Feedback
+  // Error/Success Feedback & Load states
   const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
 
   // File Inputs references
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync state when editing product changes
+  useEffect(() => {
+    if (product) {
+      setCategory(product.category);
+      setNameKO(product.nameKO);
+      setNameVI(product.nameVI);
+      setTagKO(product.tagKO || '');
+      setTagVI(product.tagVI || '');
+      setPrice(product.price);
+      setImageUrl(product.imageUrl);
+      setVideoUrl(product.videoUrl || '');
+      setDescriptionKO(product.descriptionKO || '');
+      setDescriptionVI(product.descriptionVI || '');
+      setImageLoadFailed(false);
+    }
+  }, [product]);
+
   if (!isOpen) return null;
 
-  // Handle Image File selection/drop
+  // Smart URL Sanitizer trigger
+  const handleSmartCleanImage = (val: string) => {
+    const cleaned = cleanAndConvertImageUrl(val);
+    setImageUrl(cleaned);
+    setImageLoadFailed(false);
+  };
+
+  const handleSmartCleanVideo = (val: string) => {
+    const cleaned = cleanAndConvertVideoUrl(val);
+    setVideoUrl(cleaned);
+  };
+
+  // Handle Image File selection/drop with Base64 encoding
   const handleImageFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
       setUploadFeedback(currentLang === 'ko' ? '올바른 이미지 파일을 선택해 주세요.' : 'Vui lòng chọn tệp ảnh hợp lệ.');
       return;
     }
-    const localUrl = URL.createObjectURL(file);
-    setImageUrl(localUrl);
-    setUploadFeedback(currentLang === 'ko' ? '로컬 이미지가 임시 업로드되었습니다!' : 'Ảnh nội bộ đã được tải lên tạm thời!');
-    setTimeout(() => setUploadFeedback(null), 3000);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        const base64Url = e.target.result as string;
+        setImageUrl(base64Url);
+        setImageLoadFailed(false);
+        setUploadFeedback(
+          currentLang === 'ko'
+            ? '로컬 이미지 파일이 업로드되었습니다! (새로고침 시에도 유지됨)'
+            : 'Tải ảnh nội bộ lên thành công (Lưu bền vững)!'
+        );
+        setTimeout(() => setUploadFeedback(null), 3500);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
-  // Handle Video File selection/drop
+  // Handle Video File selection/drop with Base64 encoding
   const handleVideoFile = (file: File) => {
     if (!file.type.startsWith('video/') && !file.name.endsWith('.mp4')) {
       setUploadFeedback(currentLang === 'ko' ? '올바른 동영상 파일(.mp4 등)을 선택해 주세요.' : 'Vui lòng chọn tệp video (.mp4, v.v.) hợp lệ.');
       return;
     }
-    const localUrl = URL.createObjectURL(file);
-    setVideoUrl(localUrl);
-    setUploadFeedback(currentLang === 'ko' ? '로컬 동영상이 임시 업로드되었습니다!' : 'Video nội bộ đã được tải lên tạm thời!');
-    setTimeout(() => setUploadFeedback(null), 3000);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        const base64Url = e.target.result as string;
+        setVideoUrl(base64Url);
+        setUploadFeedback(currentLang === 'ko' ? '로컬 동영상 파일이 업로드되었습니다!' : 'Tải video lên thành công!');
+        setTimeout(() => setUploadFeedback(null), 3500);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   // Drag events
@@ -96,8 +144,11 @@ export default function AdminProductModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nameKO || !nameVI || !imageUrl) {
-      alert(currentLang === 'ko' ? '상품 이름과 이미지는 필수 항목입니다.' : 'Tên sản phẩm và hình ảnh là bắt buộc.');
+    const finalImg = cleanAndConvertImageUrl(imageUrl);
+    const finalVideo = cleanAndConvertVideoUrl(videoUrl);
+
+    if (!nameKO || !nameVI || !finalImg) {
+      alert(currentLang === 'ko' ? '상품 이름과 유효한 이미지 주소는 필수 항목입니다.' : 'Tên sản phẩm và hình ảnh là bắt buộc.');
       return;
     }
 
@@ -111,8 +162,8 @@ export default function AdminProductModal({
       price: Number(price),
       rating: product?.rating || 5.0,
       reviewsCount: product?.reviewsCount || 1,
-      imageUrl,
-      videoUrl: videoUrl || undefined,
+      imageUrl: finalImg,
+      videoUrl: finalVideo || undefined,
       specsKO: product?.specsKO || {
         "제조사": "Lux Electronics (Korea)",
         "품질보증": "VIP 5년 무상 서비스 지원",
@@ -298,35 +349,88 @@ export default function AdminProductModal({
               {/* URL input and Preview */}
               <div className="space-y-3 flex flex-col justify-between">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
-                    {currentLang === 'ko' ? '이미지 웹 주소 (URL)' : 'Đường dẫn ảnh ngoài (URL)'}
-                  </label>
-                  <input
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://imgbb.com/direct-link.jpg"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs sm:text-sm focus:outline-none focus:border-[#0066FF] font-sans font-mono"
-                  />
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
+                      {currentLang === 'ko' ? '이미지 웹 주소 (URL)' : 'Đường dẫn ảnh ngoài (URL)'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleSmartCleanImage(imageUrl)}
+                      className="text-[10px] text-[#0066FF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                      title={currentLang === 'ko' ? '주소 자동 정리/변환' : 'Tự động sửa URL'}
+                    >
+                      <Wand2 className="w-3 h-3" />
+                      <span>{currentLang === 'ko' ? '자동 URL 정리' : 'Tự động sửa'}</span>
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      value={imageUrl}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setImageUrl(val);
+                        setImageLoadFailed(false);
+                      }}
+                      onBlur={(e) => handleSmartCleanImage(e.target.value)}
+                      placeholder="https://i.ibb.co/... 또는 https://images.unsplash.com/..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs sm:text-sm focus:outline-none focus:border-[#0066FF] font-sans font-mono pr-20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleSmartCleanImage(imageUrl)}
+                      className="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-[#0066FF]/10 hover:bg-[#0066FF]/20 text-[#0066FF] text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                    >
+                      {currentLang === 'ko' ? '변환' : 'Sửa'}
+                    </button>
+                  </div>
                 </div>
 
-                {imageUrl && (
-                  <div className="flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200">
-                    <img
-                      src={imageUrl}
-                      alt="Preview"
-                      className="w-12 h-12 object-cover rounded-lg border border-slate-100"
-                      onError={(e) => {
-                        // fallback or notify
-                        (e.target as any).src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=80&q=80";
-                      }}
-                    />
-                    <div className="text-left">
-                      <span className="text-[10px] text-emerald-600 font-bold font-mono uppercase block">✔ IMAGE DETECTED</span>
-                      <span className="text-[10px] text-slate-400 font-mono line-clamp-1 max-w-[200px]">{imageUrl}</span>
+                {/* Live Preview with Error Handler */}
+                {imageUrl ? (
+                  <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-12 h-12 rounded-lg border border-slate-100 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
+                        <img
+                          src={imageUrl}
+                          alt="Preview"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
+                          onError={() => {
+                            setImageLoadFailed(true);
+                          }}
+                          onLoad={() => setImageLoadFailed(false)}
+                        />
+                      </div>
+                      <div className="text-left flex-1 min-w-0">
+                        {imageLoadFailed ? (
+                          <div className="space-y-0.5">
+                            <span className="text-[10px] text-rose-600 font-bold font-mono uppercase flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" />
+                              <span>{currentLang === 'ko' ? '⚠ 이미지 주소 확인 필요' : '⚠ Lỗi đường dẫn ảnh'}</span>
+                            </span>
+                            <p className="text-[10px] text-slate-500 font-sans leading-tight">
+                              {currentLang === 'ko'
+                                ? '직접 이미지(.jpg, .png 등) 파일 주소 또는 ImgBB "직접 링크" 주소를 사용해 주세요.'
+                                : 'Vui lòng dùng đường dẫn ảnh trực tiếp (.jpg, .png) hoặc ImgBB Direct Link.'}
+                            </p>
+                          </div>
+                        ) : (
+                          <div>
+                            <span className="text-[10px] text-emerald-600 font-bold font-mono uppercase flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              <span>✔ IMAGE LOADED</span>
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono line-clamp-1 block truncate">
+                              {imageUrl}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           </div>
@@ -373,26 +477,38 @@ export default function AdminProductModal({
               {/* URL input and Preview */}
               <div className="space-y-3 flex flex-col justify-between">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
-                    {currentLang === 'ko' ? '동영상 웹 주소 (Direct MP4 URL)' : 'Đường dẫn video ngoài (Direct MP4 URL)'}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
+                      {currentLang === 'ko' ? '동영상 웹 주소 (Direct MP4 URL)' : 'Đường dẫn video ngoài (Direct MP4 URL)'}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleSmartCleanVideo(videoUrl)}
+                      className="text-[10px] text-[#0066FF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      <Wand2 className="w-3 h-3" />
+                      <span>{currentLang === 'ko' ? '자동 URL 정리' : 'Tự động sửa'}</span>
+                    </button>
+                  </div>
                   <input
-                    type="url"
+                    type="text"
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
+                    onBlur={(e) => handleSmartCleanVideo(e.target.value)}
                     placeholder="https://example.com/video.mp4"
                     className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs sm:text-sm focus:outline-none focus:border-[#0066FF] font-sans font-mono"
                   />
                 </div>
 
                 {videoUrl && (
-                  <div className="p-2.5 bg-white rounded-xl border border-slate-200 text-left">
+                  <div className="p-2.5 bg-white rounded-xl border border-slate-200 text-left space-y-1.5">
                     <span className="text-[10px] text-[#0066FF] font-bold font-mono uppercase block">🎬 VIDEO DETECTED</span>
-                    <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px]">{videoUrl}</span>
+                    <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px] block truncate">{videoUrl}</span>
                     <video
                       src={videoUrl}
                       muted
-                      className="w-full h-12 object-cover rounded-lg border border-slate-100 mt-1.5"
+                      controls
+                      className="w-full h-16 object-cover rounded-lg border border-slate-100"
                     />
                   </div>
                 )}
