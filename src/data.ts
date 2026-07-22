@@ -22,8 +22,8 @@ export const PRODUCTS: Product[] = [
     price: 1590000, // 1,590,000 KRW
     rating: 4.9,
     reviewsCount: 142,
-    imageUrl: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    imageUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     specsKO: {
       "프로세서": "Lux Core X3 Max (4나노 초정밀 공정)",
       "디스플레이": "6.8인치 Dynamic Super AMOLED 3X (1-120Hz 가변 주사율)",
