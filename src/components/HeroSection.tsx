@@ -10,6 +10,7 @@ interface HeroSectionProps {
   currentLang: 'ko' | 'vi';
   onViewProduct: (productId: string) => void;
   onScrollToProducts: () => void;
+  onBannerClick?: () => void;
 }
 
 export default function HeroSection({
@@ -18,6 +19,7 @@ export default function HeroSection({
   currentLang,
   onViewProduct,
   onScrollToProducts,
+  onBannerClick,
 }: HeroSectionProps) {
   const [mediaTab, setMediaTab] = useState<'photo' | 'video'>('photo');
 
@@ -26,7 +28,22 @@ export default function HeroSection({
   const desc = currentLang === 'ko' ? featuredProduct.descriptionKO : featuredProduct.descriptionVI;
 
   return (
-    <section className="relative w-full bg-white flex flex-col justify-between overflow-hidden pt-8 md:pt-14 pb-8 border-b border-slate-200/80">
+    <section 
+      onClick={(e) => {
+        // Trigger if clicking the section itself or its background decorative absolute divs
+        if (
+          e.target === e.currentTarget || 
+          (e.target instanceof HTMLElement && (
+            e.target.tagName === 'SECTION' || 
+            e.target.classList.contains('absolute')
+          ))
+        ) {
+          onBannerClick?.();
+        }
+      }}
+      className="relative w-full bg-white flex flex-col justify-between overflow-hidden pt-8 md:pt-14 pb-8 border-b border-slate-200/80 cursor-pointer"
+      title={currentLang === 'ko' ? '메인 화면으로 이동' : 'Về trang chủ'}
+    >
       {/* Dynamic Ambient Background Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#0066FF]/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/2 right-10 w-[300px] h-[300px] bg-slate-200/20 rounded-full blur-[100px] pointer-events-none" />

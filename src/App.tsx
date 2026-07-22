@@ -188,8 +188,26 @@ export default function App() {
     }
   };
 
+  // Helper to transition back to the top background/home
+  const handleGoToTop = () => {
+    setActiveProductId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-white text-slate-850 flex flex-col justify-between selection:bg-[#0066FF] selection:text-white">
+    <div 
+      id="app-container"
+      onClick={(e) => {
+        // Handle background click: if the user clicks the direct background of the page container
+        if (
+          e.target instanceof HTMLElement && 
+          (e.target.id === 'app-container' || e.target.tagName === 'MAIN')
+        ) {
+          handleGoToTop();
+        }
+      }}
+      className="min-h-screen bg-white text-slate-850 flex flex-col justify-between selection:bg-[#0066FF] selection:text-white"
+    >
       {/* Absolute topmost glow points */}
       <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-[#0066FF]/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-[#00D1FF]/3 rounded-full blur-[100px] pointer-events-none" />
@@ -205,6 +223,7 @@ export default function App() {
         onToggleUserSession={handleToggleUserSession}
         isAdminMode={isAdminMode}
         onToggleAdminMode={handleToggleAdminMode}
+        onLogoClick={handleGoToTop}
       />
 
       {/* Admin Mode Guide banner */}
@@ -228,6 +247,7 @@ export default function App() {
           currentLang={currentLang}
           onViewProduct={setActiveProductId}
           onScrollToProducts={handleScrollToProducts}
+          onBannerClick={handleGoToTop}
         />
 
         {/* Dynamic Detail page insertion point (가로 100% full 확장) */}
