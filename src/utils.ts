@@ -4,7 +4,6 @@ export const DEFAULT_FALLBACK_IMAGE = 'https://i.postimg.cc/s2sHdhjD/jadongbium1
  * Clean and convert image/video URLs from common image hosts, share links,
  * embed tags (<img src="...">), or markdown tags (![alt](url)).
  */
-
 export function cleanAndConvertImageUrl(rawUrl: string): string {
   if (!rawUrl) return '';
   let url = rawUrl.trim();
@@ -78,3 +77,5 @@ export function cleanAndConvertVideoUrl(rawUrl: string): string {
 
   return url;
 }
+
+export const cleanMediaUrl = cleanAndConvertImageUrl;

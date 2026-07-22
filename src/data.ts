@@ -1,4 +1,5 @@
 import { Product } from './types';
+import { cleanMediaUrl } from './utils';
 
 /**
  * =========================================================================
@@ -79,7 +80,9 @@ const BASE_PRODUCTS: Product[] = [
     price: 1590000, // 1,590,000 KRW
     rating: 4.9,
     reviewsCount: 142,
+    // [사용자 변경 영역 - Image URL Placeholder] 임시로 세련된 고대비 테크 일러스트 느낌의 고품질 언스플래시를 할당해두었습니다. 나중에 본인의 ImgBB 링크로 수정하세요!
     imageUrl: "https://i.postimg.cc/s2sHdhjD/jadongbium1(1).png",
+    // [사용자 변경 영역 - MP4 Video URL Placeholder] 원격 MP4 예시 파일 링크입니다. 본인의 MP4 주소로 수정 시 상세페이지의 비디오 플레이어에서 재생됩니다.
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     specsKO: {
       "프로세서": "Lux Core X3 Max (4나노 초정밀 공정)",
@@ -129,6 +132,7 @@ const BASE_PRODUCTS: Product[] = [
     price: 2980000, // 2,980,000 KRW
     rating: 5.0,
     reviewsCount: 94,
+    // [사용자 변경 영역 - Image URL Placeholder] 나중에 본인의 ImgBB 링크로 수정하세요!
     imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     specsKO: {
@@ -178,6 +182,7 @@ const BASE_PRODUCTS: Product[] = [
     price: 650000, // 650,000 KRW
     rating: 4.8,
     reviewsCount: 218,
+    // [사용자 변경 영역 - Image URL Placeholder] 나중에 본인의 ImgBB 링크로 수정하세요!
     imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     specsKO: {
@@ -228,6 +233,7 @@ const BASE_PRODUCTS: Product[] = [
     price: 4200000, // 4,200,000 KRW
     rating: 4.9,
     reviewsCount: 65,
+    // [사용자 변경 영역 - Image URL Placeholder] 나중에 본인의 ImgBB 링크로 수정하세요!
     imageUrl: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
     specsKO: {
@@ -282,7 +288,7 @@ export const FAQS = [
     qKO: "회원 결제와 비회원 결제는 무엇이 다른가요?",
     qVI: "Sự khác biệt giữa thanh toán thành viên và khách thường là gì?",
     aKO: "회원으로 로그인 및 인증을 거쳐 결제하시면 전 상품 기본 10%의 프리미엄 상시 할인이 즉시 정가 대비 차감됩니다. 또한 VIP 케어 프로그램(5년 무상 품질보증, VIP 전용 전문 매니저 응대 서비스)이 자동으로 누적 및 제공됩니다. 비회원은 추가 할인 없이 간편하게 신속한 결제가 가능하며 일반 1년 무상보증 혜택이 적용됩니다.",
-    aVI: "Khi bạn đăng nhập và thanh toán với tư cách thành viên, ưu đãi giảm giá VIP 10% sẽ được tự động áp dụng ngay vào tổng hóa đơn. Bên cạnh đó, bạn cũng được tham gia chương trình đặc quyền VIP (Bảo hành 5 năm, cố vấn kỹ thuật tận nhà). Khách thường có thể mua hàng nhanh chóng nhưng thanh toán theo giá niêmết và được hưởng gói bảo hành tiêu chuẩn 1 năm."
+    aVI: "Khi bạn đăng nhập và thanh toán với tư cách thành viên, ưu đãi giảm giá VIP 10% sẽ được tự động áp dụng ngay vào tổng hóa đơn. Bên cạnh đó, bạn cũng được tham gia chương trình đặc quyền VIP (Bảo hành 5 năm, cố vấn kỹ thuật tận nhà). Khách thường có thể mua hàng nhanh chóng nhưng thanh toán theo giá niêm yết và được hưởng gói bảo hành tiêu chuẩn 1 năm."
   },
   {
     qKO: "프리미엄 VIP 배송 과정은 어떻게 되나요?",
@@ -290,5 +296,4 @@ export const FAQS = [
     aKO: "결제가 완료되면 기재하신 휴대전화와 이메일로 고유 주문 안전 번호가 발송됩니다. 가전 설치 전문 출장 크루가 고객님께 사전에 연락드려 원하시는 세심한 설치 일정과 장소를 예약을 받은 후 무결점 VIP 무료 특송으로 방문 설치해 드립니다.",
     aVI: "Sau khi hoàn tất thanh toán, hệ thống sẽ gửi một mã đơn hàng an toàn qua số điện thoại và email của bạn. Đội ngũ kỹ sư lắp đặt chuyên nghiệp của chúng tôi sẽ chủ động liên hệ trước để xác nhận ngày giờ và lắp đặt miễn phí, bảo đảm không có bất kỳ thiếu sót nào."
   }
-];
 ];
