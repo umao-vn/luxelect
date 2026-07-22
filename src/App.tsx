@@ -43,10 +43,26 @@ export default function App() {
 
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
 
-  // Products list state initialized from localStorage for persistence
+  // Products list state initialized from localStorage with data.ts default sync
   const [productsList, setProductsList] = useState<Product[]>(() => {
     const cached = localStorage.getItem('lux_electronics_products');
-    return cached ? JSON.parse(cached) : PRODUCTS;
+    if (!cached) return PRODUCTS;
+    try {
+      const parsed: Product[] = JSON.parse(cached);
+      return parsed.map((item) => {
+        const defaultMatch = PRODUCTS.find((p) => p.id === item.id);
+        if (defaultMatch) {
+          return {
+            ...item,
+            imageUrl: defaultMatch.imageUrl || item.imageUrl,
+            videoUrl: defaultMatch.videoUrl || item.videoUrl,
+          };
+        }
+        return item;
+      });
+    } catch {
+      return PRODUCTS;
+    }
   });
 
   // Sync products list state to localStorage

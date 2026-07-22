@@ -25,7 +25,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 142,
     imageUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     specsKO: {
       "프로세서": "Lux Core X3 Max (4나노 초정밀 공정)",
       "디스플레이": "6.8인치 Dynamic Super AMOLED 3X (1-120Hz 가변 주사율)",
