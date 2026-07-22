@@ -8,51 +8,71 @@ export function cleanAndConvertImageUrl(rawUrl: string): string {
   if (!rawUrl) return '';
   let url = rawUrl.trim();
 
-  // Extract URL from HTML <img src="..."> if present
-  const imgTagMatch = url.match(/src=["']([^"']+)["']/i);
-  if (imgTagMatch && imgTagMatch[1]) {
-    url = imgTagMatch[1];
-  }
-
-  // Extract URL from Markdown ![alt](url) if present
-  const mdMatch = url.match(/\((https?:\/\/[^\)]+)\)/i);
+  // Extract inner URL from Markdown format like [text](http...) or [http...](http...)
+  // Handle case where URL itself contains parentheses like (1)
+  const mdMatch = url.match(/\[.*?\]\((https?:\/\/.+)\)/i);
   if (mdMatch && mdMatch[1]) {
-    url = mdMatch[1];
+    let candidate = mdMatch[1];
+    // Balance trailing parenthesis if it closes the markdown parenthesis
+    let openCount = 0;
+    let closeCount = 0;
+    for (let i = 0; i < candidate.length; i++) {
+      if (candidate[i] === '(') openCount++;
+      if (candidate[i] === ')') closeCount++;
+    }
+    if (closeCount > openCount && candidate.endsWith(')')) {
+      candidate = candidate.slice(0, candidate.lastIndexOf(')'));
+    }
+    url = candidate;
+  } else {
+    // If not markdown link, check HTML <img> or plain extraction
+    const imgTagMatch = url.match(/src=["']([^"']+)["']/i);
+    if (imgTagMatch && imgTagMatch[1]) {
+      url = imgTagMatch[1];
+    } else {
+      const plainHttpMatch = url.match(/(https?:\/\/[^\s"'<>]+)/i);
+      if (plainHttpMatch && plainHttpMatch[1]) {
+        url = plainHttpMatch[1];
+      }
+    }
   }
 
-  // Remove surrounding quotes or angle brackets
-  url = url.replace(/^["'<>]+|["'<>]+$/g, '').trim();
+  // Remove surrounding quotes, brackets or whitespace
+  url = url.replace(/^["'<>\[\]]+|["'<>\[\]]+$/g, '').trim();
 
-  // Prepend https:// if protocol is missing for known image hosting domains
+  // Prepend https:// if protocol is missing for known domains
   if (/^(i\.postimg\.cc|postimg\.cc|postimages\.org|i\.ibb\.co|i\.imgur\.com|images\.unsplash\.com|drive\.google\.com|lh3\.googleusercontent\.com|dropbox\.com)/i.test(url)) {
     url = 'https://' + url;
   }
 
-  // PostImg page links:
-  // https://postimg.cc/xxxx or https://postimages.org/xxxx -> https://i.postimg.cc/xxxx/image.png
-  const postImgMatch = url.match(/(?:postimg\.cc|postimages\.org)\/([a-zA-Z0-9]+)$/i);
+  // If it's already a direct postimg link: e.g. https://i.postimg.cc/s2sHdhjD/jadongbium1(1).png
+  if (/^https?:\/\/i\.postimg\.cc\//i.test(url)) {
+    return url;
+  }
+
+  // PostImg page links: https://postimg.cc/s2sHdhjD or https://postimages.org/s2sHdhjD
+  const postImgMatch = url.match(/(?:postimg\.cc|postimages\.org)\/([a-zA-Z0-9]+)/i);
   if (postImgMatch && postImgMatch[1]) {
     return `https://i.postimg.cc/${postImgMatch[1]}/image.png`;
   }
 
-  // Google Drive share/view links:
-  // https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+  // Google Drive share/view links
   const gDriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
   if (gDriveMatch && gDriveMatch[1]) {
     return `https://lh3.googleusercontent.com/d/${gDriveMatch[1]}`;
   }
 
-  // Dropbox share links:
-  // https://www.dropbox.com/s/xyz/photo.jpg?dl=0
+  // Dropbox share links
   if (url.includes('dropbox.com')) {
     return url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace(/\?dl=\d/, '');
   }
 
-  // Imgur page links:
-  // https://imgur.com/ABCDEF -> https://i.imgur.com/ABCDEF.png
-  const imgurMatch = url.match(/imgur\.com\/([a-zA-Z0-9]+)$/i);
-  if (imgurMatch && imgurMatch[1]) {
-    return `https://i.imgur.com/${imgurMatch[1]}.png`;
+  // Imgur page links
+  if (!/^https?:\/\/i\.imgur\.com\//i.test(url)) {
+    const imgurMatch = url.match(/imgur\.com\/([a-zA-Z0-9]+)$/i);
+    if (imgurMatch && imgurMatch[1]) {
+      return `https://i.imgur.com/${imgurMatch[1]}.png`;
+    }
   }
 
   return url;
