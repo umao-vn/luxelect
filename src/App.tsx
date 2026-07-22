@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Types & Data
-import { Product, CartItem, UserSession } from './types';
+import { Product, CartItem, UserSession, CategoryItem } from './types';
 import { PRODUCTS } from './data';
 import { translations } from './translations';
 
@@ -15,12 +15,33 @@ import ProductDetailView from './components/ProductDetailView';
 import CartModal from './components/CartModal';
 import CheckoutModal from './components/CheckoutModal';
 import AdminProductModal from './components/AdminProductModal';
+import AddCategoryModal from './components/AddCategoryModal';
 import { Lock } from 'lucide-react';
+
+const DEFAULT_CATEGORIES: CategoryItem[] = [
+  { id: 'phone', labelKO: '스마트폰', labelVI: 'Điện thoại' },
+  { id: 'laptop', labelKO: '노트북', labelVI: 'Máy tính' },
+  { id: 'audio', labelKO: '프리미엄 오디오', labelVI: 'Âm thanh VIP' },
+  { id: 'display', labelKO: '디스플레이', labelVI: 'Màn hình 8K' },
+];
 
 export default function App() {
   // Localization state (Default is Korean 'ko')
   const [currentLang, setCurrentLang] = useState<'ko' | 'vi'>('ko');
   const t = translations[currentLang];
+
+  // Categories list state initialized from localStorage for persistence
+  const [categoriesList, setCategoriesList] = useState<CategoryItem[]>(() => {
+    const cached = localStorage.getItem('lux_electronics_categories');
+    return cached ? JSON.parse(cached) : DEFAULT_CATEGORIES;
+  });
+
+  // Sync categories to localStorage
+  useEffect(() => {
+    localStorage.setItem('lux_electronics_categories', JSON.stringify(categoriesList));
+  }, [categoriesList]);
+
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
 
   // Products list state initialized from localStorage for persistence
   const [productsList, setProductsList] = useState<Product[]>(() => {
@@ -188,6 +209,18 @@ export default function App() {
     }
   };
 
+  // Category Handlers
+  const handleAddCategory = (newCat: CategoryItem) => {
+    setCategoriesList((prev) => {
+      if (prev.some((c) => c.id === newCat.id)) return prev;
+      return [...prev, newCat];
+    });
+  };
+
+  const handleDeleteCategory = (catId: string) => {
+    setCategoriesList((prev) => prev.filter((c) => c.id !== catId));
+  };
+
   // Helper to transition back to the top background/home
   const handleGoToTop = () => {
     setActiveProductId(null);
@@ -279,6 +312,7 @@ export default function App() {
             💡 IMPORTANT: HIDDEN cleanly when activeProductId is true, to make the detailed view function as separate dedicated standalone page! */}
         <MiddleSection
           products={productsList}
+          categoriesList={categoriesList}
           t={t}
           currentLang={currentLang}
           onViewProduct={setActiveProductId}
@@ -289,6 +323,8 @@ export default function App() {
           onEditProduct={handleEditProduct}
           onAddProduct={handleAddProduct}
           onDeleteProduct={handleDeleteProduct}
+          onOpenAddCategoryModal={() => setIsAddCategoryModalOpen(true)}
+          onDeleteCategory={handleDeleteCategory}
         />
 
         {/* PAGE 3: Bottom Section (하단 - Value Propositions, FAQs, Newsletter, Brand Footer)
@@ -338,6 +374,17 @@ export default function App() {
         product={editingProduct}
         onSave={handleSaveProduct}
         currentLang={currentLang}
+        categoriesList={categoriesList}
+        onOpenAddCategoryModal={() => setIsAddCategoryModalOpen(true)}
+      />
+
+      {/* CATEGORY ADDITION MODAL */}
+      <AddCategoryModal
+        isOpen={isAddCategoryModalOpen}
+        onClose={() => setIsAddCategoryModalOpen(false)}
+        onAddCategory={handleAddCategory}
+        currentLang={currentLang}
+        existingCategories={categoriesList}
       />
     </div>
   );

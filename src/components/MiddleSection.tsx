@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
-import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2 } from 'lucide-react';
-import { Product, CategoryType, UserSession } from '../types';
+import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X } from 'lucide-react';
+import { Product, CategoryType, CategoryItem, UserSession } from '../types';
 import { DEFAULT_FALLBACK_IMAGE } from '../utils';
 import { TranslationSet } from '../translations';
 import { useState } from 'react';
 
 interface MiddleSectionProps {
   products: Product[];
+  categoriesList: CategoryItem[];
   t: TranslationSet;
   currentLang: 'ko' | 'vi';
   onViewProduct: (productId: string) => void;
@@ -17,10 +18,13 @@ interface MiddleSectionProps {
   onEditProduct?: (product: Product) => void;
   onAddProduct?: () => void;
   onDeleteProduct?: (productId: string) => void;
+  onOpenAddCategoryModal: () => void;
+  onDeleteCategory?: (categoryId: string) => void;
 }
 
 export default function MiddleSection({
   products,
+  categoriesList,
   t,
   currentLang,
   onViewProduct,
@@ -31,6 +35,8 @@ export default function MiddleSection({
   onEditProduct,
   onAddProduct,
   onDeleteProduct,
+  onOpenAddCategoryModal,
+  onDeleteCategory,
 }: MiddleSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | 'all'>('all');
   const [sortBy, setSortBy] = useState<'default' | 'priceAsc' | 'priceDesc' | 'rating'>('default');
@@ -54,12 +60,14 @@ export default function MiddleSection({
     return 0; // default
   });
 
-  const categories: { id: CategoryType | 'all'; labelKO: string; labelVI: string }[] = [
+  const allCategoryTabs: { id: string; labelKO: string; labelVI: string; isCustom?: boolean }[] = [
     { id: 'all', labelKO: '전체 상품', labelVI: 'Tất cả sản phẩm' },
-    { id: 'phone', labelKO: '스마트폰', labelVI: 'Điện thoại' },
-    { id: 'laptop', labelKO: '노트북', labelVI: 'Máy tính' },
-    { id: 'audio', labelKO: '프리미엄 오디오', labelVI: 'Âm thanh VIP' },
-    { id: 'display', labelKO: '디스플레이', labelVI: 'Màn hình 8K' },
+    ...categoriesList.map((cat) => ({
+      id: cat.id,
+      labelKO: cat.labelKO,
+      labelVI: cat.labelVI,
+      isCustom: !['phone', 'laptop', 'audio', 'display'].includes(cat.id),
+    })),
   ];
 
   return (
@@ -84,35 +92,65 @@ export default function MiddleSection({
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200 mb-12">
           {/* Categories Tab selector */}
           <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto">
-            {categories.map((cat) => {
+            {allCategoryTabs.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer ${
-                    isActive
-                      ? 'bg-gradient-to-r from-[#0066FF] to-[#00D1FF] text-white shadow-lg shadow-[#0066FF]/20 font-semibold'
-                      : 'bg-slate-50 text-slate-600 border border-slate-250/60 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5'
-                  }`}
-                  id={`cat-tab-${cat.id}`}
-                >
-                  {currentLang === 'ko' ? cat.labelKO : cat.labelVI}
-                </button>
+                <div key={cat.id} className="relative group/cattab flex items-center">
+                  <button
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-[#0066FF] to-[#00D1FF] text-white shadow-lg shadow-[#0066FF]/20 font-semibold'
+                        : 'bg-slate-50 text-slate-600 border border-slate-250/60 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5'
+                    }`}
+                    id={`cat-tab-${cat.id}`}
+                  >
+                    <span>{currentLang === 'ko' ? cat.labelKO : cat.labelVI}</span>
+                  </button>
+
+                  {/* Allow deleting custom category if created by user */}
+                  {cat.isCustom && onDeleteCategory && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm(currentLang === 'ko' ? `'${cat.labelKO}' 카테고리를 삭제하시겠습니까?` : `Xóa danh mục '${cat.labelVI}'?`)) {
+                          onDeleteCategory(cat.id);
+                          if (selectedCategory === cat.id) {
+                            setSelectedCategory('all');
+                          }
+                        }
+                      }}
+                      className="ml-1 p-1 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors opacity-0 group-hover/cattab:opacity-100 cursor-pointer"
+                      title={currentLang === 'ko' ? '카테고리 삭제' : 'Xóa danh mục'}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               );
             })}
 
-            {isAdminMode && (
-              <button
-                onClick={onAddProduct}
-                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-90 text-white shadow-lg shadow-emerald-500/10 flex items-center gap-1.5 cursor-pointer ml-2"
-                id="admin-add-product-btn"
-                title={currentLang === 'ko' ? '새 럭셔리 상품 추가' : 'Thêm sản phẩm Luxury mới'}
-              >
-                <Plus className="w-4 h-4" />
-                <span>{currentLang === 'ko' ? '새 상품 추가' : 'Thêm sản phẩm'}</span>
-              </button>
-            )}
+            {/* Add Category Button */}
+            <button
+              onClick={onOpenAddCategoryModal}
+              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-white border-2 border-dashed border-[#0066FF]/40 text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ml-1"
+              id="add-category-btn"
+              title={currentLang === 'ko' ? '새 제품 카테고리 추가' : 'Thêm danh mục mới'}
+            >
+              <FolderPlus className="w-4 h-4" />
+              <span>{currentLang === 'ko' ? '+ 카테고리 추가' : '+ Thêm danh mục'}</span>
+            </button>
+
+            {/* Add Product Button - Always accessible */}
+            <button
+              onClick={onAddProduct}
+              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#0066FF] to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md shadow-[#0066FF]/20 transition-all flex items-center gap-1.5 cursor-pointer ml-1"
+              id="add-product-btn"
+              title={currentLang === 'ko' ? '새 제품 등록' : 'Đăng ký sản phẩm mới'}
+            >
+              <Plus className="w-4 h-4" />
+              <span>{currentLang === 'ko' ? '+ 제품 등록' : '+ Đăng ký sản phẩm'}</span>
+            </button>
           </div>
 
           {/* Sort selector */}
@@ -192,35 +230,35 @@ export default function MiddleSection({
                   )}
                 </div>
 
-                {/* Admin controls badge */}
-                {isAdminMode && (
-                  <div className="absolute top-4 right-4 z-20 flex gap-1.5">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEditProduct?.(product);
-                      }}
-                      className="p-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition-colors shadow-sm cursor-pointer"
-                      title={currentLang === 'ko' ? '사진/동영상 수정' : 'Sửa ảnh/video'}
-                      id={`admin-edit-prod-${product.id}`}
-                    >
-                      <Edit className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                          onDeleteProduct?.(product.id);
-                        }
-                      }}
-                      className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
-                      title={currentLang === 'ko' ? '상품 삭제' : 'Xóa sản phẩm'}
-                      id={`admin-delete-prod-${product.id}`}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
+                {/* Edit & Delete controls */}
+                <div className={`absolute top-4 right-4 z-20 flex gap-1.5 transition-opacity ${
+                  isAdminMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditProduct?.(product);
+                    }}
+                    className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-blue-50 transition-colors shadow-sm cursor-pointer"
+                    title={currentLang === 'ko' ? '제품 정보 수정' : 'Sửa thông tin sản phẩm'}
+                    id={`edit-prod-${product.id}`}
+                  >
+                    <Edit className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                        onDeleteProduct?.(product.id);
+                      }
+                    }}
+                    className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
+                    title={currentLang === 'ko' ? '상품 삭제' : 'Xóa sản phẩm'}
+                    id={`delete-prod-${product.id}`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
 
                 {/* Favorite background visual glow */}
                 <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#0066FF]/5 rounded-full blur-xl group-hover:bg-[#0066FF]/10 transition-colors pointer-events-none" />

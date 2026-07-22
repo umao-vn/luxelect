@@ -1,4 +1,10 @@
-export type CategoryType = 'phone' | 'laptop' | 'audio' | 'display';
+export interface CategoryItem {
+  id: string;
+  labelKO: string;
+  labelVI: string;
+}
+
+export type CategoryType = string;
 
 export interface Product {
   id: string;

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Upload, Image as ImageIcon, Video, Save, AlertCircle, Sparkles, CheckCircle, Wand2, RefreshCw } from 'lucide-react';
-import { Product, CategoryType } from '../types';
+import { X, Upload, Image as ImageIcon, Video, Save, AlertCircle, Sparkles, CheckCircle, Wand2, FolderPlus } from 'lucide-react';
+import { Product, CategoryType, CategoryItem } from '../types';
 import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
 
 interface AdminProductModalProps {
@@ -9,6 +9,8 @@ interface AdminProductModalProps {
   product: Product | null; // null means "Add New Product"
   onSave: (savedProduct: Product) => void;
   currentLang: 'ko' | 'vi';
+  categoriesList?: CategoryItem[];
+  onOpenAddCategoryModal?: () => void;
 }
 
 export default function AdminProductModal({
@@ -17,6 +19,8 @@ export default function AdminProductModal({
   product,
   onSave,
   currentLang,
+  categoriesList = [],
+  onOpenAddCategoryModal,
 }: AdminProductModalProps) {
   const isEdit = !!product;
 
@@ -247,18 +251,40 @@ export default function AdminProductModal({
           {/* Core metadata: category, name, price */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
-                {currentLang === 'ko' ? '카테고리' : 'Danh mục'}
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
+                  {currentLang === 'ko' ? '카테고리' : 'Danh mục'}
+                </label>
+                {onOpenAddCategoryModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenAddCategoryModal}
+                    className="text-[10px] text-[#0066FF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                  >
+                    <FolderPlus className="w-3 h-3" />
+                    <span>{currentLang === 'ko' ? '+ 새 카테고리' : '+ Danh mục mới'}</span>
+                  </button>
+                )}
+              </div>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as CategoryType)}
                 className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs sm:text-sm focus:outline-none focus:border-[#0066FF] font-sans cursor-pointer"
               >
-                <option value="phone">{currentLang === 'ko' ? '스마트폰 (Phone)' : 'Điện thoại (Phone)'}</option>
-                <option value="laptop">{currentLang === 'ko' ? '노트북 (Laptop)' : 'Máy tính (Laptop)'}</option>
-                <option value="audio">{currentLang === 'ko' ? '오디오 (Audio)' : 'Âm thanh (Audio)'}</option>
-                <option value="display">{currentLang === 'ko' ? '디스플레이 (Display)' : 'Màn hình (Display)'}</option>
+                {categoriesList.length > 0 ? (
+                  categoriesList.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {currentLang === 'ko' ? cat.labelKO : cat.labelVI} ({cat.id})
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value="phone">{currentLang === 'ko' ? '스마트폰 (Phone)' : 'Điện thoại (Phone)'}</option>
+                    <option value="laptop">{currentLang === 'ko' ? '노트북 (Laptop)' : 'Máy tính (Laptop)'}</option>
+                    <option value="audio">{currentLang === 'ko' ? '오디오 (Audio)' : 'Âm thanh (Audio)'}</option>
+                    <option value="display">{currentLang === 'ko' ? '디스플레이 (Display)' : 'Màn hình (Display)'}</option>
+                  </>
+                )}
               </select>
             </div>
 
