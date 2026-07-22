@@ -49,17 +49,27 @@ export default function App() {
     if (!cached) return PRODUCTS;
     try {
       const parsed: Product[] = JSON.parse(cached);
-      return parsed.map((item) => {
+      // Map existing items with latest default URLs if matched
+      const updatedList = parsed.map((item) => {
         const defaultMatch = PRODUCTS.find((p) => p.id === item.id);
         if (defaultMatch) {
           return {
             ...item,
-            imageUrl: defaultMatch.imageUrl || item.imageUrl,
-            videoUrl: defaultMatch.videoUrl || item.videoUrl,
+            imageUrl: defaultMatch.imageUrl,
+            videoUrl: defaultMatch.videoUrl,
           };
         }
         return item;
       });
+
+      // Append any default PRODUCTS not currently in cached list
+      PRODUCTS.forEach((defProduct) => {
+        if (!updatedList.some((p) => p.id === defProduct.id)) {
+          updatedList.push(defProduct);
+        }
+      });
+
+      return updatedList;
     } catch {
       return PRODUCTS;
     }

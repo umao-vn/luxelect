@@ -74,7 +74,7 @@ export const RAW_PRODUCTS: Product[] = [
     price: 3490000,
     rating: 4.95,
     reviewsCount: 88,
-    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://i.ibb.co/Pz4KqM31/dibea.jpg",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     specsKO: {
       "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
@@ -117,8 +117,8 @@ export const RAW_PRODUCTS: Product[] = [
     price: 890000,
     rating: 4.88,
     reviewsCount: 210,
-    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    imageUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
+    videoUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
     specsKO: {
       "드라이버": "40mm 맞춤 제작 티타늄 듀얼 다이내믹 드라이버",
       "노이즈 캔슬링": "스마트 적응형 ANC (초당 48,000회 음파 분석)",
@@ -148,6 +148,48 @@ export const RAW_PRODUCTS: Product[] = [
       { nameKO: "아틱 화이트", nameVI: "Trắng Băng", hex: "#f8fafc" }
     ],
     isNew: false,
+    isBest: true
+  },
+  {
+    id: "lux-custom-1784700690204",
+    category: "display",
+    nameKO: "럭스 시그니처 8K 올레드 디스플레이",
+    nameVI: "Màn hình Lux Signature 8K OLED",
+    tagKO: "초고화질 8K HDR 10+ 및 자발광 올레드 패널의 극상 화질",
+    tagVI: "Chất lượng hình ảnh 8K HDR 10+ & Tấm nền OLED tự phát sáng",
+    price: 4890000,
+    rating: 5.0,
+    reviewsCount: 64,
+    imageUrl: "https://i.ibb.co/nMCCPR7M/1.png",
+    videoUrl: "https://i.ibb.co/nMCCPR7M/1.png",
+    specsKO: {
+      "화면 크기": "32인치 / 8K UHD (7680x4320)",
+      "패널": "Quantum OLED (178도 광시야각)",
+      "주사율": "240Hz (0.03ms 응답속도)",
+      "색재현율": "DCI-P3 99% / Adobe RGB 99%"
+    },
+    specsVI: {
+      "Kích thước": "32 inch / 8K UHD (7680x4320)",
+      "Tấm nền": "Quantum OLED (Góc nhìn rộng 178 độ)",
+      "Tần số quét": "240Hz (Thời gian phản hồi 0.03ms)",
+      "Độ bao phủ màu": "DCI-P3 99% / Adobe RGB 99%"
+    },
+    featuresKO: [
+      "무선 8K 실시간 시그널 전송 지원",
+      "슬림 메탈 베젤 & 마그네틱 모듈러 스탠드",
+      "자동 눈 보호 모드 & 스마트 센서 탑재"
+    ],
+    featuresVI: [
+      "Hỗ trợ truyền tín hiệu 8K không dây thời gian thực",
+      "Viền kim loại siêu mỏng & Chân đế hít từ tính",
+      "Chế độ bảo vệ mắt tự động & Cảm biến thông minh"
+    ],
+    descriptionKO: "럭스 시그니처 8K 올레드 디스플레이는 현존하는 최고 레벨의 색 정확도와 압도적 명암비를 선보입니다. 8K 초고해상도로 완벽한 시각적 몰입감을 선사합니다.",
+    descriptionVI: "Màn hình Lux Signature 8K OLED mang đến độ chính xác màu sắc vượt trội và tỷ lệ tương phản ấn tượng nhất. Độ phân giải 8K cho trải nghiệm thị giác hoàn hảo.",
+    colors: [
+      { nameKO: "티타늄 실버", nameVI: "Titan Bạc", hex: "#e2e8f0" }
+    ],
+    isNew: true,
     isBest: true
   }
 ];
