@@ -1,3 +1,11 @@
+export interface HeroMediaItem {
+  id: string;
+  type: 'photo' | 'video';
+  titleKO: string;
+  titleVI: string;
+  url: string;
+}
+
 export interface CategoryItem {
   id: string;
   labelKO: string;

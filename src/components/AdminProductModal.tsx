@@ -528,14 +528,30 @@ export default function AdminProductModal({
 
                 {videoUrl && (
                   <div className="p-2.5 bg-white rounded-xl border border-slate-200 text-left space-y-1.5">
-                    <span className="text-[10px] text-[#0066FF] font-bold font-mono uppercase block">🎬 VIDEO DETECTED</span>
-                    <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px] block truncate">{videoUrl}</span>
-                    <video
-                      src={videoUrl}
-                      muted
-                      controls
-                      className="w-full h-16 object-cover rounded-lg border border-slate-100"
-                    />
+                    {/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(videoUrl) ? (
+                      <div className="space-y-1">
+                        <span className="text-[10px] text-amber-600 font-bold font-mono uppercase flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          <span>{currentLang === 'ko' ? '⚠️ 동영상 주소에 이미지 파일 감지됨' : '⚠️ Nhận diện tệp ảnh trong ô video'}</span>
+                        </span>
+                        <p className="text-[10px] text-slate-500 font-sans leading-tight">
+                          {currentLang === 'ko'
+                            ? '사진 주소는 1번 "대표 상품 이미지" 항목에 입력해 주시고, 여기에는 MP4 동영상 링크를 입력해 주세요.'
+                            : 'Đường dẫn ảnh nên nhập vào mục 1, ở đây hãy dùng liên kết video MP4.'}
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-[10px] text-[#0066FF] font-bold font-mono uppercase block">🎬 VIDEO DETECTED</span>
+                        <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px] block truncate">{videoUrl}</span>
+                        <video
+                          src={videoUrl}
+                          muted
+                          controls
+                          className="w-full h-16 object-cover rounded-lg border border-slate-100"
+                        />
+                      </>
+                    )}
                   </div>
                 )}
               </div>

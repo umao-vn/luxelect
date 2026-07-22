@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Types & Data
-import { Product, CartItem, UserSession, CategoryItem } from './types';
-import { PRODUCTS } from './data';
+import { Product, CartItem, UserSession, CategoryItem, HeroMediaItem } from './types';
+import { PRODUCTS, DEFAULT_HERO_MEDIA } from './data';
 import { translations } from './translations';
 
 // Components
@@ -16,6 +16,7 @@ import CartModal from './components/CartModal';
 import CheckoutModal from './components/CheckoutModal';
 import AdminProductModal from './components/AdminProductModal';
 import AddCategoryModal from './components/AddCategoryModal';
+import HeroMediaModal from './components/HeroMediaModal';
 import { Lock } from 'lucide-react';
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
@@ -79,6 +80,40 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('lux_electronics_products', JSON.stringify(productsList));
   }, [productsList]);
+
+  // Independent Hero Media (Top Section Photo/Video list) state
+  const [heroMediaList, setHeroMediaList] = useState<HeroMediaItem[]>(() => {
+    const cached = localStorage.getItem('lux_hero_media_items');
+    return cached ? JSON.parse(cached) : DEFAULT_HERO_MEDIA;
+  });
+
+  // Sync hero media list to localStorage
+  useEffect(() => {
+    localStorage.setItem('lux_hero_media_items', JSON.stringify(heroMediaList));
+  }, [heroMediaList]);
+
+  const [activeHeroMediaId, setActiveHeroMediaId] = useState<string | null>(null);
+  const [isHeroMediaModalOpen, setIsHeroMediaModalOpen] = useState(false);
+
+  const handleAddHeroMedia = (newItem: Omit<HeroMediaItem, 'id'>) => {
+    const createdItem: HeroMediaItem = {
+      ...newItem,
+      id: `hero-media-${Date.now()}`,
+    };
+    setHeroMediaList((prev) => [createdItem, ...prev]);
+    setActiveHeroMediaId(createdItem.id);
+  };
+
+  const handleDeleteHeroMedia = (id: string) => {
+    setHeroMediaList((prev) => prev.filter((item) => item.id !== id));
+    if (activeHeroMediaId === id) {
+      setActiveHeroMediaId(null);
+    }
+  };
+
+  const handleUpdateHeroMedia = (updatedItem: HeroMediaItem) => {
+    setHeroMediaList((prev) => prev.map((item) => (item.id === updatedItem.id ? updatedItem : item)));
+  };
 
   // Admin Mode states
   const [isAdminMode, setIsAdminMode] = useState(false);
@@ -301,10 +336,12 @@ export default function App() {
       <main className="flex-grow w-full">
         {/* PAGE 1: Upper Section (상단 - Hero cinematic billboard) */}
         <HeroSection
-          featuredProduct={featuredProduct}
+          heroMediaList={heroMediaList}
+          activeMediaId={activeHeroMediaId}
+          onSelectActiveMedia={setActiveHeroMediaId}
+          onOpenHeroMediaModal={() => setIsHeroMediaModalOpen(true)}
           t={t}
           currentLang={currentLang}
-          onViewProduct={setActiveProductId}
           onScrollToProducts={handleScrollToProducts}
           onBannerClick={handleGoToTop}
         />
@@ -411,6 +448,19 @@ export default function App() {
         onAddCategory={handleAddCategory}
         currentLang={currentLang}
         existingCategories={categoriesList}
+      />
+
+      {/* TOP SECTION HERO MEDIA MANAGEMENT MODAL */}
+      <HeroMediaModal
+        isOpen={isHeroMediaModalOpen}
+        onClose={() => setIsHeroMediaModalOpen(false)}
+        heroMediaList={heroMediaList}
+        activeMediaId={activeHeroMediaId}
+        onSelectActiveMedia={setActiveHeroMediaId}
+        onAddHeroMedia={handleAddHeroMedia}
+        onDeleteHeroMedia={handleDeleteHeroMedia}
+        onUpdateHeroMedia={handleUpdateHeroMedia}
+        currentLang={currentLang}
       />
     </div>
   );

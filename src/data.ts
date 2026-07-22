@@ -1,5 +1,22 @@
-import { Product } from './types';
+import { Product, HeroMediaItem } from './types';
 import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from './utils';
+
+export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
+  {
+    id: 'hero-media-1',
+    type: 'photo',
+    titleKO: '상단 브랜드 비주얼 메인 사진',
+    titleVI: 'Ảnh Thương Hiệu Chính Top',
+    url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png'
+  },
+  {
+    id: 'hero-media-2',
+    type: 'video',
+    titleKO: '상단 시네마틱 브랜드 영상 (MP4)',
+    titleVI: 'Video Điện Ảnh Top (MP4)',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+  }
+];
 
 /**
  * =========================================================================
@@ -67,14 +84,14 @@ export const RAW_PRODUCTS: Product[] = [
   {
     id: "lux-book-pro-16",
     category: "laptop",
-    nameKO: "럭스북 프로 16 (LuxBook Pro 16)",
+    nameKO: "맥북 프로 16 (MACBook Pro 16)",
     nameVI: "LuxBook Pro 16 (Máy tính xách tay cao cấp)",
     tagKO: "M3 Ultra 칩셋과 Liquid Retina XDR 디스플레이의 압도적 성능",
     tagVI: "Hiệu năng vượt trội với chip M3 Ultra và màn hình Liquid Retina XDR",
     price: 3490000,
     rating: 4.95,
     reviewsCount: 88,
-    imageUrl: "https://i.ibb.co/Pz4KqM31/dibea.jpg",
+    imageUrl: "https://i.postimg.cc/ryJh0g8m/xojjb3ot-643-macbook-pro-16inch-2019-core-i9-ram-16gb-ssd-1tb.jpg",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     specsKO: {
       "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
@@ -110,15 +127,15 @@ export const RAW_PRODUCTS: Product[] = [
   {
     id: "lux-sound-aura",
     category: "audio",
-    nameKO: "럭스 사운드 오라 (Lux Sound Aura)",
+    nameKO: "삼성 사운드 오라 (Lux Sound Aura)",
     nameVI: "Lux Sound Aura (Tai nghe VIP)",
     tagKO: "액티브 노이즈 캔슬링과 공간 음향의 맞춤형 오디오",
     tagVI: "Chống ồn chủ động ANC & Âm thanh vòm không gian 3D",
     price: 890000,
     rating: 4.88,
     reviewsCount: 210,
-    imageUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
-    videoUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
+    imageUrl: "https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     specsKO: {
       "드라이버": "40mm 맞춤 제작 티타늄 듀얼 다이내믹 드라이버",
       "노이즈 캔슬링": "스마트 적응형 ANC (초당 48,000회 음파 분석)",
@@ -161,7 +178,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 64,
     imageUrl: "https://i.ibb.co/nMCCPR7M/1.png",
-    videoUrl: "https://i.ibb.co/nMCCPR7M/1.png",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     specsKO: {
       "화면 크기": "32인치 / 8K UHD (7680x4320)",
       "패널": "Quantum OLED (178도 광시야각)",

@@ -186,7 +186,13 @@ export default function ProductDetailView({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-80" />
 
-              {/* Float badge */}
+              {/* Photo Mode Label Badge */}
+              <div className="absolute top-6 left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 backdrop-blur-md text-white text-xs font-mono font-bold shadow-md">
+                <span>📷</span>
+                <span>{currentLang === 'ko' ? '제품 사진 (고화질)' : 'Ảnh sản phẩm (HD)'}</span>
+              </div>
+
+              {/* Float color badge */}
               <div className="absolute bottom-6 left-6 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-mono">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedColor.hex }} />
                 <span className="text-slate-700 font-semibold">
@@ -195,8 +201,8 @@ export default function ProductDetailView({
               </div>
             </div>
 
-            {/* Premium Custom MP4 Video Player Frame */}
-            {product.videoUrl && (
+            {/* Premium Custom MP4 Video Player Frame (Rendered only when valid videoUrl is defined and distinct from image) */}
+            {product.videoUrl && product.videoUrl !== product.imageUrl && !/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(product.videoUrl) && (
               <div className="rounded-3xl bg-slate-50 border border-slate-200 p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm sm:text-base font-bold text-slate-800 font-sans flex items-center gap-2">
