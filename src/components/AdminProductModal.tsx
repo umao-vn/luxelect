@@ -606,22 +606,61 @@ export default function AdminProductModal({
           </div>
 
           {/* Action buttons footer */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+          <div className="flex items-center justify-between pt-4 border-t border-slate-200">
             <button
               type="button"
-              onClick={onClose}
-              className="px-5 py-3 border border-slate-200 hover:bg-slate-50 text-xs sm:text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+              onClick={() => {
+                const finalImg = cleanAndConvertImageUrl(imageUrl);
+                const finalVid = cleanAndConvertVideoUrl(videoUrl);
+                const snippet = JSON.stringify(
+                  {
+                    id: product?.id || `lux-custom-${Date.now()}`,
+                    category,
+                    nameKO,
+                    nameVI,
+                    tagKO: tagKO || '럭셔리 에디션 테크 디바이스',
+                    tagVI: tagVI || 'Thiết bị công nghệ cao cấp',
+                    price: Number(price),
+                    rating: product?.rating || 5.0,
+                    reviewsCount: product?.reviewsCount || 1,
+                    imageUrl: finalImg,
+                    videoUrl: finalVid || undefined,
+                    descriptionKO,
+                    descriptionVI,
+                  },
+                  null,
+                  2
+                );
+                navigator.clipboard.writeText(snippet);
+                alert(
+                  currentLang === 'ko'
+                    ? 'data.ts 파일용 코드 스니펫이 클립보드에 복사되었습니다!'
+                    : 'Đã sao chép đoạn mã cho data.ts vào clipboard!'
+                );
+              }}
+              className="text-[11px] font-mono text-slate-500 hover:text-[#0066FF] underline cursor-pointer"
+              title="data.ts 원본 파일용 객체 코드 복사"
             >
-              {currentLang === 'ko' ? '취소' : 'Hủy bỏ'}
+              {currentLang === 'ko' ? '📋 data.ts 스니펫 복사' : '📋 Sao chép mã data.ts'}
             </button>
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 px-6 py-3 bg-[#0066FF] hover:bg-blue-600 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-lg cursor-pointer"
-              id="admin-submit-btn"
-            >
-              <Save className="w-4 h-4" />
-              <span>{isEdit ? (currentLang === 'ko' ? '변경 사항 저장' : 'Lưu thay đổi') : (currentLang === 'ko' ? '새 상품 등록' : 'Đăng ký sản phẩm')}</span>
-            </button>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-3 border border-slate-200 hover:bg-slate-50 text-xs sm:text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+              >
+                {currentLang === 'ko' ? '취소' : 'Hủy bỏ'}
+              </button>
+              <button
+                type="submit"
+                className="flex items-center gap-1.5 px-6 py-3 bg-[#0066FF] hover:bg-blue-600 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-lg cursor-pointer"
+                id="admin-submit-btn"
+              >
+                <Save className="w-4 h-4" />
+                <span>{isEdit ? (currentLang === 'ko' ? '변경 사항 저장' : 'Lưu thay đổi') : (currentLang === 'ko' ? '새 상품 등록' : 'Đăng ký sản phẩm')}</span>
+              </button>
+            </div>
           </div>
 
         </form>

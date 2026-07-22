@@ -1,4 +1,5 @@
 import { Product } from './types';
+import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from './utils';
 
 /**
  * =========================================================================
@@ -6,12 +7,13 @@ import { Product } from './types';
  * =========================================================================
  * 본 파일(data.ts)의 모든 상품 이미지(imageUrl)와 동영상(videoUrl)은 외부 URL을 사용합니다.
  * 
- * 이미지/비디오 변경 방법 (PostImg, ImgBB, Unsplash 등 사용):
- * - 원하는 이미지 또는 MP4 동영상을 업로드한 후 직접 링크 주소를 아래 상품의 'imageUrl' 또는 'videoUrl' 필드에 입력하십시오.
+ * 이미지/비디오 변경 방법 (PostImg, ImgBB, Unsplash, Google Drive 등 사용):
+ * - 원하는 이미지 또는 MP4 동영상을 업로드한 후 주소, 마크다운 링크, HTML 태그를
+ *   아래 상품의 'imageUrl' 또는 'videoUrl' 필드에 입력하시면 자동으로 정제 및 변환되어 적용됩니다.
  * =========================================================================
  */
 
-export const PRODUCTS: Product[] = [
+export const RAW_PRODUCTS: Product[] = [
   {
     id: "lux-phone-alpha",
     category: "phone",
@@ -23,7 +25,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 142,
     imageUrl: "https://i.ibb.co/x8c7FpDJ/H27ed46bf176243f4b53f6917f30b0d03o-jpg.jpg",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     specsKO: {
       "프로세서": "Lux Core X3 Max (4나노 초정밀 공정)",
       "디스플레이": "6.8인치 Dynamic Super AMOLED 3X (1-120Hz 가변 주사율)",
@@ -61,8 +63,101 @@ export const PRODUCTS: Product[] = [
     ],
     isNew: true,
     isBest: true
+  },
+  {
+    id: "lux-book-pro-16",
+    category: "laptop",
+    nameKO: "럭스북 프로 16 (LuxBook Pro 16)",
+    nameVI: "LuxBook Pro 16 (Máy tính xách tay cao cấp)",
+    tagKO: "M3 Ultra 칩셋과 Liquid Retina XDR 디스플레이의 압도적 성능",
+    tagVI: "Hiệu năng vượt trội với chip M3 Ultra và màn hình Liquid Retina XDR",
+    price: 3490000,
+    rating: 4.95,
+    reviewsCount: 88,
+    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    specsKO: {
+      "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
+      "디스플레이": "16.2인치 Mini-LED XDR (3240x2160, 1600nits 피크 밝기)",
+      "메모리": "64GB 통합 메모리 / 2TB NVMe SSD",
+      "배터리": "최대 22시간 연속 사용 지원 (140W USB-C MagSafe 3 충전)"
+    },
+    specsVI: {
+      "Bộ vi xử lý": "Lux Core M3 Ultra CPU 16 nhân / GPU 40 nhân",
+      "Màn hình": "16.2 inch Mini-LED XDR (3240x2160, Độ sáng tối đa 1600nits)",
+      "Bộ nhớ": "64GB RAM hợp nhất / 2TB NVMe SSD",
+      "Pin": "Thời lượng pin lên đến 22 giờ (Sạc 140W USB-C MagSafe 3)"
+    },
+    featuresKO: [
+      "100% 리사이클 알루미늄 유니바디 커스텀 마감",
+      "스튜디오 급 3-마이크 어레이 및 6-스피커 사운드 시스템",
+      "풀사이즈 리얼 햅틱 키보드 및 스페이스 드라이브 트랙패드"
+    ],
+    featuresVI: [
+      "Vỏ nhôm nguyên khối 100% tái chế cao cấp",
+      "Hệ thống 3 micro chuẩn studio và 6 loa âm thanh vòm",
+      "Bàn phím haptic kích thước đầy đủ & Trackpad siêu rộng"
+    ],
+    descriptionKO: "럭스북 프로 16은 크리에이터와 비즈니스 리더를 위한 최고의 모바일 워크스테이션입니다. 차세대 M3 Ultra 칩의 압도적인 그래픽 처리 능력과 1,600nits 피크 밝기의 Liquid Retina XDR 화면으로 어떠한 대용량 그래픽 작업도 완벽하게 지원합니다.",
+    descriptionVI: "LuxBook Pro 16 là trạm làm việc di động đỉnh cao dành cho các nhà sáng tạo và lãnh đạo doanh nghiệp. Được trang bị chip M3 Ultra mạnh mẽ cùng màn hình Liquid Retina XDR độ sáng 1,600 nits giúp xử lý mượt mà mọi dự án đồ họa nặng nhất.",
+    colors: [
+      { nameKO: "스페이스 블랙", nameVI: "Đen Không Gian", hex: "#111215" },
+      { nameKO: "실버", nameVI: "Bạc Lux", hex: "#e2e8f0" }
+    ],
+    isNew: true,
+    isBest: true
+  },
+  {
+    id: "lux-sound-aura",
+    category: "audio",
+    nameKO: "럭스 사운드 오라 (Lux Sound Aura)",
+    nameVI: "Lux Sound Aura (Tai nghe VIP)",
+    tagKO: "액티브 노이즈 캔슬링과 공간 음향의 맞춤형 오디오",
+    tagVI: "Chống ồn chủ động ANC & Âm thanh vòm không gian 3D",
+    price: 890000,
+    rating: 4.88,
+    reviewsCount: 210,
+    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    specsKO: {
+      "드라이버": "40mm 맞춤 제작 티타늄 듀얼 다이내믹 드라이버",
+      "노이즈 캔슬링": "스마트 적응형 ANC (초당 48,000회 음파 분석)",
+      "연결성": "Bluetooth 5.4 / 무손실 LDAC & Hi-Res Audio 지원",
+      "배터리": "ANC 온 상태에서 최대 35시간 재생 (10분 충전 시 5시간 사용)"
+    },
+    specsVI: {
+      "Màng loa": "Màng loa kép Titan 40mm được tinh chỉnh riêng",
+      "Chống ồn": "Chống ồn chủ động ANC thông minh (Phân tích 48,000 lần/giây)",
+      "Kết nối": "Bluetooth 5.4 / Hỗ trợ âm thanh không nén LDAC & Hi-Res",
+      "Pin": "Phát liên tục 35 giờ khi bật ANC (Sạc 10 phút dùng 5 giờ)"
+    },
+    featuresKO: [
+      "메모리 폼 메모리 이어쿠션과 천연 가죽 헤드밴드",
+      "머리 방향 추적 맞춤형 3D spatial 오디오 기술",
+      "터치 패널 방식의 정밀 볼륨 및 트랙 조작"
+    ],
+    featuresVI: [
+      "Đệm tai Memory Foam êm ái và quai đeo bằng da thật",
+      "Công nghệ âm thanh vòm 3D theo dõi chuyển động đầu",
+      "Bảng điều khiển cảm ứng mượt mà trên củ tai"
+    ],
+    descriptionKO: "럭스 사운드 오라는 소리의 깊이가 다른 극상의 청음 환경을 선사합니다. 맞춤 티타늄 드라이버가 선명한 고음과 깊고 웅장한 베이스를 구현하며, 초정밀 ANC 기술로 오직 음악에만 몰입할 수 있도록 도와줍니다.",
+    descriptionVI: "Lux Sound Aura mang đến không gian âm nhạc riêng tư vượt trội. Màng loa Titan tinh chỉnh mang lại dải âm trầm sâu lắng cùng âm cao trong trẻo, kết hợp công nghệ ANC cho bạn đắm chìm hoàn toàn vào âm nhạc.",
+    colors: [
+      { nameKO: "매트 블랙", nameVI: "Đen Nhám", hex: "#1e1e1e" },
+      { nameKO: "아틱 화이트", nameVI: "Trắng Băng", hex: "#f8fafc" }
+    ],
+    isNew: false,
+    isBest: true
   }
 ];
+
+// 자동 변환 및 정제된 상품 데이터 Export
+export const PRODUCTS: Product[] = RAW_PRODUCTS.map((p) => ({
+  ...p,
+  imageUrl: cleanAndConvertImageUrl(p.imageUrl),
+  videoUrl: p.videoUrl ? cleanAndConvertVideoUrl(p.videoUrl) : p.videoUrl,
+}));
 
 export const FAQS = [
   {
