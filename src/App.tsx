@@ -344,6 +344,8 @@ export default function App() {
           currentLang={currentLang}
           onScrollToProducts={handleScrollToProducts}
           onBannerClick={handleGoToTop}
+          isAdmin={isAdminMode}
+          isDev={Boolean((import.meta as any).env?.DEV)}
         />
 
         {/* Dynamic Detail page insertion point (가로 100% full 확장) */}
