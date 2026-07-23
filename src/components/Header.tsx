@@ -27,6 +27,8 @@ export default function Header({
   onToggleAdminMode,
   onLogoClick,
 }: HeaderProps) {
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -62,20 +64,22 @@ export default function Header({
             <span>{currentLang === 'ko' ? '한국어' : 'Tiếng Việt'}</span>
           </button>
 
-          {/* Admin Toggle Toggler */}
-          <button
-            onClick={onToggleAdminMode}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 font-mono text-xs cursor-pointer ${
-              isAdminMode
-                ? 'bg-rose-50 border-rose-300 text-rose-600 hover:bg-rose-100 font-semibold shadow-sm shadow-rose-100'
-                : 'bg-slate-50 border-slate-200 text-slate-650 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5'
-            }`}
-            id="admin-toggle-btn"
-            title="Toggle Admin Mode"
-          >
-            <Settings className={`w-3.5 h-3.5 ${isAdminMode ? 'animate-spin' : ''}`} />
-            <span>{currentLang === 'ko' ? (isAdminMode ? '관리자 종료' : '관리자 모드') : (isAdminMode ? 'Thoát Admin' : 'Chế độ Admin')}</span>
-          </button>
+          {/* Admin Toggle Toggler (Shown only in development environment) */}
+          {isDevEnv && (
+            <button
+              onClick={onToggleAdminMode}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 font-mono text-xs cursor-pointer ${
+                isAdminMode
+                  ? 'bg-rose-50 border-rose-300 text-rose-600 hover:bg-rose-100 font-semibold shadow-sm shadow-rose-100'
+                  : 'bg-slate-50 border-slate-200 text-slate-650 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5'
+              }`}
+              id="admin-toggle-btn"
+              title="Toggle Admin Mode"
+            >
+              <Settings className={`w-3.5 h-3.5 ${isAdminMode ? 'animate-spin' : ''}`} />
+              <span>{currentLang === 'ko' ? (isAdminMode ? '관리자 종료' : '관리자 모드') : (isAdminMode ? 'Thoát Admin' : 'Chế độ Admin')}</span>
+            </button>
+          )}
 
           {/* Member Authenticate Simulation Button */}
           <div className="flex items-center gap-2">

@@ -15,6 +15,8 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
   const [emailSub, setEmailSub] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
   };
@@ -46,12 +48,14 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
 
   return (
     <section className="w-full bg-white border-t border-slate-200/80 pt-16">
-      {/* 3-Section Segment Indicator */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10">
-        <div className="inline-block text-[10px] font-mono font-black tracking-widest text-[#0066FF] uppercase px-3 py-1 bg-[#0066FF]/5 border border-[#0066FF]/20 rounded-md">
-          [ 03. BOTTOM SECTION / VIP PILLARS & FAQ SERVICES ]
+      {/* 3-Section Segment Indicator (Shown only in development) */}
+      {isDevEnv && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10">
+          <div className="inline-block text-[10px] font-mono font-black tracking-widest text-[#0066FF] uppercase px-3 py-1 bg-[#0066FF]/5 border border-[#0066FF]/20 rounded-md">
+            [ 03. BOTTOM SECTION / VIP PILLARS & FAQ SERVICES ]
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 1. Value Proposition Pillars */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 pb-16">

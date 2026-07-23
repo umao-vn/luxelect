@@ -67,6 +67,9 @@ export default function ProductDetailView({
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
 
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+  const showAdminUI = Boolean(isAdminMode && isDevEnv);
+
   // Handle Video Actions
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -141,7 +144,7 @@ export default function ProductDetailView({
           </div>
 
           <div className="flex items-center gap-3">
-            {isAdminMode && (
+            {showAdminUI && (
               <button
                 onClick={() => onEditProduct?.(product)}
                 className="px-3.5 py-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-650 text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
@@ -186,11 +189,13 @@ export default function ProductDetailView({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-80" />
 
-              {/* Photo Mode Label Badge */}
-              <div className="absolute top-6 left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 backdrop-blur-md text-white text-xs font-mono font-bold shadow-md">
-                <span>📷</span>
-                <span>{currentLang === 'ko' ? '제품 사진 (고화질)' : 'Ảnh sản phẩm (HD)'}</span>
-              </div>
+              {/* Photo Mode Label Badge (Shown in dev + admin mode) */}
+              {showAdminUI && (
+                <div className="absolute top-6 left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 backdrop-blur-md text-white text-xs font-mono font-bold shadow-md">
+                  <span>📷</span>
+                  <span>{currentLang === 'ko' ? '제품 사진 (고화질)' : 'Ảnh sản phẩm (HD)'}</span>
+                </div>
+              )}
 
               {/* Float color badge */}
               <div className="absolute bottom-6 left-6 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-mono">
@@ -209,7 +214,7 @@ export default function ProductDetailView({
                     <Play className="w-4 h-4 text-[#0066FF]" />
                     <span>{currentLang === 'ko' ? '제품 특장점 동영상' : 'Video giới thiệu tính năng'}</span>
                   </h4>
-                  <span className="text-[10px] font-mono text-slate-500">EXTERNAL MP4 SOURCE</span>
+                  {showAdminUI && <span className="text-[10px] font-mono text-slate-500">EXTERNAL MP4 SOURCE</span>}
                 </div>
 
                 <div className="relative aspect-video rounded-2xl bg-black overflow-hidden border border-slate-200 group">
@@ -258,8 +263,8 @@ export default function ProductDetailView({
                   </div>
                 </div>
 
-                {/* Subtext info detailing replacement of URL / Admin Direct Modifier */}
-                {isAdminMode ? (
+                {/* Subtext info detailing replacement of URL / Admin Direct Modifier (Shown only in dev + admin mode) */}
+                {showAdminUI && (
                   <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-left shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <p className="text-xs font-bold text-rose-600 font-sans flex items-center gap-1.5">
@@ -280,15 +285,6 @@ export default function ProductDetailView({
                       <Edit className="w-3.5 h-3.5" />
                       <span>{currentLang === 'ko' ? '사진/동영상 변경' : 'Thay đổi ảnh/video'}</span>
                     </button>
-                  </div>
-                ) : (
-                  <div className="p-3.5 bg-white rounded-xl border border-slate-200 text-left shadow-sm">
-                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                      💡 <strong className="text-[#0066FF]">{currentLang === 'ko' ? '동영상 교체 안내:' : 'Thay thế video:'}</strong>{' '}
-                      {currentLang === 'ko'
-                        ? "사용자님이 직접 업로드하신 ImgBB 사진이나 외부 MP4 동영상 주소를 '/src/data.ts' 내의 해당 제품 항목에 붙여넣으시면 실시간으로 이 화면에 안전하게 렌더링 됩니다."
-                        : "Dán liên kết ảnh ImgBB hoặc liên kết tệp video MP4 ngoài của bạn vào mục tương ứng trong `/src/data.ts` để hiển thị trực tiếp tại đây."}
-                    </p>
                   </div>
                 )}
               </div>

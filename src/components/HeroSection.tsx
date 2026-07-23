@@ -30,8 +30,9 @@ export default function HeroSection({
   isAdmin = false,
   isDev = false,
 }: HeroSectionProps) {
-  // Determine whether to display admin background management UI overlay (Only when isAdmin is true)
-  const showAdminUI = Boolean(isAdmin);
+  // Determine whether to display admin background management UI overlay (Only when in development and isAdmin is true)
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+  const showAdminUI = Boolean(isAdmin && (isDev || isDevEnv));
 
   // Find item matching activeMediaId directly
   const activeById = heroMediaList.find((m) => m.id === activeMediaId);
@@ -154,194 +155,157 @@ export default function HeroSection({
         </div>
       )}
 
-      {/* Main Center Content Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 my-auto py-4">
-        <div className="max-w-3xl space-y-5 sm:space-y-6 text-left p-6 sm:p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/20 shadow-2xl">
-          {/* Active Background Type Switcher Pills (Shown only for Admin/Dev) */}
-          {showAdminUI && (
-            <>
-              <div className="inline-flex items-center gap-2 p-1 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleTabChange('photo');
-                  }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold font-sans transition-all duration-300 flex items-center gap-1.5 ${
-                    mediaTab === 'photo'
-                      ? 'bg-[#0066FF] text-white shadow-md'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <ImageIcon className="w-3.5 h-3.5" />
-                  <span>{currentLang === 'ko' ? '배경 사진' : 'Ảnh Nền'}</span>
-                  <span className="text-[10px] opacity-80 font-mono">
-                    ({heroMediaList.filter((m) => m.type === 'photo').length})
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleTabChange('video');
-                  }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold font-sans transition-all duration-300 flex items-center gap-1.5 ${
-                    mediaTab === 'video'
-                      ? 'bg-purple-600 text-white shadow-md'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Video className="w-3.5 h-3.5" />
-                  <span>{currentLang === 'ko' ? '배경 동영상' : 'Video Nền'}</span>
-                  <span className="text-[10px] opacity-80 font-mono">
-                    ({heroMediaList.filter((m) => m.type === 'video').length})
-                  </span>
-                </button>
+      {/* Main Center Content Section (Only rendered in Development + Admin mode) */}
+      {showAdminUI && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 my-auto py-4">
+          <div className="max-w-3xl space-y-5 sm:space-y-6 text-left p-6 sm:p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/20 shadow-2xl">
+            {/* Active Background Type Switcher Pills (Shown only for Admin/Dev) */}
+            <div className="inline-flex items-center gap-2 p-1 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTabChange('photo');
+                }}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold font-sans transition-all duration-300 flex items-center gap-1.5 ${
+                  mediaTab === 'photo'
+                    ? 'bg-[#0066FF] text-white shadow-md'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>{currentLang === 'ko' ? '배경 사진' : 'Ảnh Nền'}</span>
+                <span className="text-[10px] opacity-80 font-mono">
+                  ({heroMediaList.filter((m) => m.type === 'photo').length})
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTabChange('video');
+                }}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold font-sans transition-all duration-300 flex items-center gap-1.5 ${
+                  mediaTab === 'video'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>{currentLang === 'ko' ? '배경 동영상' : 'Video Nền'}</span>
+                <span className="text-[10px] opacity-80 font-mono">
+                  ({heroMediaList.filter((m) => m.type === 'video').length})
+                </span>
+              </button>
+            </div>
+
+            {/* Quick Background Selector Pills if multiple items exist */}
+            {filteredList.length > 1 && (
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                <span className="text-[11px] font-mono text-slate-300 flex-shrink-0">
+                  {currentLang === 'ko' ? '배경 선택:' : 'Chọn nền:'}
+                </span>
+                {filteredList.map((item, idx) => {
+                  const isSel = item.id === (activeItem?.id);
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectActiveMedia(item.id);
+                      }}
+                      className={`px-3 py-1 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all border ${
+                        isSel
+                          ? 'bg-white text-slate-900 border-white shadow-md'
+                          : 'bg-black/40 border-white/20 text-slate-200 hover:bg-white/20'
+                      }`}
+                    >
+                      #{idx + 1} {currentLang === 'ko' ? item.titleKO : item.titleVI}
+                    </button>
+                  );
+                })}
               </div>
+            )}
 
-              {/* Quick Background Selector Pills if multiple items exist */}
-              {filteredList.length > 1 && (
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-                  <span className="text-[11px] font-mono text-slate-300 flex-shrink-0">
-                    {currentLang === 'ko' ? '배경 선택:' : 'Chọn nền:'}
-                  </span>
-                  {filteredList.map((item, idx) => {
-                    const isSel = item.id === (activeItem?.id);
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectActiveMedia(item.id);
-                        }}
-                        className={`px-3 py-1 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all border ${
-                          isSel
-                            ? 'bg-white text-slate-900 border-white shadow-md'
-                            : 'bg-black/40 border-white/20 text-slate-200 hover:bg-white/20'
-                        }`}
-                      >
-                        #{idx + 1} {currentLang === 'ko' ? item.titleKO : item.titleVI}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
+            {/* Title and Tagline */}
+            <div className="space-y-3">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs text-[#00D1FF] font-mono"
+              >
+                <Sparkles className="w-3.5 h-3.5 animate-spin text-[#00D1FF]" />
+                <span>LUX CUSTOM BACKGROUND HERO (DEV/ADMIN)</span>
+              </motion.div>
 
-          {/* Title and Tagline */}
-          <div className="space-y-3">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight font-sans drop-shadow-md"
+              >
+                {displayTitle}
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="text-base sm:text-lg font-bold text-[#00D1FF] font-sans tracking-wide drop-shadow"
+              >
+                {currentLang === 'ko'
+                  ? '직접 업로드하거나 입력한 사진·동영상 파일이 상단 전체 배경화면으로 적용됩니다.'
+                  : 'Ảnh/Video do bạn tải lên sẽ hiển thị làm hình nền toàn màn hình phần trên.'}
+              </motion.p>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-2xl font-sans drop-shadow-sm"
+            >
+              {currentLang === 'ko'
+                ? '상단 배경화면은 하단 제품 목록과 완전히 별개로 관리됩니다. [배경 화면 URL 추가/삭제] 버튼을 눌러 이미지 링크(ImgBB 등)나 파일, MP4 동영상을 등록해보세요.'
+                : 'Hình nền phần trên được quản lý hoàn toàn độc lập. Nhấp vào nút quản lý để thêm/xóa URL hoặc tệp hình nền.'}
+            </motion.p>
+
+            {/* Quick Specifications Highlights */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="grid grid-cols-3 gap-3 border-t border-b border-white/15 py-4 max-w-xl backdrop-blur-sm bg-black/20 px-4 rounded-2xl"
+            >
+              <div className="space-y-1">
+                <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Custom Photo</span>
+                <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-[#00D1FF]" /> ImgBB / JPG / PNG
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Custom Video</span>
+                <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-[#00D1FF]" /> MP4 / WEBM Direct
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Management</span>
+                <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#00D1FF]" /> URL 추가 / 삭제
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Interactive Actions */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs text-[#00D1FF] font-mono"
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-wrap items-center gap-4 pt-2"
             >
-              <Sparkles className="w-3.5 h-3.5 animate-spin text-[#00D1FF]" />
-              <span>{showAdminUI ? 'LUX CUSTOM BACKGROUND HERO (DEV/ADMIN)' : 'LUXURY ELECTRONICS BRAND'}</span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight font-sans drop-shadow-md"
-            >
-              {displayTitle}
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-base sm:text-lg font-bold text-[#00D1FF] font-sans tracking-wide drop-shadow"
-            >
-              {showAdminUI
-                ? (currentLang === 'ko'
-                    ? '직접 업로드하거나 입력한 사진·동영상 파일이 상단 전체 배경화면으로 적용됩니다.'
-                    : 'Ảnh/Video do bạn tải lên sẽ hiển thị làm hình nền toàn màn hình phần trên.')
-                : (currentLang === 'ko'
-                    ? '시네마틱 해상도 디스플레이와 함께 만나는 최상의 혁신'
-                    : 'Trải nghiệm đỉnh cao công nghệ cùng màn hình hiển thị cao cấp')}
-            </motion.p>
-          </div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-2xl font-sans drop-shadow-sm"
-          >
-            {showAdminUI
-              ? (currentLang === 'ko'
-                  ? '상단 배경화면은 하단 제품 목록과 완전히 별개로 관리됩니다. [배경 화면 URL 추가/삭제] 버튼을 눌러 이미지 링크(ImgBB 등)나 파일, MP4 동영상을 등록해보세요.'
-                  : 'Hình nền phần trên được quản lý hoàn toàn độc lập. Nhấp vào nút quản lý để thêm/xóa URL hoặc tệp hình nền.')
-              : (currentLang === 'ko'
-                  ? '최신 칩셋과 정교한 인지음향 기술이 결합된 프리미엄 라인업을 상단 고화질 시네마틱 배경 화면과 함께 만나보세요.'
-                  : 'Khám phá các dòng sản phẩm cao cấp được thiết kế tinh xảo cùng trải nghiệm hình ảnh tuyệt đẹp.')}
-          </motion.p>
-
-          {/* Quick Specifications Highlights */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-3 gap-3 border-t border-b border-white/15 py-4 max-w-xl backdrop-blur-sm bg-black/20 px-4 rounded-2xl"
-          >
-            {showAdminUI ? (
-              <>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Custom Photo</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5 text-[#00D1FF]" /> ImgBB / JPG / PNG
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Custom Video</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5 text-[#00D1FF]" /> MP4 / WEBM Direct
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Management</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#00D1FF]" /> URL 추가 / 삭제
-                  </span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Display</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5 text-[#00D1FF]" /> Liquid Retina 120Hz
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Performance</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5 text-[#00D1FF]" /> M3 Ultra Chipset
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[9px] text-slate-300 uppercase tracking-widest font-mono block">Sound</span>
-                  <span className="text-xs sm:text-sm font-semibold text-white font-sans flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#00D1FF]" /> Spatial Audio VIP
-                  </span>
-                </div>
-              </>
-            )}
-          </motion.div>
-
-          {/* Interactive Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-wrap items-center gap-4 pt-2"
-          >
-            {showAdminUI && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -353,17 +317,17 @@ export default function HeroSection({
                 <Plus className="w-4 h-4" />
                 <span>{currentLang === 'ko' ? '배경 화면 URL 추가 / 삭제' : 'Thêm / Xóa URL Hình Nền'}</span>
               </button>
-            )}
-            <button
-              onClick={onScrollToProducts}
-              className="px-6 py-3.5 rounded-xl bg-black/40 hover:bg-white/20 border border-white/30 text-white font-medium text-xs sm:text-sm transition-all duration-300 backdrop-blur-md"
-              id="hero-explore-btn"
-            >
-              {t.allProducts}
-            </button>
-          </motion.div>
+              <button
+                onClick={onScrollToProducts}
+                className="px-6 py-3.5 rounded-xl bg-black/40 hover:bg-white/20 border border-white/30 text-white font-medium text-xs sm:text-sm transition-all duration-300 backdrop-blur-md"
+                id="hero-explore-btn"
+              >
+                {t.allProducts}
+              </button>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Down Chevron Scrolling Assistant */}
       <div className="relative z-10 flex flex-col items-center justify-center pt-4 cursor-pointer group" onClick={onScrollToProducts}>
