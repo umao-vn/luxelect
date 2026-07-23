@@ -30,9 +30,8 @@ export default function HeroSection({
   isAdmin = false,
   isDev = false,
 }: HeroSectionProps) {
-  // Determine whether to display developer & admin background management UI
-  const isDevEnvironment = Boolean((import.meta as any).env?.DEV);
-  const showAdminUI = Boolean(isAdmin || isDev || isDevEnvironment);
+  // Determine whether to display admin background management UI overlay (Only when isAdmin is true)
+  const showAdminUI = Boolean(isAdmin);
 
   // Find item matching activeMediaId directly
   const activeById = heroMediaList.find((m) => m.id === activeMediaId);
