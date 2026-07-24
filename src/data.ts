@@ -5,15 +5,6 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
   isEnabled: false,
   panels: [
     {
-      id: 'panel-1',
-      type: 'video',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-      titleKO: '패널 01: 모션 시네마 비주얼',
-      titleVI: 'Bảng 01: Điện Ảnh Chuyển Động',
-      tagKO: 'PANEL 01 / TOP',
-      tagVI: 'BẢNG 01 / TRÊN',
-    },
-    {
       id: 'panel-2',
       type: 'photo',
       url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
@@ -21,18 +12,9 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
       titleVI: 'Bảng 02: Phần Cứng Thông Minh',
       tagKO: 'PANEL 02 / MIDDLE',
       tagVI: 'BẢNG 02 / GIỮA',
-    },
-    {
-      id: 'panel-3',
-      type: 'video',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-      titleKO: '패널 03: 미래형 하이테크 테크놀로지',
-      titleVI: 'Bảng 03: Công Nghệ Tương Lai',
-      tagKO: 'PANEL 03 / BOTTOM',
-      tagVI: 'BẢNG 03 / DƯỚI',
     }
-  ],
-};
+  ]
+  };
 
 export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
   {
@@ -47,7 +29,7 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '상단 시네마틱 브랜드 영상 (MP4)',
     titleVI: 'Video Điện Ảnh Top (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   }
 ];
 
@@ -64,7 +46,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
     titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   },
   {
     id: 'sec-hero-media-3',
@@ -73,14 +55,10 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     titleVI: 'Bộ Ảnh Cybernetic Phụ',
     url: 'https://i.ibb.co/LzdQ0mR/No-15-1.png'
   },
-  {
-    id: 'sec-hero-media-4',
-    type: 'video',
-    titleKO: '하단 서브 미래형 하이테크 비디오 (MP4)',
-    titleVI: 'Video Tương Lai Phụ (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
-  }
-];
+]
+
+  
+
 
 export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
   {
@@ -88,7 +66,7 @@ export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '서브 라이브 미니 동영상 (MP4)',
     titleVI: 'Video Phụ Live (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   },
   {
     id: 'sub-media-2',
