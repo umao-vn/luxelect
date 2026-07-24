@@ -41,7 +41,14 @@ export default function HeroMediaModal({
   onUpdateSplitBgConfig,
   initialTab = 'split',
 }: HeroMediaModalProps) {
-  const [activeTab, setActiveTab] = useState<'split' | 'single'>(initialTab);
+  const effectiveInitialTab = splitBgConfig ? initialTab : 'single';
+  const [activeTab, setActiveTab] = useState<'split' | 'single'>(effectiveInitialTab);
+
+  React.useEffect(() => {
+    if (!splitBgConfig && activeTab !== 'single') {
+      setActiveTab('single');
+    }
+  }, [splitBgConfig, activeTab]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form states for single media adding/editing
@@ -368,22 +375,19 @@ export default function HeroMediaModal({
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <video
-                                key={displayUrl}
-                                src={displayUrl || undefined}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                controlsList="nodownload"
-                                preload="auto"
-                                crossOrigin="anonymous"
-                                onCanPlay={(e) => {
-                                  (e.currentTarget as HTMLVideoElement).play().catch(() => {});
-                                }}
-                                className="w-full h-full object-cover"
-                              />
-                            )}
+<video
+  key={displayUrl}
+  src={displayUrl || undefined}
+  autoPlay
+  loop
+  muted
+  playsInline
+  preload="auto"
+  onLoadedMetadata={(e) => {
+    (e.currentTarget as HTMLVideoElement).play().catch(() => {});
+  }}
+  className="w-full h-full object-cover"
+/>                            )}
 
                             <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-white text-[9px] font-mono">
                               {panel.type === 'photo' ? '📷 PHOTO' : '🎥 VIDEO'}
@@ -655,8 +659,8 @@ export default function HeroMediaModal({
                     <Plus className="w-4 h-4 text-[#0066FF]" />
                     <span>
                       {editingId
-                        ? (currentLang === 'ko' ? '상단 미디어 정보 수정' : 'Sửa thông tin Media Top')
-                        : (currentLang === 'ko' ? '새 상단 배경 미디어 추가' : 'Thêm Media Top Mới')}
+                        ? (currentLang === 'ko' ? '미디어 정보 수정' : 'Sửa thông tin Media')
+                        : (currentLang === 'ko' ? '새 미디어 추가 (사진/동영상)' : 'Thêm Media Mới')}
                     </span>
                   </h4>
 
@@ -808,38 +812,32 @@ export default function HeroMediaModal({
                       <span className="text-[10px] font-bold font-mono uppercase text-[#0066FF] block">
                         LIVE PREVIEW (실시간 미리보기)
                       </span>
-                      <div className="w-full h-32 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
-                        {type === 'photo' ? (
-                          <img
-                            src={processedUrl || DEFAULT_FALLBACK_IMAGE}
-                            alt="Preview"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
-                            }}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <video
-                            key={processedUrl}
-                            src={processedUrl || undefined}
-                            controls
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            controlsList="nodownload"
-                            preload="auto"
-                            crossOrigin="anonymous"
-                            onCanPlay={(e) => {
-                              (e.currentTarget as HTMLVideoElement).play().catch(() => {});
-                            }}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                    </div>
+<div className="w-full min-h-[180px] rounded-lg bg-slate-900 border border-slate-200 overflow-hidden relative flex items-center justify-center">
+  {type === 'photo' ? (
+    <img
+      src={urlInput.trim() || DEFAULT_FALLBACK_IMAGE}
+      alt="Preview"
+      onError={(e) => {                          
+(e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
+      }}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <video
+      key={urlInput.trim()}
+      src={urlInput.trim() || undefined}
+      controls
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="metadata"
+      className="w-full max-h-[240px] rounded-lg object-contain bg-black"
+    />
+  )}
+                  </div>
+                  </div>
                   )}
-
                   {formError && (
                     <p className="text-xs text-rose-600 font-bold flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" />
@@ -862,7 +860,7 @@ export default function HeroMediaModal({
                       className="px-6 py-2.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs shadow-md shadow-[#0066FF]/20 flex items-center gap-1.5 transition-all"
                     >
                       <Check className="w-4 h-4" />
-                      <span>{editingId ? '수정사항 저장' : '상단 미디어에 추가하기'}</span>
+                      <span>{editingId ? (currentLang === 'ko' ? '수정사항 저장' : 'Lưu thay đổi') : (currentLang === 'ko' ? '미디어 리스트에 추가하기' : 'Thêm vào danh sách')}</span>
                     </button>
                   </div>
                 </form>

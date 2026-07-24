@@ -37,7 +37,11 @@ export default function ProductDetailView({
   onEditProduct,
 }: ProductDetailViewProps) {
   // Colors and details
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors && product.colors.length > 0
+      ? product.colors[0]
+      : { nameKO: '기본 컬러', nameVI: 'Màu cơ bản', hex: '#0066FF' }
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
@@ -67,8 +71,7 @@ export default function ProductDetailView({
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
 
-  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
-  const showAdminUI = Boolean(isAdminMode && isDevEnv);
+  const showAdminUI = Boolean(isAdminMode);
 
   // Handle Video Actions
   const handlePlayPause = () => {
@@ -356,8 +359,8 @@ export default function ProductDetailView({
                 {t.colors}
               </h4>
               <div className="flex items-center gap-3">
-                {product.colors.map((col, idx) => {
-                  const isSelected = selectedColor.hex === col.hex;
+                {(product.colors || []).map((col, idx) => {
+                  const isSelected = selectedColor?.hex === col.hex;
                   return (
                     <button
                       key={idx}

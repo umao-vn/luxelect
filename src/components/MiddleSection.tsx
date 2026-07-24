@@ -55,8 +55,7 @@ export default function MiddleSection({
 
   const [sortBy, setSortBy] = useState<'default' | 'priceAsc' | 'priceDesc' | 'rating'>('default');
 
-  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
-  const showAdminUI = Boolean(isAdminMode && isDevEnv);
+  const showAdminUI = Boolean(isAdminMode);
 
   // If the product detail view is active, cleanly hide this middle section as requested!
   if (isDetailActive) {

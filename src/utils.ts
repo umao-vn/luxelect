@@ -83,20 +83,21 @@ export function cleanAndConvertVideoUrl(rawUrl: string): string {
   if (!rawUrl) return '';
   let url = rawUrl.trim();
 
-  // Extract URL from HTML <video src="..."> or <iframe src="..."> if present
+  // 태그 내부 src 주소 추출
   const videoTagMatch = url.match(/src=["']([^"']+)["']/i);
   if (videoTagMatch && videoTagMatch[1]) {
     url = videoTagMatch[1];
   }
 
-  // Remove surrounding quotes or angle brackets
-  url = url.replace(/^["'<>]+|["'<>]+$/g, '').trim();
+  // 따옴표, 대괄호 등 앞뒤 찌꺼기 문자 제거
+  url = url.replace(/^["'\[\s<]+|["'\]\s>]+$/g, '');
 
-  if (/^(commondatastorage\.googleapis\.com|drive\.google\.com)/i.test(url)) {
+  // https:// 가 빠진 경우에만 붙여주도록 안전 보정
+  if (url.startsWith('//')) {
+    url = 'https:' + url;
+  } else if (!/^https?:\/\//i.test(url) && url.length > 0) {
     url = 'https://' + url;
   }
 
   return url;
 }
-
-export const cleanMediaUrl = cleanAndConvertImageUrl;

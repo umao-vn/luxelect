@@ -90,9 +90,11 @@ export default function App() {
         const defaultMatch = PRODUCTS.find((p) => p.id === item.id);
         if (defaultMatch) {
           return {
+            ...defaultMatch,
             ...item,
-            imageUrl: defaultMatch.imageUrl,
-            videoUrl: defaultMatch.videoUrl,
+            imageUrl: item.imageUrl || defaultMatch.imageUrl,
+            videoUrl: item.videoUrl || defaultMatch.videoUrl,
+            colors: (item.colors && item.colors.length > 0) ? item.colors : defaultMatch.colors,
           };
         }
         return item;

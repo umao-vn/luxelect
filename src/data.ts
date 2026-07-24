@@ -5,6 +5,15 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
   isEnabled: false,
   panels: [
     {
+      id: 'panel-1',
+      type: 'photo',
+      url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
+      titleKO: '패널 01: 모션 시네마 비주얼',
+      titleVI: 'Bảng 01: Điện Ảnh Chuyển Động',
+      tagKO: 'PANEL 01 / TOP',
+      tagVI: 'BẢNG 01 / TRÊN',
+    },
+    {
       id: 'panel-2',
       type: 'photo',
       url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
@@ -12,9 +21,18 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
       titleVI: 'Bảng 02: Phần Cứng Thông Minh',
       tagKO: 'PANEL 02 / MIDDLE',
       tagVI: 'BẢNG 02 / GIỮA',
+    },
+    {
+      id: 'panel-3',
+      type: 'photo',
+      url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
+      titleKO: '패널 03: 미래형 하이테크 테크놀로지',
+      titleVI: 'Bảng 03: Công Nghệ Tương Lai',
+      tagKO: 'PANEL 03 / BOTTOM',
+      tagVI: 'BẢNG 03 / DƯỚI',
     }
   ]
-  };
+};
 
 export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
   {
@@ -66,7 +84,7 @@ export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '서브 라이브 미니 동영상 (MP4)',
     titleVI: 'Video Phụ Live (MP4)',
-    url: 'https://files.catbox.moe/l21bbv.mp4'
+    url: 'https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-sky-in-a-sunset-26070-large.mp4'
   },
   {
     id: 'sub-media-2',
@@ -133,7 +151,6 @@ export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
     titleKO: '스마트 홈',
     titleVI: 'Nhà thông minh',
     subCategoriesKO: [
-      'AI 장애물 회피 스마트 로봇청소기',
       'H13 헤파 필터 초미세 공기청정기',
       '무선청소기 자동비움 F-26'
     ],
@@ -168,8 +185,8 @@ export const RAW_PRODUCTS: Product[] = [
     price: 1390000,
     rating: 4.8,
     reviewsCount: 28,
-    imageUrl: "",
-    videoUrl: "",
+    imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
       "센서": "LiDAR 3D 공간 매핑 센서"
@@ -186,9 +203,12 @@ export const RAW_PRODUCTS: Product[] = [
       "Tránh vật cản AI siêu chính xác",
       "Camera kép tối ưu hóa tự động"
     ],
-    descriptionKO: "등록된 제품 이미지가 없는 상품입니다. 관리자 모드에서 이미지를 추가해주세요.",
-    descriptionVI: "Chưa có hình ảnh sản phẩm.",
-    colors: [],
+    descriptionKO: "AI 장애물 회피 기술과 3D LiDAR 센서가 탑재된 최첨단 자율주행 스마트 로봇청소기입니다. 관리자 모드에서 사진과 동영상을 자유롭게 변경하거나 수정하실 수 있습니다.",
+    descriptionVI: "Robot hút bụi thông minh tự động tránh vật cản với cảm biến LiDAR 3D cao cấp.",
+    colors: [
+      { nameKO: "스노우 화이트", nameVI: "Trắng Tuyết", hex: "#F8FAFC" },
+      { nameKO: "스페이스 그레이", nameVI: "Xám Không Gian", hex: "#475569" }
+    ],
     isNew: true,
     isBest: false
   },
@@ -202,8 +222,8 @@ export const RAW_PRODUCTS: Product[] = [
     price: 890000,
     rating: 4.9,
     reviewsCount: 45,
-    imageUrl: "",
-    videoUrl: "",
+    imageUrl: "https://i.ibb.co/DPSdv7wD/No-14-10.png",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     specsKO: {
       "필터": "H13 헤파 필터 (99.97% 미세먼지 제거)",
       "청정면적": "85㎡ 대형 공간 지원"
@@ -220,9 +240,12 @@ export const RAW_PRODUCTS: Product[] = [
       "Bộ lọc bụi mịn H13 360 độ",
       "Chế độ ngủ yên tĩnh cực thấp"
     ],
-    descriptionKO: "등록된 제품 이미지가 없는 상품입니다. 관리자 모드에서 이미지를 추가해주세요.",
-    descriptionVI: "Chưa có hình ảnh sản phẩm.",
-    colors: [],
+    descriptionKO: "H13 등급 헤파 필터로 초미세먼지를 99.97% 제거하는 초고성능 프리미엄 공기청정기입니다. 관리자 모드에서 사진과 동영상을 자유롭게 변경하거나 수정하실 수 있습니다.",
+    descriptionVI: "Máy lọc không khí cao cấp với màng lọc HEPA H13 loại bỏ 99.97% bụi mịn.",
+    colors: [
+      { nameKO: "퓨어 화이트", nameVI: "Trắng Tinh Khôi", hex: "#FFFFFF" },
+      { nameKO: "매트 블랙", nameVI: "Đen Nhám", hex: "#1E293B" }
+    ],
     isNew: true,
     isBest: false
   },
