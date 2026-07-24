@@ -47,7 +47,7 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '상단 시네마틱 브랜드 영상 (MP4)',
     titleVI: 'Video Điện Ảnh Top (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   }
 ];
 
@@ -64,7 +64,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
     titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   },
   {
     id: 'sec-hero-media-3',
