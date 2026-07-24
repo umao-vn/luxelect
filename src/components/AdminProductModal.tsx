@@ -547,8 +547,17 @@ export default function AdminProductModal({
                         <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px] block truncate">{videoUrl}</span>
                         <video
                           src={cleanAndConvertVideoUrl(videoUrl) || undefined}
+                          autoPlay
+                          loop
                           muted
+                          playsInline
                           controls
+                          controlsList="nodownload"
+                          preload="auto"
+                          crossOrigin="anonymous"
+                          onCanPlay={(e) => {
+                            (e.currentTarget as HTMLVideoElement).play().catch(() => {});
+                          }}
                           className="w-full h-16 object-cover rounded-lg border border-slate-100"
                         />
                       </>

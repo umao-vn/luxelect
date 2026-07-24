@@ -222,8 +222,16 @@ export default function ProductDetailView({
                     ref={videoRef}
                     src={cleanAndConvertVideoUrl(product.videoUrl) || undefined}
                     className="w-full h-full object-cover"
+                    autoPlay
                     loop
+                    muted
                     playsInline
+                    controlsList="nodownload"
+                    preload="auto"
+                    crossOrigin="anonymous"
+                    onCanPlay={(e) => {
+                      (e.currentTarget as HTMLVideoElement).play().catch(() => {});
+                    }}
                     onClick={handlePlayPause}
                   />
 

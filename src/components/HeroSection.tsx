@@ -170,6 +170,9 @@ export default function HeroSection({
                       loop
                       muted
                       playsInline
+                      controlsList="nodownload"
+                      preload="auto"
+                      crossOrigin="anonymous"
                       onCanPlay={(e) => {
                         (e.currentTarget as HTMLVideoElement).play().catch(() => {});
                       }}
@@ -229,6 +232,9 @@ export default function HeroSection({
                 loop
                 muted
                 playsInline
+                controlsList="nodownload"
+                preload="auto"
+                crossOrigin="anonymous"
                 onCanPlay={(e) => {
                   (e.currentTarget as HTMLVideoElement).play().catch(() => {});
                 }}
@@ -499,6 +505,9 @@ export default function HeroSection({
               loop
               muted={isSubVideoMuted}
               playsInline
+              controlsList="nodownload"
+              preload="auto"
+              crossOrigin="anonymous"
               onCanPlay={(e) => {
                 if (isSubVideoPlaying) {
                   (e.currentTarget as HTMLVideoElement).play().catch(() => {});
