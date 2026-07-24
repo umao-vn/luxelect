@@ -1,5 +1,38 @@
-import { Product, HeroMediaItem } from './types';
+import { Product, HeroMediaItem, SubBgMediaItem, SplitBgConfig, CategorySubMenu } from './types';
 import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from './utils';
+
+export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
+  isEnabled: false,
+  panels: [
+    {
+      id: 'panel-1',
+      type: 'video',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      titleKO: '패널 01: 모션 시네마 비주얼',
+      titleVI: 'Bảng 01: Điện Ảnh Chuyển Động',
+      tagKO: 'PANEL 01 / TOP',
+      tagVI: 'BẢNG 01 / TRÊN',
+    },
+    {
+      id: 'panel-2',
+      type: 'photo',
+      url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
+      titleKO: '패널 02: 마스터피스 하드웨어',
+      titleVI: 'Bảng 02: Phần Cứng Thông Minh',
+      tagKO: 'PANEL 02 / MIDDLE',
+      tagVI: 'BẢNG 02 / GIỮA',
+    },
+    {
+      id: 'panel-3',
+      type: 'video',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+      titleKO: '패널 03: 미래형 하이테크 테크놀로지',
+      titleVI: 'Bảng 03: Công Nghệ Tương Lai',
+      tagKO: 'PANEL 03 / BOTTOM',
+      tagVI: 'BẢNG 03 / DƯỚI',
+    },
+  ],
+};
 
 export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
   {
@@ -18,6 +51,122 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
   }
 ];
 
+export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
+  {
+    id: 'sec-hero-media-1',
+    type: 'photo',
+    titleKO: '하단 서브 프리미엄 메인 사진',
+    titleVI: 'Ảnh Phụ Cao Cấp Dưới',
+    url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png'
+  },
+  {
+    id: 'sec-hero-media-2',
+    type: 'video',
+    titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
+    titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
+  },
+  {
+    id: 'sec-hero-media-3',
+    type: 'photo',
+    titleKO: '하단 서브 사이버네틱 갤러리 컷',
+    titleVI: 'Bộ Ảnh Cybernetic Phụ',
+    url: 'https://i.ibb.co/LzdQ0mR/No-15-1.png'
+  },
+  {
+    id: 'sec-hero-media-4',
+    type: 'video',
+    titleKO: '하단 서브 미래형 하이테크 비디오 (MP4)',
+    titleVI: 'Video Tương Lai Phụ (MP4)',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
+  }
+];
+
+export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
+  {
+    id: 'sub-media-1',
+    type: 'video',
+    titleKO: '서브 라이브 미니 동영상 (MP4)',
+    titleVI: 'Video Phụ Live (MP4)',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+  },
+  {
+    id: 'sub-media-2',
+    type: 'photo',
+    titleKO: '서브 프리미엄 비주얼 사진',
+    titleVI: 'Ảnh Phụ Cao Cấp',
+    url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png'
+  }
+];
+
+/**
+ * =========================================================================
+ * 📢 [사용자 커스텀 가이드] 드롭다운 서브 카테고리 ('주요 세부 라인업') 설정
+ * =========================================================================
+ * 상단 헤더 카테고리 드롭다운 메뉴의 좌측 '주요 세부 라인업' 항목을 자유롭게 직접 수정/추가/삭제할 수 있습니다!
+ * 
+ * [수정 가이드]
+ * 1. 세부 항목 변경: subCategoriesKO (한글) 및 subCategoriesVI (베트남어) 배열 내부 문구를 자유롭게 고치세요.
+ * 2. 항목 추가/삭제: 배열 항목을 추가하거나 삭제하면 드롭다운 화면에 즉시 반영됩니다.
+ * 3. 좌측 영역 완전 숨김 (Full Width 모드):
+ *    특정 카테고리의 subCategoriesKO/subCategoriesVI 배열을 빈 값 [] 으로 비워두시면,
+ *    좌측 서브 메뉴가 완전히 숨겨지고 우측 대표 상품 카드가 드롭다운 전체 폭(Full Width)으로 펼쳐집니다!
+ * =========================================================================
+ */
+export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
+  phone: {
+    titleKO: '스마트폰 & 워치',
+    titleVI: 'Điện thoại & Di động',
+    subCategoriesKO: [
+      '스마트워치',
+    ],
+    subCategoriesVI: [
+      'Đồng hồ thông minh VIP',
+    ],
+  },
+  laptop: {
+    titleKO: '스마트홈',
+    titleVI: 'Máy tính',
+    subCategoriesKO: [
+      'MACBOOK',
+
+    ],
+    subCategoriesVI: [
+      'MACBOOK',
+    ],
+  },
+  audio: {
+    titleKO: '프리미엄 오디오',
+    titleVI: 'Âm thanh VIP & Hi-Fi',
+    subCategoriesKO: [
+      '오디오',
+    ],
+    subCategoriesVI: [
+      'Mấy âm thanh',
+    ],
+  },
+  display: {
+    titleKO: '시그니처 디스플레이 & TV',
+    titleVI: 'Màn hình 8K & TV OLED',
+    subCategoriesKO: [],
+    subCategoriesVI: [],
+  },
+  smarthome: {
+    titleKO: '스마트 홈',
+    titleVI: 'Nhà thông minh',
+    subCategoriesKO: [
+      'AI 장애물 회피 스마트 로봇청소기',
+      'H13 헤파 필터 초미세 공기청정기',
+      '무선청소기 자동비움 F-26'
+    ],
+    subCategoriesVI: [
+      'Robot hút bụi AI thông minh',
+      'Máy lọc không khí HEPA H13',
+      'Máy hút bụi '
+    ],
+  },
+};
+
 /**
  * =========================================================================
  * 📢 [사용자 안내 가이드] 이미지 및 동영상 외부 URL 설정 안내
@@ -32,11 +181,79 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
 
 export const RAW_PRODUCTS: Product[] = [
   {
-    id: "lux-phone-alpha",
-    category: "phone",
-    nameKO: "럭스폰 알파 (LuxPhone Alpha)",
-    nameVI: "LuxPhone Alpha (Điện thoại thông minh)",
-    tagKO: "티타늄 보디와 2억 화소 스페이스 줌의 결합",
+    id: "smarthome-robot",
+    category: "smarthome",
+    nameKO: "AI 장애물 회피 스마트 로봇청소기",
+    nameVI: "Robot hút bụi AI thông minh",
+    tagKO: "AI 장애물 회피 스마트 로봇청소기",
+    tagVI: "Robot hút bụi AI thông minh",
+    price: 1390000,
+    rating: 4.8,
+    reviewsCount: 28,
+    imageUrl: "",
+    videoUrl: "",
+    specsKO: {
+      "기능": "AI 장애물 회피 센서 & 자동 충전",
+      "센서": "LiDAR 3D 공간 매핑 센서"
+    },
+    specsVI: {
+      "Tính năng": "Cảm biến AI né vật cản & Tự sạc",
+      "Cảm biến": "Cảm biến 3D LiDAR"
+    },
+    featuresKO: [
+      "초정밀 AI 장애물 회피 및 3D 공간 센서",
+      "자율주행 최적화 듀얼 카메라 탑재"
+    ],
+    featuresVI: [
+      "Tránh vật cản AI siêu chính xác",
+      "Camera kép tối ưu hóa tự động"
+    ],
+    descriptionKO: "등록된 제품 이미지가 없는 상품입니다. 관리자 모드에서 이미지를 추가해주세요.",
+    descriptionVI: "Chưa có hình ảnh sản phẩm.",
+    colors: [],
+    isNew: true,
+    isBest: false
+  },
+  {
+    id: "smarthome-air",
+    category: "smarthome",
+    nameKO: "H13 헤파 필터 초미세 공기청정기",
+    nameVI: "Máy lọc không khí HEPA H13",
+    tagKO: "H13 헤파 필터 초미세 공기청정기",
+    tagVI: "Máy lọc không khí HEPA H13",
+    price: 890000,
+    rating: 4.9,
+    reviewsCount: 45,
+    imageUrl: "",
+    videoUrl: "",
+    specsKO: {
+      "필터": "H13 헤파 필터 (99.97% 미세먼지 제거)",
+      "청정면적": "85㎡ 대형 공간 지원"
+    },
+    specsVI: {
+      "Bộ lọc": "Màng lọc HEPA H13 (Lọc 99.97%)",
+      "Diện tích": "Phủ diện tích lớn 85m2"
+    },
+    featuresKO: [
+      "H13 360도 초미세먼지 집진 필터",
+      "초저음 저소음 수면 모드 지원"
+    ],
+    featuresVI: [
+      "Bộ lọc bụi mịn H13 360 độ",
+      "Chế độ ngủ yên tĩnh cực thấp"
+    ],
+    descriptionKO: "등록된 제품 이미지가 없는 상품입니다. 관리자 모드에서 이미지를 추가해주세요.",
+    descriptionVI: "Chưa có hình ảnh sản phẩm.",
+    colors: [],
+    isNew: true,
+    isBest: false
+  },
+  {
+    id: "smarthome",
+    category: "smarthome",
+    nameKO: "무선청소기 자동비움 F-26",
+    nameVI: "Máy hút bụi thông minh F-26",
+    tagKO:  "무선청소기 자동비움 F-26",
     tagVI: "Sự kết hợp giữa vỏ Titan và ống kính siêu zoom 200MP",
     price: 1590000, // 1,590,000 KRW
     rating: 4.9,

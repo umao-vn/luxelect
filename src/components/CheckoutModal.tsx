@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CreditCard, Landmark, Wallet, CheckCircle, ShieldCheck, ShoppingBag, BadgeHelp, ClipboardCheck } from 'lucide-react';
 import { CartItem, UserSession, OrderDetails } from '../types';
+import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface CheckoutModalProps {
@@ -311,7 +312,7 @@ export default function CheckoutModal({
                       return (
                         <div key={idx} className="flex gap-3 items-center border-b border-slate-200 pb-3">
                           <img
-                            src={item.product.imageUrl}
+                            src={cleanAndConvertImageUrl(item.product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
                             alt={name}
                             referrerPolicy="no-referrer"
                             className="w-10 h-10 object-cover bg-white border border-slate-200 rounded shrink-0"

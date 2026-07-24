@@ -1,7 +1,7 @@
 import { X, Trash2, ShoppingBag, Plus, Minus, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartItem, UserSession } from '../types';
-import { DEFAULT_FALLBACK_IMAGE } from '../utils';
+import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface CartModalProps {
@@ -102,7 +102,7 @@ export default function CartModal({
                         {/* Img frame */}
                         <div className="w-16 h-16 rounded-lg bg-white border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
                           <img
-                            src={item.product.imageUrl}
+                            src={cleanAndConvertImageUrl(item.product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
                             alt={name}
                             referrerPolicy="no-referrer"
                             onError={(e) => {

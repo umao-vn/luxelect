@@ -6,10 +6,43 @@ export interface HeroMediaItem {
   url: string;
 }
 
+export interface SplitBgPanel {
+  id: 'panel-1' | 'panel-2' | 'panel-3';
+  type: 'photo' | 'video';
+  url: string;
+  titleKO?: string;
+  titleVI?: string;
+  tagKO?: string;
+  tagVI?: string;
+}
+
+export interface SplitBgConfig {
+  isEnabled: boolean;
+  panels: [SplitBgPanel, SplitBgPanel, SplitBgPanel];
+}
+
+export interface SubBgMediaItem {
+  url: string;
+  type: 'video' | 'photo';
+  titleKO?: string;
+  titleVI?: string;
+  badgeKO?: string;
+  badgeVI?: string;
+  subtitleKO?: string;
+  subtitleVI?: string;
+}
+
 export interface CategoryItem {
   id: string;
   labelKO: string;
   labelVI: string;
+}
+
+export interface CategorySubMenu {
+  titleKO: string;
+  titleVI: string;
+  subCategoriesKO: string[];
+  subCategoriesVI: string[];
 }
 
 export type CategoryType = string;

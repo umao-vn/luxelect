@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Shield, Award, CheckCircle2, MessageSquare, Star, ShoppingCart, CreditCard, Edit } from 'lucide-react';
 import { Product, UserSession } from '../types';
-import { DEFAULT_FALLBACK_IMAGE } from '../utils';
+import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface ProductDetailViewProps {
@@ -179,7 +179,7 @@ export default function ProductDetailView({
             {/* Massive Hero Image Frame */}
             <div className="relative aspect-[16/10] rounded-3xl bg-slate-100 border border-slate-200 overflow-hidden shadow-lg flex items-center justify-center">
               <img
-                src={product.imageUrl}
+                src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
                 alt={name}
                 referrerPolicy="no-referrer"
                 onError={(e) => {
@@ -220,7 +220,7 @@ export default function ProductDetailView({
                 <div className="relative aspect-video rounded-2xl bg-black overflow-hidden border border-slate-200 group">
                   <video
                     ref={videoRef}
-                    src={product.videoUrl}
+                    src={cleanAndConvertVideoUrl(product.videoUrl) || undefined}
                     className="w-full h-full object-cover"
                     loop
                     playsInline

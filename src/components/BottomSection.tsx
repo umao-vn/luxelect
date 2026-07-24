@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Shield, ShieldCheck, HeartHandshake, PhoneCall, ChevronDown, ChevronUp } from 'lucide-react';
-import { FAQS } from '../data';
+import { Mail, Headphones, ShieldCheck, Layers, HelpCircle, PhoneCall } from 'lucide-react';
 import { TranslationSet } from '../translations';
 
 interface BottomSectionProps {
@@ -11,15 +10,10 @@ interface BottomSectionProps {
 }
 
 export default function BottomSection({ t, currentLang, isDetailActive }: BottomSectionProps) {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [emailSub, setEmailSub] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
-
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +24,7 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
     }
   };
 
-  // If detailed view is active, we cleanly show only the minimalist luxury footer to make the detail view stand out!
+  // If detailed view is active, we cleanly show only the minimalist luxury footer
   if (isDetailActive) {
     return (
       <footer className="w-full bg-slate-50 border-t border-slate-200 py-10">
@@ -47,115 +41,91 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
   }
 
   return (
-    <section className="w-full bg-white border-t border-slate-200/80 pt-16">
-      {/* 3-Section Segment Indicator (Shown only in development) */}
+    <section className="w-full bg-[#f7f7f7] border-t border-slate-200/80 pt-10">
+      {/* Dev Indicator */}
       {isDevEnv && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-6">
           <div className="inline-block text-[10px] font-mono font-black tracking-widest text-[#0066FF] uppercase px-3 py-1 bg-[#0066FF]/5 border border-[#0066FF]/20 rounded-md">
-            [ 03. BOTTOM SECTION / VIP PILLARS & FAQ SERVICES ]
+            [ 03. BOTTOM SECTION / XIAOMI SUPPORT ]
           </div>
         </div>
       )}
 
-      {/* 1. Value Proposition Pillars */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 pb-16">
-        <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-[#0066FF] hover:bg-white hover:shadow-md transition-all duration-300 text-left space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-[#0066FF]">
-            <Shield className="w-6 h-6" />
-          </div>
-          <h4 className="text-lg font-bold text-slate-800 font-sans">
-            {currentLang === 'ko' ? '5년 글로벌 품질 보증' : 'Bảo hành toàn cầu 5 năm'}
-          </h4>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-            {currentLang === 'ko' 
-               ? '럭스 일렉트로닉스의 VIP 회원들은 구매하신 제품에 대해 업계 최고 규격인 5개년 무상 부품 보증을 보장받으십니다.'
-               : 'Thành viên VIP của Lux Electronics được hưởng chính sách bảo hành linh kiện miễn phí lên đến 5 năm tiêu chuẩn cao nhất.'}
-          </p>
-        </div>
+      {/* Xiaomi Style Support Section */}
+      <div className="bg-[#f7f7f7] py-16 border-t border-b border-slate-200/60">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-12 font-sans tracking-tight">
+            {currentLang === 'ko' ? 'Xiaomi Support (고객 지원)' : 'Xiaomi Support'}
+          </h3>
 
-        <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-[#0066FF] hover:bg-white hover:shadow-md transition-all duration-300 text-left space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-[#0066FF]">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <h4 className="text-lg font-bold text-slate-800 font-sans">
-            {currentLang === 'ko' ? '무결점 맞춤 완벽배송' : 'Giao hàng cài đặt hoàn hảo'}
-          </h4>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-            {currentLang === 'ko' 
-               ? '전문 엔지니어팀이 지정한 장소로 직접 안전 배송 및 정밀 설치를 완료한 후 오작동 점검까지 무상으로 대행해 드립니다.'
-               : 'Đội ngũ kỹ sư chuyên nghiệp sẽ giao hàng trực tiếp, lắp đặt chuẩn xác và kiểm tra vận hành hoàn chỉnh miễn phí cho quý khách.'}
-          </p>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+            {/* 1. Customer Support */}
+            <div className="flex flex-col items-center text-center group cursor-pointer">
+              <div className="w-16 h-16 flex items-center justify-center text-slate-700 group-hover:text-[#0066FF] transition-colors mb-4">
+                <Headphones className="w-12 h-12 stroke-[1.5]" />
+              </div>
+              <h4 className="text-base font-bold text-slate-900 mb-2 font-sans">
+                {currentLang === 'ko' ? 'Customer Support' : 'Customer Support'}
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-sans max-w-[220px]">
+                {currentLang === 'ko' 
+                  ? '실시간 채팅, 이메일, 전화 상담을 통한 빠른 지원' 
+                  : 'Contact us via live-chat, email, and phone call'}
+              </p>
+            </div>
 
-        <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-[#0066FF] hover:bg-white hover:shadow-md transition-all duration-300 text-left space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-[#0066FF]">
-            <HeartHandshake className="w-6 h-6" />
-          </div>
-          <h4 className="text-lg font-bold text-slate-800 font-sans">
-            {currentLang === 'ko' ? '1:1 명품 컨설팅 서비스' : 'Dịch vụ tư vấn VIP 1:1'}
-          </h4>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-            {currentLang === 'ko' 
-               ? '제품의 작동법, ImgBB 외부 자산 연동 방법, 라이프스타일 가전 배치 가이드 등 전문 인력이 연중무휴 실시간 답변을 대기합니다.'
-               : 'Nhân viên tư vấn luôn sẵn sàng giải đáp 24/7 về cách vận hành, tích hợp liên kết ngoài ImgBB hay hướng dẫn bố trí phòng tinh tế.'}
-          </p>
-        </div>
-      </div>
+            {/* 2. Warranty */}
+            <div className="flex flex-col items-center text-center group cursor-pointer">
+              <div className="w-16 h-16 flex items-center justify-center text-slate-700 group-hover:text-[#0066FF] transition-colors mb-4">
+                <ShieldCheck className="w-12 h-12 stroke-[1.5]" />
+              </div>
+              <h4 className="text-base font-bold text-slate-900 mb-2 font-sans">
+                {currentLang === 'ko' ? 'Warranty' : 'Warranty'}
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-sans max-w-[220px]">
+                {currentLang === 'ko' 
+                  ? '공식 정품 보증 및 안심 무상 A/S 정책 제공' 
+                  : 'Local warranty policy protection is provided'}
+              </p>
+            </div>
 
-      {/* 2. Interactive FAQs */}
-      <div className="bg-slate-50/50 border-t border-b border-slate-200 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 space-y-3">
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-sans">
-              {t.faqTitle}
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 font-sans">
-              {t.faqDesc}
-            </p>
-          </div>
+            {/* 3. User Guides */}
+            <div className="flex flex-col items-center text-center group cursor-pointer">
+              <div className="w-16 h-16 flex items-center justify-center text-slate-700 group-hover:text-[#0066FF] transition-colors mb-4">
+                <Layers className="w-12 h-12 stroke-[1.5]" />
+              </div>
+              <h4 className="text-base font-bold text-slate-900 mb-2 font-sans">
+                {currentLang === 'ko' ? 'User Guides' : 'User Guides'}
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-sans max-w-[220px]">
+                {currentLang === 'ko' 
+                  ? '제품별 사용자 가이드 확인 및 다운로드' 
+                  : 'Find and download your Xiaomi product user guide'}
+              </p>
+            </div>
 
-          <div className="space-y-4 text-left">
-            {FAQS.map((faq, idx) => {
-              const isOpen = openFaq === idx;
-              const question = currentLang === 'ko' ? faq.qKO : faq.qVI;
-              const answer = currentLang === 'ko' ? faq.aKO : faq.aVI;
-
-              return (
-                <div
-                  key={idx}
-                  className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:border-[#0066FF] transition-colors"
-                >
-                  <button
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none hover:bg-[#0066FF]/5 transition-colors cursor-pointer"
-                    id={`faq-btn-${idx}`}
-                  >
-                    <span className="text-sm sm:text-base font-bold text-slate-700 font-sans pr-4">
-                      {question}
-                    </span>
-                    {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-[#0066FF] shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
-                    )}
-                  </button>
-
-                  {isOpen && (
-                    <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 font-sans">
-                      {answer}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {/* 4. FAQ */}
+            <div className="flex flex-col items-center text-center group cursor-pointer">
+              <div className="w-16 h-16 flex items-center justify-center text-slate-700 group-hover:text-[#0066FF] transition-colors mb-4">
+                <HelpCircle className="w-12 h-12 stroke-[1.5]" />
+              </div>
+              <h4 className="text-base font-bold text-slate-900 mb-2 font-sans">
+                FAQ
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-sans max-w-[220px]">
+                {currentLang === 'ko' 
+                  ? '제품 관련 자주 묻는 질문 검색 및 정보 안내' 
+                  : 'Search for help about Xiaomi'}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Newsletter and Consultation Actions */}
+      {/* Newsletter and Consultation Actions */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Newsletter Signup */}
-        <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 text-left space-y-6 shadow-sm">
+        <div className="p-8 rounded-3xl bg-white border border-slate-200 text-left space-y-6 shadow-sm">
           <div className="space-y-2">
             <h4 className="text-xl font-bold text-slate-900 font-sans">{t.newsletterTitle}</h4>
             <p className="text-xs sm:text-sm text-slate-600 font-sans">{t.newsletterDesc}</p>
@@ -200,8 +170,8 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
             <h4 className="text-xl font-bold text-slate-900 font-sans">{t.contactUs}</h4>
             <p className="text-xs sm:text-sm text-slate-600 font-sans">
               {currentLang === 'ko'
-                ? '가전 마스터의 실시간 응대를 받으실 수 있습니다. 구매 전 궁금한 사양이나 맞춤 가전 조율 서비스를 문의하십시오.'
-                : 'Nhận tư vấn ngay lập tức từ chuyên gia. Hãy đặt các câu hỏi về thông số sản phẩm hoặc yêu cầu hỗ trợ lắp đặt phù hợp.'}
+                ? '실시간 상담을 받으실 수 있습니다. 궁금한 사양이나 맞춤 조율 서비스를 문의하십시오.'
+                : 'Nhận tư vấn ngay lập tức từ chuyên gia. Hãy đặt các câu hỏi về thông số sản phẩm hoặc yêu cầu hỗ trợ.'}
             </p>
           </div>
 
@@ -215,14 +185,14 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
               <span>{currentLang === 'ko' ? '대표 번호 연결 (1600-0000)' : 'Tổng đài VIP (1600-0000)'}</span>
             </a>
             <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-              <span className="w-2 h-2 rounded-full bg-emerald-555 bg-emerald-550 bg-emerald-500 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               <span>ONLINE AGENTS ACTIVE</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 4. Core Footer */}
+      {/* Core Footer */}
       <footer className="w-full bg-slate-50 border-t border-slate-200 py-12 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo brand */}
@@ -244,3 +214,4 @@ export default function BottomSection({ t, currentLang, isDetailActive }: Bottom
     </section>
   );
 }
+

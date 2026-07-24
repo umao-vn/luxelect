@@ -1,12 +1,13 @@
-export const DEFAULT_FALLBACK_IMAGE = 'https://i.postimg.cc/s2sHdhjD/jadongbium1(1).png';
+export const DEFAULT_FALLBACK_IMAGE = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%23f8fafc"/><rect x="10" y="10" width="280" height="280" rx="16" fill="none" stroke="%23e2e8f0" stroke-width="2" stroke-dasharray="6 6"/><g fill="%2394a3b8"><path d="M120 110a15 15 0 1 0 0-30 15 15 0 0 0 0 30zm60 20l-30 40-20-25-45 60h140l-45-75z"/><text x="150" y="225" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="%2394a3b8">사진 없음</text></g></svg>`;
 
 /**
  * Clean and convert image/video URLs from common image hosts, share links,
  * embed tags (<img src="...">), or markdown tags (![alt](url)).
  */
 export function cleanAndConvertImageUrl(rawUrl: string): string {
-  if (!rawUrl) return '';
+  if (!rawUrl) return DEFAULT_FALLBACK_IMAGE;
   let url = rawUrl.trim();
+  if (!url) return DEFAULT_FALLBACK_IMAGE;
 
   // Extract inner URL from Markdown format like [text](http...) or [http...](http...)
   // Handle case where URL itself contains parentheses like (1)
@@ -75,7 +76,7 @@ export function cleanAndConvertImageUrl(rawUrl: string): string {
     }
   }
 
-  return url;
+  return url || DEFAULT_FALLBACK_IMAGE;
 }
 
 export function cleanAndConvertVideoUrl(rawUrl: string): string {

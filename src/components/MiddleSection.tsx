@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X } from 'lucide-react';
 import { Product, CategoryType, CategoryItem, UserSession } from '../types';
-import { DEFAULT_FALLBACK_IMAGE } from '../utils';
+import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl } from '../utils';
 import { TranslationSet } from '../translations';
 import { useState } from 'react';
 
@@ -20,6 +20,8 @@ interface MiddleSectionProps {
   onDeleteProduct?: (productId: string) => void;
   onOpenAddCategoryModal: () => void;
   onDeleteCategory?: (categoryId: string) => void;
+  selectedCategory?: string;
+  onSelectCategory?: (catId: string) => void;
 }
 
 export default function MiddleSection({
@@ -37,8 +39,20 @@ export default function MiddleSection({
   onDeleteProduct,
   onOpenAddCategoryModal,
   onDeleteCategory,
+  selectedCategory: propSelectedCategory,
+  onSelectCategory: propOnSelectCategory,
 }: MiddleSectionProps) {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | 'all'>('all');
+  const [internalSelectedCategory, setInternalSelectedCategory] = useState<CategoryType | 'all'>('all');
+  const selectedCategory = propSelectedCategory ?? internalSelectedCategory;
+
+  const setSelectedCategory = (catId: string) => {
+    if (propOnSelectCategory) {
+      propOnSelectCategory(catId);
+    } else {
+      setInternalSelectedCategory(catId);
+    }
+  };
+
   const [sortBy, setSortBy] = useState<'default' | 'priceAsc' | 'priceDesc' | 'rating'>('default');
 
   const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
@@ -74,7 +88,7 @@ export default function MiddleSection({
   ];
 
   return (
-    <section id="middle-products-section" className="w-full bg-white py-16 sm:py-24 border-t border-slate-200/80">
+    <section id="middle-products-section" className="w-full bg-[#f7f7f7] py-16 sm:py-24 border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
@@ -94,95 +108,81 @@ export default function MiddleSection({
         </div>
 
         {/* Filter and Categorization controls bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200 mb-12">
-          {/* Categories Tab selector */}
-          <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto">
-            {allCategoryTabs.map((cat) => {
-              const isActive = selectedCategory === cat.id;
-              return (
-                <div key={cat.id} className="relative group/cattab flex items-center">
-                  <button
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-[#0066FF] to-[#00D1FF] text-white shadow-lg shadow-[#0066FF]/20 font-semibold'
-                        : 'bg-slate-50 text-slate-600 border border-slate-250/60 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5'
-                    }`}
-                    id={`cat-tab-${cat.id}`}
-                  >
-                    <span>{currentLang === 'ko' ? cat.labelKO : cat.labelVI}</span>
-                  </button>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-10">
+          {/* Integrated Active Category Status Badge */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700">
+              <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
+              <span>
+                {currentLang === 'ko' ? '선택된 카테고리:' : 'Danh mục đã chọn:'}{' '}
+                <strong className="text-[#0066FF] font-extrabold">
+                  {allCategoryTabs.find((c) => c.id === selectedCategory)?.[currentLang === 'ko' ? 'labelKO' : 'labelVI'] || (currentLang === 'ko' ? '전체 상품' : 'Tất cả')}
+                </strong>
+              </span>
+              <span className="text-xs text-slate-400 font-mono ml-1">
+                ({filteredProducts.length}{currentLang === 'ko' ? '개 모델' : ' sản phẩm'})
+              </span>
+            </div>
 
-                  {/* Allow deleting custom category if created by user */}
-                  {cat.isCustom && onDeleteCategory && showAdminUI && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (confirm(currentLang === 'ko' ? `'${cat.labelKO}' 카테고리를 삭제하시겠습니까?` : `Xóa danh mục '${cat.labelVI}'?`)) {
-                          onDeleteCategory(cat.id);
-                          if (selectedCategory === cat.id) {
-                            setSelectedCategory('all');
-                          }
-                        }
-                      }}
-                      className="ml-1 p-1 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors opacity-0 group-hover/cattab:opacity-100 cursor-pointer"
-                      title={currentLang === 'ko' ? '카테고리 삭제' : 'Xóa danh mục'}
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Admin Buttons (Shown in development + admin mode) */}
-            {showAdminUI && (
-              <>
-                {/* Add Category Button */}
-                <button
-                  onClick={onOpenAddCategoryModal}
-                  className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-white border-2 border-dashed border-[#0066FF]/40 text-[#0066FF] hover:border-[#0066FF] hover:bg-[#0066FF]/5 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ml-1"
-                  id="add-category-btn"
-                  title={currentLang === 'ko' ? '새 제품 카테고리 추가' : 'Thêm danh mục mới'}
-                >
-                  <FolderPlus className="w-4 h-4" />
-                  <span>{currentLang === 'ko' ? '+ 카테고리 추가' : '+ Thêm danh mục'}</span>
-                </button>
-
-                {/* Add Product Button */}
-                <button
-                  onClick={onAddProduct}
-                  className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#0066FF] to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md shadow-[#0066FF]/20 transition-all flex items-center gap-1.5 cursor-pointer ml-1"
-                  id="add-product-btn"
-                  title={currentLang === 'ko' ? '새 제품 등록' : 'Đăng ký sản phẩm mới'}
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>{currentLang === 'ko' ? '+ 제품 등록' : '+ Đăng ký sản phẩm'}</span>
-                </button>
-              </>
+            {/* Reset button if filtered */}
+            {selectedCategory !== 'all' && (
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('all')}
+                className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
+              >
+                {currentLang === 'ko' ? '전체 보기 ✕' : 'Xem tất cả ✕'}
+              </button>
             )}
           </div>
 
-          {/* Sort selector */}
-          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>FILTER:</span>
-            </div>
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-xs sm:text-sm text-slate-700 hover:text-slate-900 focus:outline-none focus:border-[#0066FF] transition-colors cursor-pointer"
-                id="product-sort-select"
-              >
-                <option value="default">{currentLang === 'ko' ? '추천 제품순' : 'Sản phẩm gợi ý'}</option>
-                <option value="priceAsc">{currentLang === 'ko' ? '낮은 가격순' : 'Giá thấp đến cao'}</option>
-                <option value="priceDesc">{currentLang === 'ko' ? '높은 가격순' : 'Giá cao đến thấp'}</option>
-                <option value="rating">{currentLang === 'ko' ? '최고 평점순' : 'Đánh giá cao nhất'}</option>
-              </select>
-              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-455">
-                <ArrowUpDown className="w-3.5 h-3.5" />
+          {/* Right Controls: Sort Selector + Admin Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+            {/* Admin Buttons (Shown in development + admin mode) */}
+            {showAdminUI && (
+              <>
+                <button
+                  onClick={onOpenAddCategoryModal}
+                  className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-dashed border-[#0066FF]/50 text-[#0066FF] hover:bg-[#0066FF]/5 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  id="add-category-btn"
+                  title={currentLang === 'ko' ? '새 제품 카테고리 추가' : 'Thêm danh mục mới'}
+                >
+                  <FolderPlus className="w-3.5 h-3.5" />
+                  <span>{currentLang === 'ko' ? '+ 카테고리 추가' : '+ Thêm danh mục'}</span>
+                </button>
+
+                <button
+                  onClick={onAddProduct}
+                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF] hover:bg-blue-700 text-white shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                  id="add-product-btn"
+                  title={currentLang === 'ko' ? '새 제품 등록' : 'Đăng ký sản phẩm mới'}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{currentLang === 'ko' ? '+ 제품 등록' : '+ Đăng ký'}</span>
+                </button>
+              </>
+            )}
+
+            {/* Sort selector */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </div>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-slate-700 hover:text-slate-900 focus:outline-none focus:border-[#0066FF] transition-colors cursor-pointer"
+                  id="product-sort-select"
+                >
+                  <option value="default">{currentLang === 'ko' ? '추천 제품순' : 'Sản phẩm gợi ý'}</option>
+                  <option value="priceAsc">{currentLang === 'ko' ? '낮은 가격순' : 'Giá thấp đến cao'}</option>
+                  <option value="priceDesc">{currentLang === 'ko' ? '높은 가격순' : 'Giá cao đến thấp'}</option>
+                  <option value="rating">{currentLang === 'ko' ? '최고 평점순' : 'Đánh giá cao nhất'}</option>
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                </div>
               </div>
             </div>
           </div>
@@ -223,7 +223,8 @@ export default function MiddleSection({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="group relative flex flex-col justify-between bg-slate-50/60 border border-slate-200 hover:border-[#0066FF] hover:bg-white rounded-2xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg"
+                onClick={() => onViewProduct(product.id)}
+                className="group relative flex flex-col justify-between bg-white border border-slate-200/80 hover:border-[#0066FF] hover:bg-white rounded-2xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg cursor-pointer"
                 id={`product-card-${product.id}`}
               >
                 {/* Badges */}
@@ -278,7 +279,7 @@ export default function MiddleSection({
                   onClick={() => onViewProduct(product.id)}
                 >
                   <img
-                    src={product.imageUrl}
+                    src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
                     alt={name}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
@@ -352,7 +353,10 @@ export default function MiddleSection({
                     <span>{currentLang === 'ko' ? '제품 상세' : 'Chi tiết'}</span>
                   </button>
                   <button
-                    onClick={() => onAddToCart(product, product.colors[0])}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAddToCart(product, product.colors[0]);
+                    }}
                     className="flex items-center justify-center gap-1 py-2.5 rounded-xl bg-slate-900 hover:bg-[#0066FF] text-white hover:text-white transition-all text-xs font-bold cursor-pointer"
                     title="Add to Cart"
                     id={`middle-add-${product.id}`}

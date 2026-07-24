@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload, Image as ImageIcon, Video, Save, AlertCircle, Sparkles, CheckCircle, Wand2, FolderPlus } from 'lucide-react';
 import { Product, CategoryType, CategoryItem } from '../types';
-import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
+import { cleanAndConvertImageUrl, cleanAndConvertVideoUrl, DEFAULT_FALLBACK_IMAGE } from '../utils';
 
 interface AdminProductModalProps {
   isOpen: boolean;
@@ -283,6 +283,7 @@ export default function AdminProductModal({
                     <option value="laptop">{currentLang === 'ko' ? '노트북 (Laptop)' : 'Máy tính (Laptop)'}</option>
                     <option value="audio">{currentLang === 'ko' ? '오디오 (Audio)' : 'Âm thanh (Audio)'}</option>
                     <option value="display">{currentLang === 'ko' ? '디스플레이 (Display)' : 'Màn hình (Display)'}</option>
+                    <option value="smarthome">{currentLang === 'ko' ? '스마트 홈 (smarthome)' : 'Nhà thông minh (smarthome)'}</option>
                   </>
                 )}
               </select>
@@ -419,7 +420,7 @@ export default function AdminProductModal({
                     <div className="flex items-center gap-3">
                       <div className="relative w-12 h-12 rounded-lg border border-slate-100 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
                         <img
-                          src={imageUrl}
+                          src={cleanAndConvertImageUrl(imageUrl) || DEFAULT_FALLBACK_IMAGE}
                           alt="Preview"
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
@@ -545,7 +546,7 @@ export default function AdminProductModal({
                         <span className="text-[10px] text-[#0066FF] font-bold font-mono uppercase block">🎬 VIDEO DETECTED</span>
                         <span className="text-[10px] text-slate-500 font-mono line-clamp-1 max-w-[220px] block truncate">{videoUrl}</span>
                         <video
-                          src={videoUrl}
+                          src={cleanAndConvertVideoUrl(videoUrl) || undefined}
                           muted
                           controls
                           className="w-full h-16 object-cover rounded-lg border border-slate-100"
