@@ -119,35 +119,37 @@ export default function MiddleSection({
 
         {/* Filter and Categorization controls bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-6">
-          {/* Integrated Active Category Status Badge */}
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700">
-              <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
-              <span>
-                {currentLang === 'ko' ? '선택된 카테고리:' : 'Danh mục đã chọn:'}{' '}
-                <strong className="text-[#0066FF] font-extrabold">
-                  {allCategoryTabs.find((c) => c.id === selectedCategory)?.[currentLang === 'ko' ? 'labelKO' : 'labelVI'] || (currentLang === 'ko' ? '전체 상품' : 'Tất cả')}
-                </strong>
-              </span>
-              <span className="text-xs text-slate-400 font-mono ml-1">
-                ({filteredProducts.length}{currentLang === 'ko' ? '개 모델' : ' sản phẩm'})
-              </span>
-            </div>
+          {/* Integrated Active Category Status Badge (Admin Mode Only) */}
+          {isAdminMode ? (
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700">
+                <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
+                <span>
+                  {currentLang === 'ko' ? '선택된 카테고리:' : 'Danh mục đã chọn:'}{' '}
+                  <strong className="text-[#0066FF] font-extrabold">
+                    {allCategoryTabs.find((c) => c.id === selectedCategory)?.[currentLang === 'ko' ? 'labelKO' : 'labelVI'] || (currentLang === 'ko' ? '전체 상품' : 'Tất cả')}
+                  </strong>
+                </span>
+                <span className="text-xs text-slate-400 font-mono ml-1">
+                  ({filteredProducts.length}{currentLang === 'ko' ? '개 모델' : ' sản phẩm'})
+                </span>
+              </div>
 
-            {/* Reset button if filtered */}
-            {selectedCategory !== 'all' && (
-              <button
-                type="button"
-                onClick={() => setSelectedCategory('all')}
-                className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
-              >
-                {currentLang === 'ko' ? '전체 보기 ✕' : 'Xem tất cả ✕'}
-              </button>
-            )}
-          </div>
+              {/* Reset button if filtered */}
+              {selectedCategory !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('all')}
+                  className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
+                >
+                  {currentLang === 'ko' ? '전체 보기 ✕' : 'Xem tất cả ✕'}
+                </button>
+              )}
+            </div>
+          ) : <div />}
 
           {/* Right Controls: Sort Selector + Admin Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end ml-auto">
             {/* Admin Buttons (Shown in development + admin mode) */}
             {showAdminUI && (
               <>
@@ -198,63 +200,65 @@ export default function MiddleSection({
           </div>
         </div>
 
-        {/* Category Pills Navigation & Admin Controls Bar */}
-        <div className="flex flex-wrap items-center gap-2 mb-10 pb-2 overflow-x-auto no-scrollbar">
-          {visibleCategoryTabs.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <div
-                key={cat.id}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
-                  isSelected
-                    ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md shadow-[#0066FF]/20'
-                    : 'bg-white text-slate-700 border-slate-200 hover:border-[#0066FF] hover:bg-blue-50/50'
-                }`}
-                onClick={() => setSelectedCategory(cat.id)}
-              >
-                <span>{currentLang === 'ko' ? cat.labelKO : cat.labelVI}</span>
+        {/* Category Pills Navigation & Admin Controls Bar (Admin Mode Only) */}
+        {isAdminMode && (
+          <div className="flex flex-wrap items-center gap-2 mb-10 pb-2 overflow-x-auto no-scrollbar">
+            {visibleCategoryTabs.map((cat) => {
+              const isSelected = selectedCategory === cat.id;
+              return (
+                <div
+                  key={cat.id}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
+                    isSelected
+                      ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md shadow-[#0066FF]/20'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-[#0066FF] hover:bg-blue-50/50'
+                  }`}
+                  onClick={() => setSelectedCategory(cat.id)}
+                >
+                  <span>{currentLang === 'ko' ? cat.labelKO : cat.labelVI}</span>
 
-                {/* Admin Mode Quick Controls (Lock/Unlock & Delete) */}
-                {showAdminUI && cat.id !== 'all' && (
-                  <div className="flex items-center gap-1 ml-0.5" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      type="button"
-                      onClick={() => onToggleCategoryAdminOnly?.(cat.id)}
-                      title={
-                        cat.isAdminOnly
-                          ? (currentLang === 'ko' ? '관리자 전용 (외부/Netlify 비공개). 클릭하여 전체 공개' : 'Chỉ dành cho Admin. Click để công khai')
-                          : (currentLang === 'ko' ? '전체 공개 중. 클릭하여 관리자 전용(외부 비공개)으로 설정' : 'Đang công khai. Click để ẩn với khách')
-                      }
-                      className={`p-1 rounded-md text-[10px] transition-colors ${
-                        cat.isAdminOnly
-                          ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
-                          : 'bg-slate-100 text-slate-400 hover:text-amber-600 hover:bg-amber-50'
-                      }`}
-                    >
-                      {cat.isAdminOnly ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                    </button>
-
-                    {cat.isCustom && onDeleteCategory && (
+                  {/* Admin Mode Quick Controls (Lock/Unlock & Delete) */}
+                  {showAdminUI && cat.id !== 'all' && (
+                    <div className="flex items-center gap-1 ml-0.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        onClick={() => {
-                          if (confirm(currentLang === 'ko' ? `'${cat.labelKO}' 카테고리를 삭제하시겠습니까?` : `Xóa danh mục '${cat.labelVI}'?`)) {
-                            onDeleteCategory(cat.id);
-                            if (selectedCategory === cat.id) setSelectedCategory('all');
-                          }
-                        }}
-                        className="p-1 rounded-md bg-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                        title={currentLang === 'ko' ? '카테고리 삭제' : 'Xóa danh mục'}
+                        onClick={() => onToggleCategoryAdminOnly?.(cat.id)}
+                        title={
+                          cat.isAdminOnly
+                            ? (currentLang === 'ko' ? '관리자 전용 (외부/Netlify 비공개). 클릭하여 전체 공개' : 'Chỉ dành cho Admin. Click để công khai')
+                            : (currentLang === 'ko' ? '전체 공개 중. 클릭하여 관리자 전용(외부 비공개)으로 설정' : 'Đang công khai. Click để ẩn với khách')
+                        }
+                        className={`p-1 rounded-md text-[10px] transition-colors ${
+                          cat.isAdminOnly
+                            ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
+                            : 'bg-slate-100 text-slate-400 hover:text-amber-600 hover:bg-amber-50'
+                        }`}
                       >
-                        <Trash2 className="w-3 h-3" />
+                        {cat.isAdminOnly ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                       </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+
+                      {cat.isCustom && onDeleteCategory && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (confirm(currentLang === 'ko' ? `'${cat.labelKO}' 카테고리를 삭제하시겠습니까?` : `Xóa danh mục '${cat.labelVI}'?`)) {
+                              onDeleteCategory(cat.id);
+                              if (selectedCategory === cat.id) setSelectedCategory('all');
+                            }
+                          }}
+                          className="p-1 rounded-md bg-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          title={currentLang === 'ko' ? '카테고리 삭제' : 'Xóa danh mục'}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Membership Banner (Simulated benefits - Admin Mode Only) */}
         {isAdminMode && (
