@@ -244,7 +244,11 @@ export default function Header({
                         <ul className="space-y-2">
                           {subList.map((subName, idx) => {
                             const matchedProd = categoryProducts.find(
-                              (p) => p.nameKO === subName || p.tagKO === subName || p.nameKO.includes(subName)
+                              (p) => p.nameKO === subName || p.tagKO === subName || p.nameKO.includes(subName) || subName.includes(p.nameKO) ||
+                              (p.nameKO.includes('드라이어') && subName.includes('드라이어')) ||
+                              (p.nameKO.includes('공기청정기') && subName.includes('공기청정기')) ||
+                              (p.nameKO.includes('로봇청소기') && subName.includes('로봇청소기')) ||
+                              (p.nameKO.includes('무선청소기') && subName.includes('무선청소기'))
                             );
                             return (
                               <li key={idx}>

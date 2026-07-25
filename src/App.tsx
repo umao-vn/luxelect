@@ -92,15 +92,20 @@ export default function App() {
           return {
             ...defaultMatch,
             ...item,
+            category: defaultMatch.category,
+            nameKO: defaultMatch.nameKO || item.nameKO,
             imageUrl: item.imageUrl || defaultMatch.imageUrl,
             videoUrl: item.videoUrl || defaultMatch.videoUrl,
             colors: (item.colors && item.colors.length > 0) ? item.colors : defaultMatch.colors,
           };
         }
+        if (item.nameKO?.includes('드라이어') || item.nameKO?.includes('공기청정기') || item.nameKO?.includes('로봇청소기') || item.nameKO?.includes('무선청소기')) {
+          return { ...item, category: 'smarthome' };
+        }
         return item;
       });
 
-      // Ensure all 4 default core PRODUCTS are present
+      // Ensure all default core PRODUCTS are present
       PRODUCTS.forEach((defProduct) => {
         if (!updatedList.some((p) => p.id === defProduct.id)) {
           updatedList.push(defProduct);

@@ -47,7 +47,7 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '상단 시네마틱 브랜드 영상 (MP4)',
     titleVI: 'Video Điện Ảnh Top (MP4)',
-    url: 'https://files.catbox.moe/l21bbv.mp4'
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'
   }
 ];
 
@@ -64,7 +64,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
     titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
-    url: 'https://files.catbox.moe/l21bbv.mp4'
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
   },
   {
     id: 'sec-hero-media-3',
@@ -73,10 +73,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     titleVI: 'Bộ Ảnh Cybernetic Phụ',
     url: 'https://i.ibb.co/LzdQ0mR/No-15-1.png'
   },
-]
-
-  
-
+];
 
 export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
   {
@@ -84,7 +81,7 @@ export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '서브 라이브 미니 동영상 (MP4)',
     titleVI: 'Video Phụ Live (MP4)',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-sky-in-a-sunset-26070-large.mp4'
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
   },
   {
     id: 'sub-media-2',
@@ -151,13 +148,16 @@ export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
     titleKO: '스마트 홈',
     titleVI: 'Nhà thông minh',
     subCategoriesKO: [
+      '초음속 음이온 스마트 헤어 드라이어',
       'H13 헤파 필터 초미세 공기청정기',
+      'AI 장애물 회피 스마트 로봇청소기',
       '무선청소기 자동비움 F-26'
     ],
     subCategoriesVI: [
-      'Robot hút bụi AI thông minh',
+      'Máy sấy tóc siêu tốc AI',
       'Máy lọc không khí HEPA H13',
-      'Máy hút bụi '
+      'Robot hút bụi AI thông minh',
+      'Máy hút bụi thông minh F-26'
     ],
   },
 };
@@ -176,6 +176,43 @@ export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
 
 export const RAW_PRODUCTS: Product[] = [
   {
+    id: "smarthome-dryer",
+    category: "smarthome",
+    nameKO: "초음속 음이온 스마트 헤어 드라이어",
+    nameVI: "Máy sấy tóc siêu tốc AI",
+    tagKO: "초음속 음이온 및 고밀도 모터 케어 드라이어",
+    tagVI: "Máy sấy tóc ion âm kiểm soát nhiệt độ thông minh",
+    price: 490000,
+    rating: 4.9,
+    reviewsCount: 56,
+    imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyances.mp4",
+    specsKO: {
+      "모터": "11만 RPM 고속 디지털 모터",
+      "기능": "스마트 지능형 온도 제어 & 2억 개 음이온 케어"
+    },
+    specsVI: {
+      "Động cơ": "Động cơ kỹ thuật số 110.000 vòng/phút",
+      "Tính năng": "Kiểm soát nhiệt độ thông minh & 200 triệu Ion âm"
+    },
+    featuresKO: [
+      "초초속 고속 모터로 3분 모발 초스피드 건조",
+      "음이온 집중 케어로 모발 손상 차단 및 윤기 부여"
+    ],
+    featuresVI: [
+      "Sấy khô tóc siêu tốc chỉ trong 3 phút",
+      "Bảo vệ tóc khỏi hư tổn với ion âm cao cấp"
+    ],
+    descriptionKO: "11만 RPM 초고속 디지털 모터와 스마트 지능형 온도 센서가 모발 손상 없이 쾌속 건조를 도와주는 프리미엄 스마트 헤어 드라이어입니다.",
+    descriptionVI: "Máy sấy tóc cao cấp với động cơ kỹ thuật số 110.000 vòng/phút và cảm biến nhiệt thông minh bảo vệ tóc.",
+    colors: [
+      { nameKO: "매트 미드나잇", nameVI: "Đen Nhám", hex: "#1F2937" },
+      { nameKO: "로즈 골드", nameVI: "Vàng Hồng", hex: "#F43F5E" }
+    ],
+    isNew: true,
+    isBest: true
+  },
+  {
     id: "smarthome-robot",
     category: "smarthome",
     nameKO: "AI 장애물 회피 스마트 로봇청소기",
@@ -186,7 +223,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 28,
     imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
-    videoUrl: "[]",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
       "센서": "LiDAR 3D 공간 매핑 센서"
@@ -255,46 +292,41 @@ export const RAW_PRODUCTS: Product[] = [
     nameKO: "무선청소기 자동비움 F-26",
     nameVI: "Máy hút bụi thông minh F-26",
     tagKO:  "무선청소기 자동비움 F-26",
-    tagVI: "Sự kết hợp giữa vỏ Titan và ống kính siêu zoom 200MP",
+    tagVI: "Máy hút bụi tự động làm sạch F-26",
     price: 1590000, // 1,590,000 KRW
     rating: 4.9,
     reviewsCount: 142,
     imageUrl: "https://i.ibb.co/DPSdv7wD/No-14-10.png",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     specsKO: {
-      "프로세서": "Lux Core X3 Max (4나노 초정밀 공정)",
-      "디스플레이": "6.8인치 Dynamic Super AMOLED 3X (1-120Hz 가변 주사율)",
-      "카메라": "후면 2억 화소 광각 + 5000만 화소 초광각 + 1200만 화소 망원 / 전면 4000만 화소",
-      "배터리": "5500 mAh (100W 초고속 유선 충전 / 50W 무선 충전 지원)",
-      "메모리": "16GB LPDDR5X RAM / 512GB UFS 4.0 스토리지",
-      "내구성": "IP68 등급 방수 방진 & 티타늄 Grade 5 프레임 적용"
+      "흡입력": "30,000Pa 강력 초고성능 수퍼 흡입력",
+      "클린스테이션": "자동 먼지 비움 & 살균 덤핑 스테이션",
+      "배터리": "최대 70시간 고용량 리튬이온 패키지",
+      "필터": "H13 초미세 다중 사이클론 헤파 필터"
     },
     specsVI: {
-      "Bộ vi xử lý": "Lux Core X3 Max (Tiến trình siêu chính xác 4nm)",
-      "Màn hình": "6.8 inch Dynamic Super AMOLED 3X (Tần số quét biến thiên 1-120Hz)",
-      "Camera": "Sau 200MP Góc rộng + 50MP Góc siêu rộng + 12MP Ống kính zoom / Trước 40MP",
-      "Pin": "5500 mAh (Sạc siêu nhanh có dây 100W / Sạc không dây 50W)",
-      "Bộ nhớ": "16GB LPDDR5X RAM / 512GB UFS 4.0 Lưu trữ",
-      "Độ bền": "Kháng nước kháng bụi chuẩn IP68 & Khung viền Titan Grade 5"
+      "Lực hút": "Lực hút siêu mạnh 30.000Pa",
+      "Trạm sạc": "Tự động hút bụi & diệt khuẩn Trạm rác",
+      "Pin": "Pin Lithium-ion dung lượng cao dùng đến 70 phút",
+      "Bộ lọc": "Bộ lọc HEPA đa chu trình H13"
     },
     featuresKO: [
-      "스페이스 줌 150배율 울트라 센서 탑재",
-      "빛 반사를 99% 차단하는 고기능 저반사 무광 유리 코팅 적용",
-      "인공지능 실시간 음성 통역 및 사진 피사체 완벽 AI 제거 기능 지원",
-      "프리미엄 햅틱 모터 탑재로 더욱 입체감 있는 터치 감각 선사"
+      "자동 먼지 감지 및 스마트 흡입력 조절",
+      "클린 스테이션 자동 비움 시스템 탑재",
+      "LED 정밀 헤드 라이트로 어두운 구석 먼지 시각화",
+      "인체공학적 경량 설계로 손목 부담 최소화"
     ],
     featuresVI: [
-      "Trang bị cảm biến siêu Zoom không gian lên tới 150x",
-      "Phủ lớp kính nhám chống chói giảm thiểu phản xạ ánh sáng đến 99%",
-      "Hỗ trợ dịch thuật giọng nói thời gian thực và xóa vật thể thông minh",
-      "Mô-tơ rung phản hồi xúc giác cao cấp mang lại trải nghiệm chạm chân thực"
+      "Cảm biến bụi tự động điều chỉnh lực hút",
+      "Trạm tự động dọn rác khép kín thông minh",
+      "Đèn LED chiếu sáng siêu sáng soi bụi ẩn",
+      "Thiết kế công thái học siêu nhẹ giảm mỏi tay"
     ],
-    descriptionKO: "럭스폰 알파는 모바일 테크놀로지의 절대적인 정점을 상징합니다. 항공우주 공학 등급의 Grade 5 티타늄 프레임으로 제작되어 뛰어난 강도와 놀라울 정도로 가벼운 무게감을 동시에 만족시킵니다. 초미세 4나노 공정으로 튜닝된 Lux Core X3 Max 칩셋이 탑재되어 어떠한 고사양 작업이나 3D 게이밍도 끊김 없이 부드럽게 소화해 냅니다.",
-    descriptionVI: "LuxPhone Alpha đại diện cho đỉnh cao tuyệt đối của công nghệ di động. Được thiết kế với khung viền Titan Grade 5 chuẩn hàng không vũ trụ, mang lại độ bền siêu hạng cùng cảm giác cầm nắm nhẹ nhàng khó tin. Bộ vi xử lý Lux Core X3 Max sản xuất trên tiến trình 4nm tiên tiến giúp xử lý mượt mà mọi tác vụ đồ họa và các tựa game 3D nặng nhất.",
+    descriptionKO: "무선청소기 자동비움 F-26은 30,000Pa의 압도적인 흡입력과 먼지통을 자동으로 비워주는 스마트 클린스테이션을 탑재한 최상위 스틱 무선 청소기입니다.",
+    descriptionVI: "Máy hút bụi F-26 với lực hút mạnh mẽ 30.000Pa cùng trạm rác tự động thông minh giúp dọn dẹp nhà cửa dễ dàng.",
     colors: [
       { nameKO: "티타늄 블랙", nameVI: "Titan Đen", hex: "#1c1d21" },
-      { nameKO: "티타늄 실버", nameVI: "Titan Bạc", hex: "#d1d5db" },
-      { nameKO: "내추럴 골드", nameVI: "Titan Vàng", hex: "#e5c158" }
+      { nameKO: "티타늄 실버", nameVI: "Titan Bạc", hex: "#d1d5db" }
     ],
     isNew: true,
     isBest: true

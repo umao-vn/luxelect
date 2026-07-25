@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Shield, Award, CheckCircle2, MessageSquare, Star, ShoppingCart, CreditCard, Edit } from 'lucide-react';
 import { Product, UserSession } from '../types';
-import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
+import { DEFAULT_FALLBACK_IMAGE, DEFAULT_FALLBACK_VIDEO, cleanAndConvertImageUrl, cleanAndConvertVideoUrl } from '../utils';
 import { TranslationSet } from '../translations';
 
 interface ProductDetailViewProps {
@@ -233,6 +233,13 @@ export default function ProductDetailView({
                     controlsList="nodownload"
                     preload="auto"
                     crossOrigin="anonymous"
+                    onError={(e) => {
+                      const v = e.currentTarget as HTMLVideoElement;
+                      if (v.src !== DEFAULT_FALLBACK_VIDEO) {
+                        v.src = DEFAULT_FALLBACK_VIDEO;
+                        v.play().catch(() => {});
+                      }
+                    }}
                     onCanPlay={(e) => {
                       (e.currentTarget as HTMLVideoElement).play().catch(() => {});
                     }}

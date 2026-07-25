@@ -1,5 +1,7 @@
 export const DEFAULT_FALLBACK_IMAGE = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%23f8fafc"/><rect x="10" y="10" width="280" height="280" rx="16" fill="none" stroke="%23e2e8f0" stroke-width="2" stroke-dasharray="6 6"/><g fill="%2394a3b8"><path d="M120 110a15 15 0 1 0 0-30 15 15 0 0 0 0 30zm60 20l-30 40-20-25-45 60h140l-45-75z"/><text x="150" y="225" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="%2394a3b8">사진 없음</text></g></svg>`;
 
+export const DEFAULT_FALLBACK_VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
+
 /**
  * Clean and convert image/video URLs from common image hosts, share links,
  * embed tags (<img src="...">), or markdown tags (![alt](url)).
@@ -80,7 +82,7 @@ export function cleanAndConvertImageUrl(rawUrl: string): string {
 }
 
 export function cleanAndConvertVideoUrl(rawUrl: string): string {
-  if (!rawUrl) return '';
+  if (!rawUrl || rawUrl.trim() === '' || rawUrl.trim() === '[]') return DEFAULT_FALLBACK_VIDEO;
   let url = rawUrl.trim();
 
   // 태그 내부 src 주소 추출
@@ -92,6 +94,8 @@ export function cleanAndConvertVideoUrl(rawUrl: string): string {
   // 따옴표, 대괄호 등 앞뒤 찌꺼기 문자 제거
   url = url.replace(/^["'\[\s<]+|["'\]\s>]+$/g, '');
 
+  if (!url || url === '[]') return DEFAULT_FALLBACK_VIDEO;
+
   // https:// 가 빠진 경우에만 붙여주도록 안전 보정
   if (url.startsWith('//')) {
     url = 'https:' + url;
@@ -99,5 +103,5 @@ export function cleanAndConvertVideoUrl(rawUrl: string): string {
     url = 'https://' + url;
   }
 
-  return url;
+  return url || DEFAULT_FALLBACK_VIDEO;
 }

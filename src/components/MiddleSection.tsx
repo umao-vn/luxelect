@@ -83,7 +83,7 @@ export default function MiddleSection({
       id: cat.id,
       labelKO: cat.labelKO,
       labelVI: cat.labelVI,
-      isCustom: !['phone', 'laptop', 'audio', 'display'].includes(cat.id),
+      isCustom: !['phone', 'laptop', 'audio', 'display', 'smarthome'].includes(cat.id),
     })),
   ];
 
