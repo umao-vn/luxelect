@@ -16,7 +16,7 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
     {
       id: 'panel-2',
       type: 'photo',
-      url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
+      url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg',
       titleKO: '패널 02: 마스터피스 하드웨어',
       titleVI: 'Bảng 02: Phần Cứng Thông Minh',
       tagKO: 'PANEL 02 / MIDDLE',
@@ -25,7 +25,7 @@ export const DEFAULT_SPLIT_BG_CONFIG: SplitBgConfig = {
     {
       id: 'panel-3',
       type: 'photo',
-      url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png',
+      url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg',
       titleKO: '패널 03: 미래형 하이테크 테크놀로지',
       titleVI: 'Bảng 03: Công Nghệ Tương Lai',
       tagKO: 'PANEL 03 / BOTTOM',
@@ -57,7 +57,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'photo',
     titleKO: '하단 서브 프리미엄 메인 사진',
     titleVI: 'Ảnh Phụ Cao Cấp Dưới',
-    url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png'
+    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
   },
   {
     id: 'sec-hero-media-2',
@@ -71,7 +71,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'photo',
     titleKO: '하단 서브 사이버네틱 갤러리 컷',
     titleVI: 'Bộ Ảnh Cybernetic Phụ',
-    url: 'https://i.ibb.co/LzdQ0mR/No-15-1.png'
+    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
   },
 ];
 
@@ -88,7 +88,7 @@ export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
     type: 'photo',
     titleKO: '서브 프리미엄 비주얼 사진',
     titleVI: 'Ảnh Phụ Cao Cấp',
-    url: 'https://i.ibb.co/DPSdv7wD/No-14-10.png'
+    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
   }
 ];
 
