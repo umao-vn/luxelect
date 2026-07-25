@@ -77,6 +77,46 @@ export default function App() {
 
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
 
+  // Helper to detect if a URL is broken / expired
+  const isBrokenUrl = (url?: string | null) => {
+    if (!url) return true;
+    return (
+      url.includes('image not found') ||
+      url.includes('catbox.moe') ||
+      url === '[]'
+    );
+  };
+
+  // Prevent default Ctrl+S / Cmd+S browser behavior (which causes browser 'Save Webpage' folder download dialog)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Run auto resync once to update restored imgbb product photos and fix product URLs
+  useEffect(() => {
+    const STORAGE_VERSION_KEY = 'lux_media_v10_ctrls_and_sync';
+    const isSynced = localStorage.getItem(STORAGE_VERSION_KEY);
+
+    if (!isSynced) {
+      localStorage.setItem('lux_electronics_products', JSON.stringify(PRODUCTS));
+      localStorage.setItem('top_hero_media_list', JSON.stringify(DEFAULT_HERO_MEDIA));
+      localStorage.setItem('secondary_hero_media_list', JSON.stringify(DEFAULT_SECONDARY_HERO_MEDIA));
+      localStorage.setItem('sub_hero_media_list', JSON.stringify(DEFAULT_SUB_MEDIA));
+      localStorage.setItem(STORAGE_VERSION_KEY, 'true');
+
+      setProductsList(PRODUCTS);
+      setTopHeroMediaList(DEFAULT_HERO_MEDIA);
+      setSecondaryHeroMediaList(DEFAULT_SECONDARY_HERO_MEDIA);
+      setSubMediaList(DEFAULT_SUB_MEDIA);
+    }
+  }, []);
+
   // Products list state initialized from localStorage with data.ts default sync
   const [productsList, setProductsList] = useState<Product[]>(() => {
     const cached = localStorage.getItem('lux_electronics_products');
@@ -85,18 +125,13 @@ export default function App() {
       const parsed: Product[] = JSON.parse(cached);
       const defaultIds = PRODUCTS.map((p) => p.id);
       
-      // Keep strictly default core products and user created custom items
-      const updatedList = parsed.filter((item) => defaultIds.includes(item.id) || item.id.startsWith('lux-custom-')).map((item) => {
+      // Keep default core products and user created custom items (excluding removed 8K display), replace broken links
+      const updatedList = parsed.filter((item) => item.id !== 'lux-custom-1784700690204' && item.category !== 'display' && (defaultIds.includes(item.id) || item.id.startsWith('lux-custom-'))).map((item) => {
         const defaultMatch = PRODUCTS.find((p) => p.id === item.id);
         if (defaultMatch) {
           return {
-            ...defaultMatch,
             ...item,
-            category: defaultMatch.category,
-            nameKO: defaultMatch.nameKO || item.nameKO,
-            imageUrl: item.imageUrl || defaultMatch.imageUrl,
-            videoUrl: item.videoUrl || defaultMatch.videoUrl,
-            colors: (item.colors && item.colors.length > 0) ? item.colors : defaultMatch.colors,
+            ...defaultMatch, // Prioritize updated definitions from data.ts
           };
         }
         if (item.nameKO?.includes('드라이어') || item.nameKO?.includes('공기청정기') || item.nameKO?.includes('로봇청소기') || item.nameKO?.includes('무선청소기')) {
@@ -126,9 +161,18 @@ export default function App() {
   // Top Section Hero Media List State (key: top_hero_media_list)
   const [topHeroMediaList, setTopHeroMediaList] = useState<HeroMediaItem[]>(() => {
     const cachedNew = localStorage.getItem('top_hero_media_list');
-    if (cachedNew) return JSON.parse(cachedNew);
+    if (cachedNew) {
+      const parsed: HeroMediaItem[] = JSON.parse(cachedNew);
+      if (parsed.some((m) => isBrokenUrl(m.url))) return DEFAULT_HERO_MEDIA;
+      return parsed;
+    }
     const cachedOld = localStorage.getItem('lux_hero_media_items');
-    return cachedOld ? JSON.parse(cachedOld) : DEFAULT_HERO_MEDIA;
+    if (cachedOld) {
+      const parsed: HeroMediaItem[] = JSON.parse(cachedOld);
+      if (parsed.some((m) => isBrokenUrl(m.url))) return DEFAULT_HERO_MEDIA;
+      return parsed;
+    }
+    return DEFAULT_HERO_MEDIA;
   });
 
   useEffect(() => {
@@ -138,7 +182,12 @@ export default function App() {
   // Secondary Section Hero Media List State (key: secondary_hero_media_list)
   const [secondaryHeroMediaList, setSecondaryHeroMediaList] = useState<HeroMediaItem[]>(() => {
     const cached = localStorage.getItem('secondary_hero_media_list');
-    return cached ? JSON.parse(cached) : DEFAULT_SECONDARY_HERO_MEDIA;
+    if (cached) {
+      const parsed: HeroMediaItem[] = JSON.parse(cached);
+      if (parsed.some((m) => isBrokenUrl(m.url))) return DEFAULT_SECONDARY_HERO_MEDIA;
+      return parsed;
+    }
+    return DEFAULT_SECONDARY_HERO_MEDIA;
   });
 
   useEffect(() => {
@@ -257,7 +306,12 @@ export default function App() {
   // Sub Media List (PIP Mini Player Photo/Video list) state
   const [subMediaList, setSubMediaList] = useState<HeroMediaItem[]>(() => {
     const cached = localStorage.getItem('lux_sub_media_items');
-    return cached ? JSON.parse(cached) : DEFAULT_SUB_MEDIA;
+    if (cached) {
+      const parsed: HeroMediaItem[] = JSON.parse(cached);
+      if (parsed.some((m) => isBrokenUrl(m.url))) return DEFAULT_SUB_MEDIA;
+      return parsed;
+    }
+    return DEFAULT_SUB_MEDIA;
   });
 
   // Sync sub media list to localStorage

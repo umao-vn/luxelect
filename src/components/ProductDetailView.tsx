@@ -225,6 +225,7 @@ export default function ProductDetailView({
                   <video
                     ref={videoRef}
                     src={cleanAndConvertVideoUrl(product.videoUrl) || undefined}
+                    poster={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
                     className="w-full h-full object-cover"
                     autoPlay
                     loop

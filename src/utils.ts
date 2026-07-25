@@ -9,7 +9,9 @@ export const DEFAULT_FALLBACK_VIDEO = "https://commondatastorage.googleapis.com/
 export function cleanAndConvertImageUrl(rawUrl: string): string {
   if (!rawUrl) return DEFAULT_FALLBACK_IMAGE;
   let url = rawUrl.trim();
-  if (!url) return DEFAULT_FALLBACK_IMAGE;
+  if (!url || url === '[]') {
+    return DEFAULT_FALLBACK_IMAGE;
+  }
 
   // Extract inner URL from Markdown format like [text](http...) or [http...](http...)
   // Handle case where URL itself contains parentheses like (1)

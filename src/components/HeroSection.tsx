@@ -167,6 +167,7 @@ export default function HeroSection({
                     <video
                       key={panelUrl}
                       src={panelUrl || undefined}
+                      poster="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80"
                       autoPlay
                       loop
                       muted
@@ -236,6 +237,7 @@ export default function HeroSection({
               <video
                 key={`video-${activeItem.id}-${activeItem.url}`}
                 src={cleanAndConvertVideoUrl(activeItem.url) || undefined}
+                poster="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80"
                 autoPlay
                 loop
                 muted
@@ -548,6 +550,7 @@ export default function HeroSection({
               <video
                 ref={subVideoRef}
                 src={cleanAndConvertVideoUrl(subMediaUrl) || undefined}
+                poster="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=80"
                 autoPlay
                 loop
                 muted={isSubVideoMuted}

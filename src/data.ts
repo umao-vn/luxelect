@@ -47,7 +47,7 @@ export const DEFAULT_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '상단 시네마틱 브랜드 영상 (MP4)',
     titleVI: 'Video Điện Ảnh Top (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   }
 ];
 
@@ -64,7 +64,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
     titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   },
   {
     id: 'sec-hero-media-3',
@@ -81,7 +81,7 @@ export const DEFAULT_SUB_MEDIA: HeroMediaItem[] = [
     type: 'video',
     titleKO: '서브 라이브 미니 동영상 (MP4)',
     titleVI: 'Video Phụ Live (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
+    url: 'https://files.catbox.moe/l21bbv.mp4'
   },
   {
     id: 'sub-media-2',
@@ -138,19 +138,13 @@ export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
       'Mấy âm thanh',
     ],
   },
-  display: {
-    titleKO: '시그니처 디스플레이 & TV',
-    titleVI: 'Màn hình 8K & TV OLED',
-    subCategoriesKO: [],
-    subCategoriesVI: [],
-  },
   smarthome: {
     titleKO: '스마트 홈',
     titleVI: 'Nhà thông minh',
     subCategoriesKO: [
       '초음속 음이온 스마트 헤어 드라이어',
       'H13 헤파 필터 초미세 공기청정기',
-      'AI 장애물 회피 스마트 로봇청소기',
+      'AI 스마트 로봇청소기',
       '무선청소기 자동비움 F-26'
     ],
     subCategoriesVI: [
@@ -185,8 +179,8 @@ export const RAW_PRODUCTS: Product[] = [
     price: 490000,
     rating: 4.9,
     reviewsCount: 56,
-    imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyances.mp4",
+    imageUrl: "https://i.ibb.co/DHXZ2TvR/1.png",
+    videoUrl: "[]",
     specsKO: {
       "모터": "11만 RPM 고속 디지털 모터",
       "기능": "스마트 지능형 온도 제어 & 2억 개 음이온 케어"
@@ -215,15 +209,15 @@ export const RAW_PRODUCTS: Product[] = [
   {
     id: "smarthome-robot",
     category: "smarthome",
-    nameKO: "AI 장애물 회피 스마트 로봇청소기",
+    nameKO: "AI 스마트 로봇청소기",
     nameVI: "Robot hút bụi AI thông minh",
-    tagKO: "AI 장애물 회피 스마트 로봇청소기",
+    tagKO: "AI 스마트 로봇청소기",
     tagVI: "Robot hút bụi AI thông minh",
     price: 1390000,
     rating: 4.8,
     reviewsCount: 28,
-    imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    imageUrl: "https://i.ibb.co/yB00NfV7/f720c7b7-7771-4ef3-ae80-46e6153c49b3-1745999521717.jpg",
+    videoUrl: "[]",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
       "센서": "LiDAR 3D 공간 매핑 센서"
@@ -259,8 +253,8 @@ export const RAW_PRODUCTS: Product[] = [
     price: 890000,
     rating: 4.9,
     reviewsCount: 45,
-    imageUrl: "https://i.ibb.co/DPSdv7wD/No-14-10.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    imageUrl: "https://i.ibb.co/tTH04Ryv/No-13-2.jpg",
+    videoUrl: "[]",
     specsKO: {
       "필터": "H13 헤파 필터 (99.97% 미세먼지 제거)",
       "청정면적": "85㎡ 대형 공간 지원"
@@ -297,7 +291,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 142,
     imageUrl: "https://i.ibb.co/DPSdv7wD/No-14-10.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: "[]",
     specsKO: {
       "흡입력": "30,000Pa 강력 초고성능 수퍼 흡입력",
       "클린스테이션": "자동 먼지 비움 & 살균 덤핑 스테이션",
@@ -342,7 +336,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.95,
     reviewsCount: 88,
     imageUrl: "https://i.postimg.cc/ryJh0g8m/xojjb3ot-643-macbook-pro-16inch-2019-core-i9-ram-16gb-ssd-1tb.jpg",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    videoUrl: "[]",
     specsKO: {
       "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
       "디스플레이": "16.2인치 Mini-LED XDR (3240x2160, 1600nits 피크 밝기)",
@@ -415,48 +409,6 @@ export const RAW_PRODUCTS: Product[] = [
       { nameKO: "아틱 화이트", nameVI: "Trắng Băng", hex: "#f8fafc" }
     ],
     isNew: false,
-    isBest: true
-  },
-  {
-    id: "lux-custom-1784700690204",
-    category: "display",
-    nameKO: "럭스 시그니처 8K 올레드 디스플레이",
-    nameVI: "Màn hình Lux Signature 8K OLED",
-    tagKO: "초고화질 8K HDR 10+ 및 자발광 올레드 패널의 극상 화질",
-    tagVI: "Chất lượng hình ảnh 8K HDR 10+ & Tấm nền OLED tự phát sáng",
-    price: 4890000,
-    rating: 5.0,
-    reviewsCount: 64,
-    imageUrl: "https://i.ibb.co/nMCCPR7M/1.png",
-    videoUrl: "[]",
-    specsKO: {
-      "화면 크기": "32인치 / 8K UHD (7680x4320)",
-      "패널": "Quantum OLED (178도 광시야각)",
-      "주사율": "240Hz (0.03ms 응답속도)",
-      "색재현율": "DCI-P3 99% / Adobe RGB 99%"
-    },
-    specsVI: {
-      "Kích thước": "32 inch / 8K UHD (7680x4320)",
-      "Tấm nền": "Quantum OLED (Góc nhìn rộng 178 độ)",
-      "Tần số quét": "240Hz (Thời gian phản hồi 0.03ms)",
-      "Độ bao phủ màu": "DCI-P3 99% / Adobe RGB 99%"
-    },
-    featuresKO: [
-      "무선 8K 실시간 시그널 전송 지원",
-      "슬림 메탈 베젤 & 마그네틱 모듈러 스탠드",
-      "자동 눈 보호 모드 & 스마트 센서 탑재"
-    ],
-    featuresVI: [
-      "Hỗ trợ truyền tín hiệu 8K không dây thời gian thực",
-      "Viền kim loại siêu mỏng & Chân đế hít từ tính",
-      "Chế độ bảo vệ mắt tự động & Cảm biến thông minh"
-    ],
-    descriptionKO: "럭스 시그니처 8K 올레드 디스플레이는 현존하는 최고 레벨의 색 정확도와 압도적 명암비를 선보입니다. 8K 초고해상도로 완벽한 시각적 몰입감을 선사합니다.",
-    descriptionVI: "Màn hình Lux Signature 8K OLED mang đến độ chính xác màu sắc vượt trội và tỷ lệ tương phản ấn tượng nhất. Độ phân giải 8K cho trải nghiệm thị giác hoàn hảo.",
-    colors: [
-      { nameKO: "티타늄 실버", nameVI: "Titan Bạc", hex: "#e2e8f0" }
-    ],
-    isNew: true,
     isBest: true
   }
 ];
