@@ -84,15 +84,28 @@ export default function Header({
   ];
 
   // Combine default pills with user custom categories if any exist
-  const customPills = categoriesList
-    .filter((c) => !['phone', 'laptop', 'audio', 'display', 'smarthome', 'cleaner'].includes(c.id))
-    .map((c) => ({
-      id: c.id,
-      labelKO: c.labelKO,
-      labelVI: c.labelVI,
-    }));
+  const rawPills = [
+    ...defaultPills,
+    ...categoriesList
+      .filter((c) => !['phone', 'laptop', 'audio', 'display', 'smarthome', 'cleaner'].includes(c.id))
+      .map((c) => ({
+        id: c.id,
+        labelKO: c.labelKO,
+        labelVI: c.labelVI,
+      })),
+  ];
 
-  const navPills = [...defaultPills, ...customPills];
+  // Attach isAdminOnly flag from categoriesList
+  const navPillsWithAdmin = rawPills.map((pill) => {
+    const matched = categoriesList.find((c) => c.id === pill.id);
+    return {
+      ...pill,
+      isAdminOnly: !!matched?.isAdminOnly,
+    };
+  });
+
+  // Filter out admin-only categories when not in admin mode (external/Netlify customers)
+  const navPills = navPillsWithAdmin.filter((pill) => !pill.isAdminOnly || isAdminMode);
 
   // Hover handlers with smooth buffer time to prevent flickering
   const handleMouseEnterCategory = (catId: string) => {
@@ -196,7 +209,7 @@ export default function Header({
                       type="button"
                       onMouseEnter={() => handleMouseEnterCategory(pill.id)}
                       onClick={() => handleCategoryClick(pill.id)}
-                      className={`relative px-3 py-1.5 rounded-md text-[13px] sm:text-sm whitespace-nowrap transition-all cursor-pointer ${
+                      className={`relative px-3 py-1.5 rounded-md text-[13px] sm:text-sm whitespace-nowrap transition-all cursor-pointer flex items-center gap-1 ${
                         isHovered
                           ? 'text-[#0066FF] font-medium bg-blue-50/60'
                           : isSelected
@@ -205,6 +218,11 @@ export default function Header({
                       }`}
                     >
                       <span>{currentLang === 'ko' ? pill.labelKO : pill.labelVI}</span>
+                      {pill.isAdminOnly && (
+                        <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-1 py-0.5 rounded" title="관리자 전용 (외부 비공개)">
+                          🔒
+                        </span>
+                      )}
                       {/* Subtle Xiaomi-style Bottom Active/Hover Accent Bar */}
                       {(isHovered || isSelected) && (
                         <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#0066FF] rounded-full animate-fade-in" />

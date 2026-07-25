@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X } from 'lucide-react';
+import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X, Lock, Unlock } from 'lucide-react';
 import { Product, CategoryType, CategoryItem, UserSession } from '../types';
 import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl } from '../utils';
 import { TranslationSet } from '../translations';
@@ -20,6 +20,7 @@ interface MiddleSectionProps {
   onDeleteProduct?: (productId: string) => void;
   onOpenAddCategoryModal: () => void;
   onDeleteCategory?: (categoryId: string) => void;
+  onToggleCategoryAdminOnly?: (categoryId: string) => void;
   selectedCategory?: string;
   onSelectCategory?: (catId: string) => void;
 }
@@ -39,6 +40,7 @@ export default function MiddleSection({
   onDeleteProduct,
   onOpenAddCategoryModal,
   onDeleteCategory,
+  onToggleCategoryAdminOnly,
   selectedCategory: propSelectedCategory,
   onSelectCategory: propOnSelectCategory,
 }: MiddleSectionProps) {
@@ -63,8 +65,12 @@ export default function MiddleSection({
     return null;
   }
 
-  // Filter products by category
+  // Filter products by category, ignoring admin-only category products for non-admin/external users
   const filteredProducts = products.filter((product) => {
+    const catItem = categoriesList.find((c) => c.id === product.category);
+    if (catItem?.isAdminOnly && !isAdminMode) {
+      return false; // Hide from external customers on Netlify / non-admin
+    }
     if (selectedCategory === 'all') return true;
     return product.category === selectedCategory;
   });
@@ -77,15 +83,19 @@ export default function MiddleSection({
     return 0; // default
   });
 
-  const allCategoryTabs: { id: string; labelKO: string; labelVI: string; isCustom?: boolean }[] = [
+  const allCategoryTabs: { id: string; labelKO: string; labelVI: string; isCustom?: boolean; isAdminOnly?: boolean }[] = [
     { id: 'all', labelKO: '전체 상품', labelVI: 'Tất cả sản phẩm' },
     ...categoriesList.map((cat) => ({
       id: cat.id,
       labelKO: cat.labelKO,
       labelVI: cat.labelVI,
+      isAdminOnly: cat.isAdminOnly,
       isCustom: !['phone', 'laptop', 'audio', 'display', 'smarthome'].includes(cat.id),
     })),
   ];
+
+  // Filter out admin-only categories for external users/customers on Netlify
+  const visibleCategoryTabs = allCategoryTabs.filter((cat) => !cat.isAdminOnly || isAdminMode);
 
   return (
     <section id="middle-products-section" className="w-full bg-[#f7f7f7] py-16 sm:py-24 border-t border-slate-200/80">
@@ -108,7 +118,7 @@ export default function MiddleSection({
         </div>
 
         {/* Filter and Categorization controls bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-6">
           {/* Integrated Active Category Status Badge */}
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700">
@@ -188,23 +198,83 @@ export default function MiddleSection({
           </div>
         </div>
 
-        {/* Membership Banner (Simulated benefits) */}
-        <div className="bg-gradient-to-r from-[#0066FF]/5 to-[#00D1FF]/5 border border-[#0066FF]/15 rounded-2xl p-4 sm:p-6 mb-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 flex items-center justify-center border border-[#0066FF]/25 text-[#0066FF]">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <div className="text-left">
-              <h4 className="text-sm sm:text-base font-bold text-slate-800 font-sans">{t.memberDiscount}</h4>
-              <p className="text-xs text-slate-500 mt-1 font-sans">{t.memberBenefits}</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <span className="inline-block px-3 py-1 bg-[#0066FF]/15 text-[#0066FF] text-[10px] font-bold rounded-full font-mono border border-[#0066FF]/20">
-              {userSession.isLoggedIn ? 'VIP DISCOUNT ENABLED (10%)' : 'VIP SYSTEM READY'}
-            </span>
-          </div>
+        {/* Category Pills Navigation & Admin Controls Bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-10 pb-2 overflow-x-auto no-scrollbar">
+          {visibleCategoryTabs.map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <div
+                key={cat.id}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
+                  isSelected
+                    ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md shadow-[#0066FF]/20'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-[#0066FF] hover:bg-blue-50/50'
+                }`}
+                onClick={() => setSelectedCategory(cat.id)}
+              >
+                <span>{currentLang === 'ko' ? cat.labelKO : cat.labelVI}</span>
+
+                {/* Admin Mode Quick Controls (Lock/Unlock & Delete) */}
+                {showAdminUI && cat.id !== 'all' && (
+                  <div className="flex items-center gap-1 ml-0.5" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      onClick={() => onToggleCategoryAdminOnly?.(cat.id)}
+                      title={
+                        cat.isAdminOnly
+                          ? (currentLang === 'ko' ? '관리자 전용 (외부/Netlify 비공개). 클릭하여 전체 공개' : 'Chỉ dành cho Admin. Click để công khai')
+                          : (currentLang === 'ko' ? '전체 공개 중. 클릭하여 관리자 전용(외부 비공개)으로 설정' : 'Đang công khai. Click để ẩn với khách')
+                      }
+                      className={`p-1 rounded-md text-[10px] transition-colors ${
+                        cat.isAdminOnly
+                          ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
+                          : 'bg-slate-100 text-slate-400 hover:text-amber-600 hover:bg-amber-50'
+                      }`}
+                    >
+                      {cat.isAdminOnly ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                    </button>
+
+                    {cat.isCustom && onDeleteCategory && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(currentLang === 'ko' ? `'${cat.labelKO}' 카테고리를 삭제하시겠습니까?` : `Xóa danh mục '${cat.labelVI}'?`)) {
+                            onDeleteCategory(cat.id);
+                            if (selectedCategory === cat.id) setSelectedCategory('all');
+                          }
+                        }}
+                        className="p-1 rounded-md bg-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        title={currentLang === 'ko' ? '카테고리 삭제' : 'Xóa danh mục'}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+
+        {/* Membership Banner (Simulated benefits - Admin Mode Only) */}
+        {isAdminMode && (
+          <div className="bg-gradient-to-r from-[#0066FF]/5 to-[#00D1FF]/5 border border-[#0066FF]/15 rounded-2xl p-4 sm:p-6 mb-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#0066FF]/10 flex items-center justify-center border border-[#0066FF]/25 text-[#0066FF]">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <h4 className="text-sm sm:text-base font-bold text-slate-800 font-sans">{t.memberDiscount}</h4>
+                <p className="text-xs text-slate-500 mt-1 font-sans">{t.memberBenefits}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="inline-block px-3 py-1 bg-[#0066FF]/15 text-[#0066FF] text-[10px] font-bold rounded-full font-mono border border-[#0066FF]/20">
+                {userSession.isLoggedIn ? 'VIP DISCOUNT ENABLED (10%)' : 'VIP SYSTEM READY'}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Products Grid */}
         {sortedProducts.length > 0 ? (

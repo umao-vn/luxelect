@@ -528,6 +528,17 @@ export default function App() {
     setCategoriesList((prev) => prev.filter((c) => c.id !== catId));
   };
 
+  const handleToggleCategoryAdminOnly = (catId: string) => {
+    setCategoriesList((prev) =>
+      prev.map((cat) => {
+        if (cat.id === catId) {
+          return { ...cat, isAdminOnly: !cat.isAdminOnly };
+        }
+        return cat;
+      })
+    );
+  };
+
   // Helper to transition back to the top background/home
   const handleGoToTop = () => {
     setActiveProductId(null);
@@ -692,6 +703,7 @@ export default function App() {
           onDeleteProduct={handleDeleteProduct}
           onOpenAddCategoryModal={() => setIsAddCategoryModalOpen(true)}
           onDeleteCategory={handleDeleteCategory}
+          onToggleCategoryAdminOnly={handleToggleCategoryAdminOnly}
           selectedCategory={selectedCategory}
           onSelectCategory={handleSelectCategory}
         />

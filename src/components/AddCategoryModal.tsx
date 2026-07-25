@@ -29,6 +29,7 @@ export default function AddCategoryModal({
   const [labelKO, setLabelKO] = useState('');
   const [labelVI, setLabelVI] = useState('');
   const [customId, setCustomId] = useState('');
+  const [isAdminOnly, setIsAdminOnly] = useState(false);
 
   if (!isOpen) return null;
 
@@ -65,12 +66,14 @@ export default function AddCategoryModal({
       id,
       labelKO: trimmedKO,
       labelVI: trimmedVI,
+      isAdminOnly,
     };
 
     onAddCategory(newCategory);
     setLabelKO('');
     setLabelVI('');
     setCustomId('');
+    setIsAdminOnly(false);
     onClose();
   };
 
@@ -177,6 +180,26 @@ export default function AddCategoryModal({
                 placeholder="예: smartwatch, smarthome, accessory"
                 className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs sm:text-sm focus:outline-none focus:border-[#0066FF] font-mono"
               />
+            </div>
+
+            {/* Admin Only Toggle Checkbox */}
+            <div className="pt-2">
+              <label className="flex items-center gap-2.5 p-3.5 bg-amber-50/80 border border-amber-200/80 rounded-2xl cursor-pointer hover:bg-amber-100/60 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={isAdminOnly}
+                  onChange={(e) => setIsAdminOnly(e.target.checked)}
+                  className="w-4 h-4 text-[#0066FF] border-slate-300 rounded focus:ring-[#0066FF] cursor-pointer"
+                />
+                <div className="text-xs">
+                  <span className="font-bold text-slate-800 block">
+                    {currentLang === 'ko' ? '🔒 관리자 전용 카테고리 (외부/Netlify 고객 접속시 숨김)' : '🔒 Danh mục chỉ dành cho Admin (Ẩn với khách)'}
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    {currentLang === 'ko' ? '체크하면 관리자 모드에서만 보이고 외부 고객 화면에서는 감춰집니다.' : 'Ẩn khỏi người dùng thông thường khi không ở chế độ Admin.'}
+                  </span>
+                </div>
+              </label>
             </div>
           </div>
 

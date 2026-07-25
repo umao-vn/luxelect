@@ -36,6 +36,7 @@ export interface CategoryItem {
   id: string;
   labelKO: string;
   labelVI: string;
+  isAdminOnly?: boolean;
 }
 
 export interface CategorySubMenu {

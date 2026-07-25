@@ -139,7 +139,7 @@ export default function HeroSection({
       id={sectionId === 'SECONDARY_HERO' ? 'sub-main-visual-section' : 'top-main-visual-section'}
     >
       {/* Full-width Background Image / Video Container (Supports Vertical 3-Split Grid & Single Background) */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-950">
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-900/40">
         {splitBgConfig && splitBgConfig.isEnabled ? (
           /* 📍 [배경화면 세로 3분할 레이아웃 & 구분선 (Vertical 3-Split)] */
           <div className="flex flex-col w-full h-full relative border-collapse">
@@ -161,7 +161,7 @@ export default function HeroSection({
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
                       }}
-                      className="w-full h-full object-cover opacity-90 transition-all duration-700 group-hover/panel:scale-105 group-hover/panel:opacity-100"
+                      className="w-full h-full object-cover opacity-100 transition-all duration-700 group-hover/panel:scale-105"
                     />
                   ) : (
                     <video
@@ -214,7 +214,7 @@ export default function HeroSection({
                   )}
 
                   {/* Dark gradient overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/20 pointer-events-none" />
                 </div>
               );
             })}
@@ -263,9 +263,15 @@ export default function HeroSection({
           )
         )}
 
-        {/* Subtle Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/50 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
+        {/* Subtle Overlay tuned to preserve original photo color fidelity */}
+        {activeItem?.type === 'photo' ? (
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none" />
+          </>
+        )}
       </div>
 
       {/* Section Header Indicator & Background Management Quick Buttons (Admin Mode Only) */}
