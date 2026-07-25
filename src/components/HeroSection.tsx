@@ -502,18 +502,8 @@ export default function HeroSection({
           id="sub-main-visual-container"
         >
           {/* 서브 메인 비주얼 헤더 바 */}
-          <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white font-mono tracking-wider flex items-center gap-1">
-                {subMediaType === 'photo' ? '📷' : '🎥'}
-                <span>{currentLang === 'ko' ? '서브 메인 비주얼' : 'Visual Phụ'}</span>
-              </span>
-              <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                {subMediaType === 'photo' ? 'Photo' : 'Video'}
-              </span>
-            </div>
-
-            {showAdminUI && onOpenSubMediaModal && (
+          {showAdminUI && onOpenSubMediaModal && (
+            <div className="flex items-center justify-end pb-2 mb-2">
               <button
                 type="button"
                 onClick={(e) => {
@@ -526,8 +516,8 @@ export default function HeroSection({
                 <Plus className="w-3 h-3" />
                 <span>{currentLang === 'ko' ? '추가·삭제·선택' : 'Thêm/Xóa'}</span>
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* 미니 플레이어 뷰포트 (동영상 또는 이미지) */}
           <div className="relative aspect-video rounded-xl overflow-hidden bg-black/80 border border-white/10 group/player">
@@ -560,11 +550,7 @@ export default function HeroSection({
               />
             )}
 
-            {/* 오버레이 라벨 뱃지 */}
-            <span className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-0.5 bg-blue-600/90 backdrop-blur-md border border-white/30 text-[10px] text-white rounded-full font-bold font-mono shadow-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              {subMediaType === 'video' ? '🎥 VIDEO PREVIEW' : '📷 PHOTO PREVIEW'}
-            </span>
+            {/* 오버레이 라벨 뱃지 제거 */}
 
             {/* 서브 미디어 관리자 열기 버튼 (우측 상단 버블) */}
             {showAdminUI && onOpenSubMediaModal && (
@@ -582,65 +568,38 @@ export default function HeroSection({
               </button>
             )}
 
-            {/* 동영상 전용 미니 컨트롤 버튼 (재생/일시정지 & 음소거 토글) */}
-            {subMediaType === 'video' && (
-              <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 opacity-90 group-hover/player:opacity-100 transition-opacity">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSubVideoPlay();
-                  }}
-                  className="p-1.5 rounded-lg bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white transition-all cursor-pointer shadow-sm"
-                  title={isSubVideoPlaying ? '일시정지' : '재생'}
-                >
-                  {isSubVideoPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSubVideoMute();
-                  }}
-                  className="p-1.5 rounded-lg bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white transition-all cursor-pointer shadow-sm"
-                  title={isSubVideoMuted ? '음소거 해제' : '음소거'}
-                >
-                  {isSubVideoMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-                </button>
-              </div>
-            )}
+            {/* 동영상 전용 미니 컨트롤 버튼 제거 */}
           </div>
 
           {/* 하단 카드 제목 및 서브 미디어 선택 탭 */}
-          <div className="mt-2.5 space-y-2 px-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <div className="w-2 h-2 rounded-full bg-[#00D1FF] shrink-0 shadow-sm shadow-[#00D1FF]" />
-                <span className="text-xs font-bold text-white font-sans tracking-wide truncate">
-                  {activeSubItem
-                    ? (currentLang === 'ko' ? activeSubItem.titleKO : activeSubItem.titleVI)
-                    : (currentLang === 'ko' ? '서브 메인 비주얼' : 'Visual phụ')}
-                </span>
+          {showAdminUI && (
+            <div className="mt-2.5 space-y-2 px-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <div className="w-2 h-2 rounded-full bg-[#00D1FF] shrink-0 shadow-sm shadow-[#00D1FF]" />
+                  <span className="text-xs font-bold text-white font-sans tracking-wide truncate">
+                    {activeSubItem
+                      ? (currentLang === 'ko' ? activeSubItem.titleKO : activeSubItem.titleVI)
+                      : (currentLang === 'ko' ? '서브 메인 비주얼' : 'Visual phụ')}
+                  </span>
+                </div>
+                {onOpenSubMediaModal && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenSubMediaModal();
+                    }}
+                    className="px-2 py-1 rounded bg-white/10 hover:bg-[#0066FF] text-white transition-all text-[10px] font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0 border border-white/10"
+                    title={currentLang === 'ko' ? '서브 사진/동영상 관리자 열기' : 'Quản lý media phụ'}
+                  >
+                    <Settings className="w-3 h-3" />
+                    <span>{currentLang === 'ko' ? '설정' : 'Cài đặt'}</span>
+                  </button>
+                )}
               </div>
-              {showAdminUI && onOpenSubMediaModal && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenSubMediaModal();
-                  }}
-                  className="px-2 py-1 rounded bg-white/10 hover:bg-[#0066FF] text-white transition-all text-[10px] font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0 border border-white/10"
-                  title={currentLang === 'ko' ? '서브 사진/동영상 관리자 열기' : 'Quản lý media phụ'}
-                >
-                  <Settings className="w-3 h-3" />
-                  <span>{currentLang === 'ko' ? '설정' : 'Cài đặt'}</span>
-                </button>
-              )}
-            </div>
 
-            {/* 서브 미디어 퀵 선택 탭 & 추가 버튼 (Admin Mode Only) */}
-            {showAdminUI && (
+              {/* 서브 미디어 퀵 선택 탭 & 추가 버튼 (Admin Mode Only) */}
               <div className="flex items-center gap-1.5 pt-1 overflow-x-auto no-scrollbar">
                 {subMediaList.map((item, idx) => {
                   const isSelected = item.id === (activeSubItem?.id);
@@ -680,8 +639,8 @@ export default function HeroSection({
                   </button>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

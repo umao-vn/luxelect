@@ -344,8 +344,8 @@ export default function Header({
                           })}
                         </div>
                       ) : (
-                        <div className="p-10 text-center text-slate-400 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                          {currentLang === 'ko' ? '해당 카테고리에 등록된 상품이 없습니다.' : 'Không có sản phẩm nào.'}
+                        <div className="p-10 text-center text-slate-400 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200 font-semibold">
+                          {currentLang === 'ko' ? '준비중' : 'Đang chuẩn bị'}
                         </div>
                       )}
                     </div>

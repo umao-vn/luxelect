@@ -121,7 +121,7 @@ export const CATEGORY_SUB_MENUS: Record<string, CategorySubMenu> = {
     ],
   },
   laptop: {
-    titleKO: '스마트홈',
+    titleKO: '노트북',
     titleVI: 'Máy tính',
     subCategoriesKO: [
       'MACBOOK',
@@ -186,7 +186,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 28,
     imageUrl: "https://i.ibb.co/LzdQ0mR/No-15-1.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: "[]",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
       "센서": "LiDAR 3D 공간 매핑 센서"
@@ -353,7 +353,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.88,
     reviewsCount: 210,
     imageUrl: "https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    videoUrl: "[]",
     specsKO: {
       "드라이버": "40mm 맞춤 제작 티타늄 듀얼 다이내믹 드라이버",
       "노이즈 캔슬링": "스마트 적응형 ANC (초당 48,000회 음파 분석)",
@@ -396,7 +396,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 64,
     imageUrl: "https://i.ibb.co/nMCCPR7M/1.png",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    videoUrl: "[]",
     specsKO: {
       "화면 크기": "32인치 / 8K UHD (7680x4320)",
       "패널": "Quantum OLED (178도 광시야각)",
@@ -437,12 +437,6 @@ export const PRODUCTS: Product[] = RAW_PRODUCTS.map((p) => ({
 }));
 
 export const FAQS = [
-  {
-    qKO: "원하는 ImgBB 사진이나 직접 촬영한 MP4 동영상 주소를 어떻게 적용하나요?",
-    qVI: "Làm thế nào tôi có thể áp dụng ảnh ImgBB hoặc liên kết video MP4 của riêng tôi?",
-    aKO: "이 사이트는 템플릿 완성도가 매우 높습니다! 프로젝트 내의 '/src/data.ts' 파일을 열어보시면, 각 제품 항목마다 'imageUrl'과 'videoUrl' 필드가 친절한 한글 및 베트남어 안내 주석과 함께 마련되어 있습니다. ImgBB에 제품 사진을 올리고 발급받은 '직접 주소(Direct Link)'나 MP4 비디오 파일의 경로를 복사하여 그 자리에 덮어쓰기 하시면 바로 반영됩니다.",
-    aVI: "Trang web này được thiết kế để dễ dàng tùy chỉnh! Vui lòng mở tệp `/src/data.ts` trong dự án. Tại đây, mỗi sản phẩm đều có trường 'imageUrl' và 'videoUrl' được đính kèm chú thích hướng dẫn bằng tiếng Hàn và tiếng Việt. Bạn chỉ cần tải ảnh lên ImgBB và lấy liên kết trực tiếp (Direct Link) hoặc sao chép liên kết tệp MP4 của bạn để dán đè lên đường dẫn hiện có."
-  },
   {
     qKO: "회원 결제와 비회원 결제는 무엇이 다른가요?",
     qVI: "Sự khác biệt giữa thanh toán thành viên và khách thường là gì?",

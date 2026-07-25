@@ -55,7 +55,8 @@ export default function MiddleSection({
 
   const [sortBy, setSortBy] = useState<'default' | 'priceAsc' | 'priceDesc' | 'rating'>('default');
 
-  const showAdminUI = Boolean(isAdminMode);
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+  const showAdminUI = Boolean(isAdminMode && isDevEnv);
 
   // If the product detail view is active, cleanly hide this middle section as requested!
   if (isDetailActive) {
@@ -206,168 +207,174 @@ export default function MiddleSection({
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {sortedProducts.map((product) => {
-            const name = currentLang === 'ko' ? product.nameKO : product.nameVI;
-            const tag = currentLang === 'ko' ? product.tagKO : product.tagVI;
-            
-            // Calculate member discounted price if logged in
-            const finalPrice = userSession.isLoggedIn ? Math.round(product.price * 0.9) : product.price;
-            const hasDiscount = userSession.isLoggedIn;
+        {sortedProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {sortedProducts.map((product) => {
+              const name = currentLang === 'ko' ? product.nameKO : product.nameVI;
+              const tag = currentLang === 'ko' ? product.tagKO : product.tagVI;
+              
+              // Calculate member discounted price if logged in
+              const finalPrice = userSession.isLoggedIn ? Math.round(product.price * 0.9) : product.price;
+              const hasDiscount = userSession.isLoggedIn;
 
-            return (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-                onClick={() => onViewProduct(product.id)}
-                className="group relative flex flex-col justify-between bg-white border border-slate-200/80 hover:border-[#0066FF] hover:bg-white rounded-2xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg cursor-pointer"
-                id={`product-card-${product.id}`}
-              >
-                {/* Badges */}
-                <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
-                  {product.isNew && (
-                    <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-white bg-[#0066FF] rounded-md font-mono shadow-sm">
-                      NEW
-                    </span>
-                  )}
-                  {product.isBest && (
-                    <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-black bg-[#00D1FF] rounded-md font-mono shadow-sm">
-                      BEST
-                    </span>
-                  )}
-                </div>
-
-                {/* Edit & Delete controls (Shown only in development + admin mode) */}
-                {showAdminUI && (
-                  <div className="absolute top-4 right-4 z-20 flex gap-1.5 transition-opacity opacity-100">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEditProduct?.(product);
-                      }}
-                      className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-blue-50 transition-colors shadow-sm cursor-pointer"
-                      title={currentLang === 'ko' ? '제품 정보 수정' : 'Sửa thông tin sản phẩm'}
-                      id={`edit-prod-${product.id}`}
-                    >
-                      <Edit className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                          onDeleteProduct?.(product.id);
-                        }
-                      }}
-                      className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
-                      title={currentLang === 'ko' ? '상품 삭제' : 'Xóa sản phẩm'}
-                      id={`delete-prod-${product.id}`}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Favorite background visual glow */}
-                <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#0066FF]/5 rounded-full blur-xl group-hover:bg-[#0066FF]/10 transition-colors pointer-events-none" />
-
-                {/* Product Image Frame */}
-                <div className="relative aspect-square w-full rounded-xl bg-white border border-slate-100 overflow-hidden mb-5 flex items-center justify-center cursor-pointer"
+              return (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
                   onClick={() => onViewProduct(product.id)}
+                  className="group relative flex flex-col justify-between bg-white border border-slate-200/80 hover:border-[#0066FF] hover:bg-white rounded-2xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg cursor-pointer"
+                  id={`product-card-${product.id}`}
                 >
-                  <img
-                    src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
-                    alt={name}
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
-                    }}
-                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-60" />
-                  
-                  {/* Quick hover visualizer */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="flex items-center gap-2 px-4 py-2 bg-[#0066FF] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#0066FF]/20 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      <Eye className="w-4 h-4" /> {currentLang === 'ko' ? '상세 정보 단독 보기' : 'Xem chi tiết riêng biệt'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Text details */}
-                <div className="space-y-2 text-left flex-1 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#0066FF] uppercase tracking-widest block font-bold">
-                      {product.category}
-                    </span>
-                    <h4
-                      onClick={() => onViewProduct(product.id)}
-                      className="text-base font-bold text-slate-800 group-hover:text-[#0066FF] transition-colors cursor-pointer line-clamp-1 font-sans"
-                    >
-                      {name}
-                    </h4>
-                    <p className="text-xs text-slate-500 line-clamp-1 font-sans">{tag}</p>
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+                    {product.isNew && (
+                      <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-white bg-[#0066FF] rounded-md font-mono shadow-sm">
+                        NEW
+                      </span>
+                    )}
+                    {product.isBest && (
+                      <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-black bg-[#00D1FF] rounded-md font-mono shadow-sm">
+                        BEST
+                      </span>
+                    )}
                   </div>
 
-                  <div className="pt-4 border-t border-slate-200">
-                    {/* Rating and count */}
-                    <div className="flex items-center gap-1 mb-2">
-                      <span className="text-xs text-amber-500 font-mono">★</span>
-                      <span className="text-xs font-bold text-slate-700 font-mono">{product.rating.toFixed(1)}</span>
-                      <span className="text-[10px] text-slate-400 font-mono">({product.reviewsCount})</span>
+                  {/* Edit & Delete controls (Shown only in development + admin mode) */}
+                  {showAdminUI && (
+                    <div className="absolute top-4 right-4 z-20 flex gap-1.5 transition-opacity opacity-100">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditProduct?.(product);
+                        }}
+                        className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-blue-50 transition-colors shadow-sm cursor-pointer"
+                        title={currentLang === 'ko' ? '제품 정보 수정' : 'Sửa thông tin sản phẩm'}
+                        id={`edit-prod-${product.id}`}
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                            onDeleteProduct?.(product.id);
+                          }
+                        }}
+                        className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
+                        title={currentLang === 'ko' ? '상품 삭제' : 'Xóa sản phẩm'}
+                        id={`delete-prod-${product.id}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Favorite background visual glow */}
+                  <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#0066FF]/5 rounded-full blur-xl group-hover:bg-[#0066FF]/10 transition-colors pointer-events-none" />
+
+                  {/* Product Image Frame */}
+                  <div className="relative aspect-square w-full rounded-xl bg-white border border-slate-100 overflow-hidden mb-5 flex items-center justify-center cursor-pointer"
+                    onClick={() => onViewProduct(product.id)}
+                  >
+                    <img
+                      src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
+                      alt={name}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
+                      }}
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-60" />
+                    
+                    {/* Quick hover visualizer */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="flex items-center gap-2 px-4 py-2 bg-[#0066FF] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#0066FF]/20 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <Eye className="w-4 h-4" /> {currentLang === 'ko' ? '상세 정보 단독 보기' : 'Xem chi tiết riêng biệt'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Text details */}
+                  <div className="space-y-2 text-left flex-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-mono text-[#0066FF] uppercase tracking-widest block font-bold">
+                        {product.category}
+                      </span>
+                      <h4
+                        onClick={() => onViewProduct(product.id)}
+                        className="text-base font-bold text-slate-800 group-hover:text-[#0066FF] transition-colors cursor-pointer line-clamp-1 font-sans"
+                      >
+                        {name}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-1 font-sans">{tag}</p>
                     </div>
 
-                    {/* Price structure */}
-                    <div className="flex flex-col">
-                      {hasDiscount && (
-                        <span className="text-xs text-slate-400 line-through font-mono">
-                          {product.price.toLocaleString()} KRW
-                        </span>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-black text-slate-900 font-mono">
-                          {finalPrice.toLocaleString()} KRW
-                        </span>
+                    <div className="pt-4 border-t border-slate-200">
+                      {/* Rating and count */}
+                      <div className="flex items-center gap-1 mb-2">
+                        <span className="text-xs text-amber-500 font-mono">★</span>
+                        <span className="text-xs font-bold text-slate-700 font-mono">{product.rating.toFixed(1)}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">({product.reviewsCount})</span>
+                      </div>
+
+                      {/* Price structure */}
+                      <div className="flex flex-col">
                         {hasDiscount && (
-                          <span className="text-[10px] font-bold text-[#0066FF] font-mono">
-                            -10% VIP
+                          <span className="text-xs text-slate-400 line-through font-mono">
+                            {product.price.toLocaleString()} KRW
                           </span>
                         )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-base font-black text-slate-900 font-mono">
+                            {finalPrice.toLocaleString()} KRW
+                          </span>
+                          {hasDiscount && (
+                            <span className="text-[10px] font-bold text-[#0066FF] font-mono">
+                              -10% VIP
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Actions bottom */}
-                <div className="grid grid-cols-2 gap-2 mt-5">
-                  <button
-                    onClick={() => onViewProduct(product.id)}
-                    className="flex items-center justify-center gap-1 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066FF] text-xs text-slate-600 hover:text-[#0066FF] transition-colors bg-white hover:bg-[#0066FF]/5 cursor-pointer"
-                    title="View Details"
-                    id={`middle-view-${product.id}`}
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>{currentLang === 'ko' ? '제품 상세' : 'Chi tiết'}</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(product, product.colors[0]);
-                    }}
-                    className="flex items-center justify-center gap-1 py-2.5 rounded-xl bg-slate-900 hover:bg-[#0066FF] text-white hover:text-white transition-all text-xs font-bold cursor-pointer"
-                    title="Add to Cart"
-                    id={`middle-add-${product.id}`}
-                  >
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    <span>{t.addToCart.split(' ')[0]}</span>
-                  </button>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                  {/* Actions bottom */}
+                  <div className="grid grid-cols-2 gap-2 mt-5">
+                    <button
+                      onClick={() => onViewProduct(product.id)}
+                      className="flex items-center justify-center gap-1 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066FF] text-xs text-slate-600 hover:text-[#0066FF] transition-colors bg-white hover:bg-[#0066FF]/5 cursor-pointer"
+                      title="View Details"
+                      id={`middle-view-${product.id}`}
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>{currentLang === 'ko' ? '제품 상세' : 'Chi tiết'}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onAddToCart(product, product.colors[0]);
+                      }}
+                      className="flex items-center justify-center gap-1 py-2.5 rounded-xl bg-slate-900 hover:bg-[#0066FF] text-white hover:text-white transition-all text-xs font-bold cursor-pointer"
+                      title="Add to Cart"
+                      id={`middle-add-${product.id}`}
+                    >
+                      <ShoppingCart className="w-3.5 h-3.5" />
+                      <span>{t.addToCart.split(' ')[0]}</span>
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="p-12 text-center text-slate-400 text-base bg-slate-50 rounded-2xl border border-dashed border-slate-200 font-bold my-8">
+            {currentLang === 'ko' ? '준비중' : 'Đang chuẩn bị'}
+          </div>
+        )}
 
       </div>
     </section>

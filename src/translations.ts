@@ -124,7 +124,7 @@ export const translations: Record<'ko' | 'vi', TranslationSet> = {
     newsletterTitle: "VIP 전용 뉴스레터 구독",
     newsletterDesc: "새로운 한정판 스마트 디바이스 소식 및 프리미엄 특별 할인 코드를 가장 먼저 받아보세요.",
     subscribe: "무료 소식 받기",
-    copyright: "© 2026 LUX ELECTRONICS. All Rights Reserved. 본 사이트의 템플릿과 디자인은 상업적 명품 가전 유통에 최적화되어 있습니다.",
+    copyright: "(주)럭스 일렉트로닉스 | 대표자: 김민기 | 사업자등록번호: 310-11-81132 | 통신판매업신고: 2025-경기성남-1001호 | 주소: 경기도 성남시 분당구 정자원로 1 | © 2026 LUX ELECTRONICS. All Rights Reserved.",
   },
   vi: {
     brand: "LUX ELECTRONICS",

@@ -71,7 +71,8 @@ export default function ProductDetailView({
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
 
-  const showAdminUI = Boolean(isAdminMode);
+  const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
+  const showAdminUI = Boolean(isAdminMode && isDevEnv);
 
   // Handle Video Actions
   const handlePlayPause = () => {
