@@ -335,7 +335,7 @@ export const RAW_PRODUCTS: Product[] = [
     price: 3490000,
     rating: 4.95,
     reviewsCount: 88,
-    imageUrl: "https://i.postimg.cc/ryJh0g8m/xojjb3ot-643-macbook-pro-16inch-2019-core-i9-ram-16gb-ssd-1tb.jpg",
+    imageUrl: "https://i.ibb.co/bRNJs0ZL/macbookpro16.jpg",
     videoUrl: "",
     specsKO: {
       "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
