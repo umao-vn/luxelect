@@ -6,6 +6,7 @@ import {
   LogOut, 
   Settings, 
   Menu, 
+  X,
   ChevronDown, 
   Smartphone, 
   Laptop, 
@@ -69,6 +70,9 @@ export default function Header({
 }: HeaderProps) {
   const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
   
+  // State for mobile menu open
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // State for hover-based dynamic dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -172,8 +176,19 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-15 gap-4">
 
-          {/* LEFT GROUP: LOGO + CATEGORY NAVIGATION */}
-          <div className="flex items-center space-x-6 lg:space-x-8">
+          {/* LEFT GROUP: HAMBURGER (Mobile) + LOGO + DESKTOP CATEGORY NAVIGATION */}
+          <div className="flex items-center space-x-2.5 sm:space-x-4 lg:space-x-8">
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center border border-slate-200"
+              aria-label="Toggle mobile menu"
+              id="mobile-hamburger-btn"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5 text-[#0066FF]" /> : <Menu className="w-5 h-5 text-slate-800" />}
+            </button>
+
             {/* 1. LOGO AREA (Xiaomi Style Compact Logo) */}
             <div 
               onClick={onLogoClick}
@@ -522,6 +537,126 @@ export default function Header({
 
         </div>
       </div>
+
+      {/* MOBILE HORIZONTAL SCROLLABLE CATEGORY BAR (Visible on small/mobile screens) */}
+      <div className="lg:hidden border-t border-slate-100 bg-slate-50/90 px-3 py-2 overflow-x-auto no-scrollbar shadow-inner">
+        <div className="flex items-center space-x-1.5 min-w-max">
+          <button
+            type="button"
+            onClick={() => handleCategoryClick('all')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
+              selectedCategory === 'all'
+                ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-sm font-bold'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-[#0066FF]'
+            }`}
+          >
+            {currentLang === 'ko' ? '전체' : 'Tất cả'}
+          </button>
+          {navPills.map((pill) => {
+            const isSelected = selectedCategory === pill.id;
+            return (
+              <button
+                key={pill.id}
+                type="button"
+                onClick={() => handleCategoryClick(pill.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1 border ${
+                  isSelected
+                    ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-sm font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-[#0066FF] hover:text-[#0066FF]'
+                }`}
+              >
+                <span>{currentLang === 'ko' ? pill.labelKO : pill.labelVI}</span>
+                {pill.isAdminOnly && (
+                  <span className="text-[9px] bg-amber-100 text-amber-700 font-bold px-1 rounded">
+                    🔒
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* MOBILE MENU DRAWER OVERLAY (When Hamburger is clicked) */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 shadow-2xl space-y-3 max-h-[80vh] overflow-y-auto animate-fade-in">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <span className="text-xs font-extrabold text-slate-700 font-mono uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#0066FF]" />
+              {currentLang === 'ko' ? '카테고리 전체 메뉴' : 'DANH MỤC SẢN PHẨM'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-xs text-slate-400 hover:text-slate-600 font-bold px-2 py-1 bg-slate-100 rounded-lg"
+            >
+              {currentLang === 'ko' ? '닫기 ✕' : 'Đóng ✕'}
+            </button>
+          </div>
+
+          <div className="space-y-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                handleCategoryClick('all');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left text-sm font-bold transition-colors ${
+                selectedCategory === 'all' ? 'bg-[#0066FF] text-white' : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
+              }`}
+            >
+              <span>{currentLang === 'ko' ? '전체 상품 보기' : 'Xem tất cả sản phẩm'}</span>
+              <ChevronRight className="w-4 h-4 opacity-70" />
+            </button>
+
+            {navPills.map((pill) => {
+              const isSelected = selectedCategory === pill.id;
+              const IconComp = CATEGORY_ICONS[pill.id] || Sparkles;
+              const subData = CATEGORY_SUB_MENUS[pill.id];
+              const subList = currentLang === 'ko' ? (subData?.subCategoriesKO || []) : (subData?.subCategoriesVI || []);
+
+              return (
+                <div key={pill.id} className="rounded-xl border border-slate-200/80 overflow-hidden bg-slate-50/50">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCategoryClick(pill.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left text-sm font-bold transition-colors ${
+                      isSelected ? 'bg-blue-50 text-[#0066FF]' : 'text-slate-800 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <IconComp className="w-4 h-4 text-[#0066FF]" />
+                      <span>{currentLang === 'ko' ? pill.labelKO : pill.labelVI}</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  </button>
+
+                  {subList.length > 0 && (
+                    <div className="px-4 pb-3 pt-1.5 bg-white flex flex-wrap gap-1.5 border-t border-slate-100">
+                      {subList.map((sub, sIdx) => (
+                        <button
+                          key={sIdx}
+                          type="button"
+                          onClick={() => {
+                            handleCategoryClick(pill.id);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="text-xs text-slate-600 hover:text-[#0066FF] bg-slate-100 hover:bg-blue-50 px-2.5 py-1 rounded-lg transition-colors"
+                        >
+                          {sub}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
