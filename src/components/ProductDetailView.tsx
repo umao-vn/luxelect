@@ -193,14 +193,6 @@ export default function ProductDetailView({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-80" />
 
-              {/* Photo Mode Label Badge (Shown in dev + admin mode) */}
-              {showAdminUI && (
-                <div className="absolute top-6 left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 backdrop-blur-md text-white text-xs font-mono font-bold shadow-md">
-                  <span>📷</span>
-                  <span>{currentLang === 'ko' ? '제품 사진 (고화질)' : 'Ảnh sản phẩm (HD)'}</span>
-                </div>
-              )}
-
               {/* Float color badge */}
               <div className="absolute bottom-6 left-6 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-mono">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedColor.hex }} />
@@ -210,105 +202,129 @@ export default function ProductDetailView({
               </div>
             </div>
 
-            {/* Premium Custom MP4 Video Player Frame (Rendered only when valid videoUrl is defined and distinct from image) */}
-            {product.videoUrl && product.videoUrl !== product.imageUrl && !/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(product.videoUrl) && (
-              <div className="rounded-3xl bg-slate-50 border border-slate-200 p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm sm:text-base font-bold text-slate-800 font-sans flex items-center gap-2">
-                    <Play className="w-4 h-4 text-[#0066FF]" />
-                    <span>{currentLang === 'ko' ? '제품 특장점 동영상' : 'Video giới thiệu tính năng'}</span>
-                  </h4>
-                  {showAdminUI && <span className="text-[10px] font-mono text-slate-500">EXTERNAL MP4 SOURCE</span>}
-                </div>
+            {/* Premium Custom MP4 Video Player Frame (Rendered strictly when a valid non-empty videoUrl is uploaded) */}
+            {(() => {
+              const cleanedVideoUrl = cleanAndConvertVideoUrl(product.videoUrl || '');
+              const hasValidVideo = Boolean(
+                cleanedVideoUrl &&
+                cleanedVideoUrl.trim() !== '' &&
+                cleanedVideoUrl !== cleanAndConvertImageUrl(product.imageUrl) &&
+                !/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(cleanedVideoUrl)
+              );
 
-                <div className="relative aspect-video rounded-2xl bg-black overflow-hidden border border-slate-200 group">
-                  <video
-                    ref={videoRef}
-                    src={cleanAndConvertVideoUrl(product.videoUrl) || undefined}
-                    poster={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    controlsList="nodownload"
-                    preload="auto"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      const v = e.currentTarget as HTMLVideoElement;
-                      if (v.src !== DEFAULT_FALLBACK_VIDEO) {
-                        v.src = DEFAULT_FALLBACK_VIDEO;
-                        v.play().catch(() => {});
-                      }
-                    }}
-                    onCanPlay={(e) => {
-                      (e.currentTarget as HTMLVideoElement).play().catch(() => {});
-                    }}
-                    onClick={handlePlayPause}
-                  />
+              if (hasValidVideo) {
+                return (
+                  <div className="rounded-3xl bg-slate-50 border border-slate-200 p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm sm:text-base font-bold text-slate-800 font-sans flex items-center gap-2">
+                        <Play className="w-4 h-4 text-[#0066FF]" />
+                        <span>{currentLang === 'ko' ? '제품 특장점 동영상' : 'Video giới thiệu tính năng'}</span>
+                      </h4>
+                      {showAdminUI && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => onEditProduct?.(product)}
+                            className="text-[11px] font-mono font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <Edit className="w-3 h-3" />
+                            <span>{currentLang === 'ko' ? '동영상 편집/삭제' : 'Sửa/Xóa video'}</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Play Pause Ambient Overlay Indicator */}
-                  {!isPlaying && (
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none transition-opacity duration-300">
-                      <div className="w-16 h-16 rounded-full bg-[#0066FF]/95 text-white flex items-center justify-center shadow-lg shadow-[#0066FF]/20">
-                        <Play className="w-8 h-8 fill-white text-white ml-1" />
+                    <div className="relative aspect-video rounded-2xl bg-black overflow-hidden border border-slate-200 group">
+                      <video
+                        ref={videoRef}
+                        src={cleanedVideoUrl}
+                        poster={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controlsList="nodownload"
+                        preload="auto"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          const v = e.currentTarget as HTMLVideoElement;
+                          if (v.src !== DEFAULT_FALLBACK_VIDEO) {
+                            v.src = DEFAULT_FALLBACK_VIDEO;
+                            v.play().catch(() => {});
+                          }
+                        }}
+                        onCanPlay={(e) => {
+                          (e.currentTarget as HTMLVideoElement).play().catch(() => {});
+                        }}
+                        onClick={handlePlayPause}
+                      />
+
+                      {/* Play Pause Ambient Overlay Indicator */}
+                      {!isPlaying && (
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none transition-opacity duration-300">
+                          <div className="w-16 h-16 rounded-full bg-[#0066FF]/95 text-white flex items-center justify-center shadow-lg shadow-[#0066FF]/20">
+                            <Play className="w-8 h-8 fill-white text-white ml-1" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Player custom controls panel overlay */}
+                      <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-slate-200 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={handlePlayPause}
+                            className="p-1.5 rounded bg-slate-100 hover:bg-slate-250 text-[#0066FF] transition-colors cursor-pointer"
+                            id="video-play-btn"
+                          >
+                            {isPlaying ? <Pause className="w-4 h-4 fill-[#0066FF] text-[#0066FF]" /> : <Play className="w-4 h-4 fill-[#0066FF] text-[#0066FF]" />}
+                          </button>
+                          <span className="text-[11px] text-slate-700 font-mono">
+                            {isPlaying ? 'STREAMING ACTIVE' : 'PAUSED'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleMuteToggle}
+                            className="p-1.5 rounded bg-slate-100 hover:bg-slate-250 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                            id="video-mute-btn"
+                          >
+                            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  )}
 
-                  {/* Player custom controls panel overlay */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-slate-200 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={handlePlayPause}
-                        className="p-1.5 rounded bg-slate-100 hover:bg-slate-250 text-[#0066FF] transition-colors cursor-pointer"
-                        id="video-play-btn"
-                      >
-                        {isPlaying ? <Pause className="w-4 h-4 fill-[#0066FF] text-[#0066FF]" /> : <Play className="w-4 h-4 fill-[#0066FF] text-[#0066FF]" />}
-                      </button>
-                      <span className="text-[11px] text-slate-700 font-mono">
-                        {isPlaying ? 'STREAMING ACTIVE' : 'PAUSED'}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={handleMuteToggle}
-                        className="p-1.5 rounded bg-slate-100 hover:bg-slate-250 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
-                        id="video-mute-btn"
-                      >
-                        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                      </button>
-                    </div>
+                    {/* Subtext info detailing replacement of URL / Admin Direct Modifier (Shown only in dev + admin mode) */}
+                    {showAdminUI && (
+                      <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-left shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-rose-600 font-sans flex items-center gap-1.5">
+                            <Edit className="w-4 h-4 text-rose-600" />
+                            <span>{currentLang === 'ko' ? '관리자 미디어 편집기 활성화됨' : 'Trình chỉnh sửa phương tiện Admin đã bật'}</span>
+                          </p>
+                          <p className="text-[11px] text-slate-650 font-sans leading-relaxed">
+                            {currentLang === 'ko'
+                              ? '이 제품의 사진과 동영상을 드래그앤드롭 업로드 또는 링크 주소 지정을 통해 실시간 변경할 수 있습니다.'
+                              : 'Thay đổi trực tiếp ảnh và video của sản phẩm này bằng cách kéo thả hoặc nhập liên kết ngoài.'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => onEditProduct?.(product)}
+                          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shrink-0 shadow-md shadow-rose-600/10 flex items-center gap-1"
+                          id="detail-direct-edit-btn"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                          <span>{currentLang === 'ko' ? '사진/동영상 변경' : 'Thay đổi ảnh/video'}</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
-                </div>
+                );
+              }
 
-                {/* Subtext info detailing replacement of URL / Admin Direct Modifier (Shown only in dev + admin mode) */}
-                {showAdminUI && (
-                  <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-left shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <p className="text-xs font-bold text-rose-600 font-sans flex items-center gap-1.5">
-                        <Edit className="w-4 h-4 text-rose-600" />
-                        <span>{currentLang === 'ko' ? '관리자 미디어 편집기 활성화됨' : 'Trình chỉnh sửa phương tiện Admin đã bật'}</span>
-                      </p>
-                      <p className="text-[11px] text-slate-650 font-sans leading-relaxed">
-                        {currentLang === 'ko'
-                          ? '이 제품의 사진과 동영상을 드래그앤드롭 업로드 또는 링크 주소 지정을 통해 실시간 변경할 수 있습니다.'
-                          : 'Thay đổi trực tiếp ảnh và video của sản phẩm này bằng cách kéo thả hoặc nhập liên kết ngoài.'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => onEditProduct?.(product)}
-                      className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shrink-0 shadow-md shadow-rose-600/10 flex items-center gap-1"
-                      id="detail-direct-edit-btn"
-                    >
-                      <Edit className="w-3.5 h-3.5" />
-                      <span>{currentLang === 'ko' ? '사진/동영상 변경' : 'Thay đổi ảnh/video'}</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+              return null;
+            })()}
           </div>
 
           {/* Right Block (5 cols): Configurator, Specs & Buying Options */}

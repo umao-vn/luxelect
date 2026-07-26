@@ -84,7 +84,7 @@ export function cleanAndConvertImageUrl(rawUrl: string): string {
 }
 
 export function cleanAndConvertVideoUrl(rawUrl: string): string {
-  if (!rawUrl || rawUrl.trim() === '' || rawUrl.trim() === '[]') return DEFAULT_FALLBACK_VIDEO;
+  if (!rawUrl || rawUrl.trim() === '' || rawUrl.trim() === '[]') return '';
   let url = rawUrl.trim();
 
   // 태그 내부 src 주소 추출
@@ -96,14 +96,19 @@ export function cleanAndConvertVideoUrl(rawUrl: string): string {
   // 따옴표, 대괄호 등 앞뒤 찌꺼기 문자 제거
   url = url.replace(/^["'\[\s<]+|["'\]\s>]+$/g, '');
 
-  if (!url || url === '[]') return DEFAULT_FALLBACK_VIDEO;
+  if (!url || url === '[]') return '';
+
+  // Data URLs or Blob URLs pass through as is
+  if (url.startsWith('data:') || url.startsWith('blob:')) {
+    return url;
+  }
 
   // https:// 가 빠진 경우에만 붙여주도록 안전 보정
   if (url.startsWith('//')) {
     url = 'https:' + url;
-  } else if (!/^https?:\/\//i.test(url) && url.length > 0) {
+  } else if (!/^https?:\/\//i.test(url) && url.length > 0 && !url.startsWith('data:')) {
     url = 'https://' + url;
   }
 
-  return url || DEFAULT_FALLBACK_VIDEO;
+  return url;
 }

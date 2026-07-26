@@ -508,14 +508,27 @@ export default function AdminProductModal({
                     <label className="text-[11px] font-mono text-slate-500 uppercase font-bold">
                       {currentLang === 'ko' ? '동영상 웹 주소 (Direct MP4 URL)' : 'Đường dẫn video ngoài (Direct MP4 URL)'}
                     </label>
-                    <button
-                      type="button"
-                      onClick={() => handleSmartCleanVideo(videoUrl)}
-                      className="text-[10px] text-[#0066FF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
-                    >
-                      <Wand2 className="w-3 h-3" />
-                      <span>{currentLang === 'ko' ? '자동 URL 정리' : 'Tự động sửa'}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {videoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setVideoUrl('')}
+                          className="text-[10px] text-rose-600 hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                          title={currentLang === 'ko' ? '동영상 삭제' : 'Xóa video'}
+                        >
+                          <span>✕</span>
+                          <span>{currentLang === 'ko' ? '동영상 삭제' : 'Xóa video'}</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleSmartCleanVideo(videoUrl)}
+                        className="text-[10px] text-[#0066FF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                      >
+                        <Wand2 className="w-3 h-3" />
+                        <span>{currentLang === 'ko' ? '자동 URL 정리' : 'Tự động sửa'}</span>
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="text"

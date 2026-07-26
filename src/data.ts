@@ -180,7 +180,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 56,
     imageUrl: "https://i.ibb.co/DHXZ2TvR/1.png",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "모터": "11만 RPM 고속 디지털 모터",
       "기능": "스마트 지능형 온도 제어 & 2억 개 음이온 케어"
@@ -217,7 +217,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 28,
     imageUrl: "https://i.ibb.co/yB00NfV7/f720c7b7-7771-4ef3-ae80-46e6153c49b3-1745999521717.jpg",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
       "센서": "LiDAR 3D 공간 매핑 센서"
@@ -254,7 +254,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 45,
     imageUrl: "https://i.ibb.co/tTH04Ryv/No-13-2.jpg",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "필터": "H13 헤파 필터 (99.97% 미세먼지 제거)",
       "청정면적": "85㎡ 대형 공간 지원"
@@ -291,7 +291,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 142,
     imageUrl: "https://i.ibb.co/DPSdv7wD/No-14-10.png",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "흡입력": "30,000Pa 강력 초고성능 수퍼 흡입력",
       "클린스테이션": "자동 먼지 비움 & 살균 덤핑 스테이션",
@@ -336,7 +336,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.95,
     reviewsCount: 88,
     imageUrl: "https://i.postimg.cc/ryJh0g8m/xojjb3ot-643-macbook-pro-16inch-2019-core-i9-ram-16gb-ssd-1tb.jpg",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "프로세서": "Lux Core M3 Ultra 16코어 CPU / 40코어 GPU",
       "디스플레이": "16.2인치 Mini-LED XDR (3240x2160, 1600nits 피크 밝기)",
@@ -379,7 +379,7 @@ export const RAW_PRODUCTS: Product[] = [
     rating: 4.88,
     reviewsCount: 210,
     imageUrl: "https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg",
-    videoUrl: "[]",
+    videoUrl: "",
     specsKO: {
       "드라이버": "40mm 맞춤 제작 티타늄 듀얼 다이내믹 드라이버",
       "노이즈 캔슬링": "스마트 적응형 ANC (초당 48,000회 음파 분석)",
