@@ -100,7 +100,7 @@ export default function App() {
 
   // Run auto resync once to update restored imgbb product photos and fix product URLs
   useEffect(() => {
-    const STORAGE_VERSION_KEY = 'lux_media_v10_ctrls_and_sync';
+    const STORAGE_VERSION_KEY = 'lux_media_v12_sec_hero_resync';
     const isSynced = localStorage.getItem(STORAGE_VERSION_KEY);
 
     if (!isSynced) {
@@ -183,9 +183,25 @@ export default function App() {
   const [secondaryHeroMediaList, setSecondaryHeroMediaList] = useState<HeroMediaItem[]>(() => {
     const cached = localStorage.getItem('secondary_hero_media_list');
     if (cached) {
-      const parsed: HeroMediaItem[] = JSON.parse(cached);
-      if (parsed.some((m) => isBrokenUrl(m.url))) return DEFAULT_SECONDARY_HERO_MEDIA;
-      return parsed;
+      try {
+        const parsed: HeroMediaItem[] = JSON.parse(cached);
+        if (
+          parsed.some(
+            (m) =>
+              isBrokenUrl(m.url) ||
+              m.titleKO?.toLowerCase().includes('xiaomi') ||
+              m.titleVI?.toLowerCase().includes('xiaomi') ||
+              m.url?.includes('DHXZ2TvR') ||
+              m.url?.includes('tTH04Ryv') ||
+              m.id === 'sec-hero-media-3'
+          )
+        ) {
+          return DEFAULT_SECONDARY_HERO_MEDIA;
+        }
+        return parsed;
+      } catch {
+        return DEFAULT_SECONDARY_HERO_MEDIA;
+      }
     }
     return DEFAULT_SECONDARY_HERO_MEDIA;
   });

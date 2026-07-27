@@ -159,12 +159,12 @@ export default function SecondaryHeroSection({
       });
       if (nameMatch) return nameMatch;
 
-      if (combined.includes('bud') || combined.includes('이어폰') || combined.includes('버즈') || combined.includes('드라이어')) {
-        const match = products.find((p) => p.id === 'smarthome-dryer' || p.category === 'audio');
+      if (combined.includes('sound') || combined.includes('samsung') || combined.includes('beat') || combined.includes('audio')) {
+        const match = products.find((p) => p.id === 'lux-sound-aura' || p.category === 'audio');
         if (match) return match;
       }
-      if (combined.includes('sound') || combined.includes('스피커') || combined.includes('사운드') || combined.includes('공기청정기')) {
-        const match = products.find((p) => p.id === 'lux-sound-aura' || p.id === 'smarthome-air' || p.category === 'audio');
+      if (combined.includes('macbook') || combined.includes('pro') || combined.includes('laptop') || combined.includes('notebook')) {
+        const match = products.find((p) => p.id === 'lux-book-pro-16' || p.category === 'laptop');
         if (match) return match;
       }
     }
@@ -203,24 +203,24 @@ export default function SecondaryHeroSection({
         </div>
       )}
 
-      {/* 2-Column Xiaomi Style Grid Layout */}
+      {/* 2-Column Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {Array.from({ length: 2 }).map((_, idx) => {
           const item = heroMediaList[idx];
-          const defaultTitle = idx === 0 ? 'Xiaomi Buds 6' : 'Xiaomi Sound Play';
+          const defaultTitle = idx === 0 ? 'Feel Every beat' : 'Built for Professionals';
           const defaultSub =
             idx === 0
               ? currentLang === 'ko'
-                ? '순수한 사운드, 편안한 착용감'
+                ? 'Saumsung Audio'
                 : 'Pure sound, pure comfort'
               : currentLang === 'ko'
-                ? '비트마다 빛나는 시네마틱 사운드'
+                ? 'Macbook Pro16'
                 : 'Light up every beat';
 
           const defaultImage =
             idx === 0
-              ? 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=800&auto=format&fit=crop'
-              : 'https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=800&auto=format&fit=crop';
+              ? 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
+              : 'https://i.ibb.co/bRNJs0ZL/macbookpro16.jpg';
 
           const cardTitle = item
             ? currentLang === 'ko'
@@ -235,8 +235,8 @@ export default function SecondaryHeroSection({
             : defaultSub;
 
           const matchedProduct = getMatchingProduct(item, idx);
-          const cardTargetProduct = matchedProduct?.id || item?.targetProductId || 'smarthome-dryer';
-          const cardImage = matchedProduct?.imageUrl ? cleanAndConvertImageUrl(matchedProduct.imageUrl) : (item?.url ? cleanAndConvertImageUrl(item.url) : defaultImage);
+          const cardTargetProduct = item?.targetProductId || matchedProduct?.id || (idx === 0 ? 'lux-sound-aura' : 'lux-book-pro-16');
+          const cardImage = item?.url ? cleanAndConvertImageUrl(item.url) : (matchedProduct?.imageUrl ? cleanAndConvertImageUrl(matchedProduct.imageUrl) : defaultImage);
 
           return (
             <div
