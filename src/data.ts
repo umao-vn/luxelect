@@ -55,21 +55,21 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
   {
     id: 'sec-hero-media-1',
     type: 'photo',
-    titleKO: 'Xiaomi Buds 6',
-    titleVI: 'Xiaomi Buds 6',
-    subtitleKO: '순수한 사운드, 편안한 착용감',
+    titleKO: 'Feel Every beat',
+    titleVI: 'lux samsung sound',
+    subtitleKO: 'Saumsung Audio',
     subtitleVI: 'Pure sound, pure comfort',
-    url: 'https://i.ibb.co/DHXZ2TvR/1.png',
+    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg',
     targetProductId: 'smarthome-dryer'
   },
   {
     id: 'sec-hero-media-2',
     type: 'photo',
-    titleKO: 'Xiaomi Sound Play',
-    titleVI: 'Xiaomi Sound Play',
-    subtitleKO: '비트마다 빛나는 시네마틱 사운드',
+    titleKO: 'Built for Professionals',
+    titleVI: 'Được thiết kế dành cho các chuyên gia',
+    subtitleKO: 'Macbook Pro16',
     subtitleVI: 'Light up every beat',
-    url: 'https://i.ibb.co/tTH04Ryv/No-13-2.jpg',
+    url: 'https://i.ibb.co/bRNJs0ZL/macbookpro16.jpg',
     targetProductId: 'smarthome-air'
   },
 ];
@@ -215,7 +215,7 @@ export const RAW_PRODUCTS: Product[] = [
     price: 1390000,
     rating: 4.8,
     reviewsCount: 28,
-    imageUrl: "https://i.ibb.co/yB00NfV7/f720c7b7-7771-4ef3-ae80-46e6153c49b3-1745999521717.jpg",
+    imageUrl: "https://i.ibb.co/vxG63NmW/ron2025-robot-vacuum-cleaner-5073580.jpg",
     videoUrl: "",
     specsKO: {
       "기능": "AI 장애물 회피 센서 & 자동 충전",
