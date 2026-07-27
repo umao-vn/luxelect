@@ -60,7 +60,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     subtitleKO: 'Saumsung Audio',
     subtitleVI: 'Pure sound, pure comfort',
     url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg',
-    targetProductId: 'smarthome-dryer'
+    targetProductId: 'audio'
   },
   {
     id: 'sec-hero-media-2',
@@ -70,7 +70,7 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
     subtitleKO: 'Macbook Pro16',
     subtitleVI: 'Light up every beat',
     url: 'https://i.ibb.co/bRNJs0ZL/macbookpro16.jpg',
-    targetProductId: 'smarthome-air'
+    targetProductId: 'laptop'
   },
 ];
 
