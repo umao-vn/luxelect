@@ -55,23 +55,22 @@ export const DEFAULT_SECONDARY_HERO_MEDIA: HeroMediaItem[] = [
   {
     id: 'sec-hero-media-1',
     type: 'photo',
-    titleKO: '하단 서브 프리미엄 메인 사진',
-    titleVI: 'Ảnh Phụ Cao Cấp Dưới',
-    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
+    titleKO: 'Xiaomi Buds 6',
+    titleVI: 'Xiaomi Buds 6',
+    subtitleKO: '순수한 사운드, 편안한 착용감',
+    subtitleVI: 'Pure sound, pure comfort',
+    url: 'https://i.ibb.co/DHXZ2TvR/1.png',
+    targetProductId: 'smarthome-dryer'
   },
   {
     id: 'sec-hero-media-2',
-    type: 'video',
-    titleKO: '하단 서브 시네마틱 모션 영상 (MP4)',
-    titleVI: 'Video Phụ Điện Ảnh Dưới (MP4)',
-    url: 'https://files.catbox.moe/l21bbv.mp4'
-  },
-  {
-    id: 'sec-hero-media-3',
     type: 'photo',
-    titleKO: '하단 서브 사이버네틱 갤러리 컷',
-    titleVI: 'Bộ Ảnh Cybernetic Phụ',
-    url: 'https://i.ibb.co/F4XxSjPM/vn-feature-nbsp-549228901.jpg'
+    titleKO: 'Xiaomi Sound Play',
+    titleVI: 'Xiaomi Sound Play',
+    subtitleKO: '비트마다 빛나는 시네마틱 사운드',
+    subtitleVI: 'Light up every beat',
+    url: 'https://i.ibb.co/tTH04Ryv/No-13-2.jpg',
+    targetProductId: 'smarthome-air'
   },
 ];
 

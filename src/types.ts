@@ -1,11 +1,15 @@
 export interface HeroMediaItem {
   id: string;
   type: 'photo' | 'video';
+  title?: string;
   titleKO: string;
   titleVI: string;
+  subtitle?: string;
+  subtitleKO?: string;
+  subtitleVI?: string;
   url: string;
+  targetProductId?: string;
 }
-
 export interface SplitBgPanel {
   id: 'panel-1' | 'panel-2' | 'panel-3';
   type: 'photo' | 'video';
@@ -14,6 +18,7 @@ export interface SplitBgPanel {
   titleVI?: string;
   tagKO?: string;
   tagVI?: string;
+  targetProductId?: string; //
 }
 
 export interface SplitBgConfig {

@@ -10,7 +10,8 @@ interface HeroSectionProps {
   heroMediaList: HeroMediaItem[];
   activeMediaId: string | null;
   onSelectActiveMedia: (id: string) => void;
-  onOpenHeroMediaModal: (initialTab?: 'split' | 'single') => void;
+  onOpenHeroMediaModal?: (tab?: 'split' | 'single') => void;
+  onUpdateHeroMedia?: (updatedMedia: HeroMediaItem) => void; 
   subMediaList?: HeroMediaItem[];
   activeSubMediaId?: string | null;
   onSelectActiveSubMedia?: (id: string) => void;
@@ -19,7 +20,7 @@ interface HeroSectionProps {
   onUpdateSplitBgConfig?: (newConfig: SplitBgConfig) => void;
   t: TranslationSet;
   currentLang: 'ko' | 'vi';
-  onScrollToProducts: () => void;
+  onScrollToProducts: () => void; 
   onBannerClick?: () => void;
   isAdmin?: boolean;
   isDev?: boolean;
@@ -39,6 +40,7 @@ export default function HeroSection({
   onUpdateSplitBgConfig,
   t,
   currentLang,
+  onUpdateHeroMedia,
   onScrollToProducts,
   onBannerClick,
   isAdmin = false,

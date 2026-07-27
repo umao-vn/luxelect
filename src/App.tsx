@@ -282,7 +282,7 @@ export default function App() {
       ...newItem,
       id: `sec-hero-${Date.now()}`,
     };
-    setSecondaryHeroMediaList((prev) => [createdItem, ...prev]);
+    setSecondaryHeroMediaList((prev) => [...prev, createdItem]);
     setActiveSecondaryHeroMediaId(createdItem.id);
     if (secondarySplitBgConfig.isEnabled) {
       setSecondarySplitBgConfig((prev) => ({ ...prev, isEnabled: false }));
@@ -297,10 +297,6 @@ export default function App() {
       }
       return updated;
     });
-  };
-
-  const handleUpdateSecondaryHeroMedia = (updatedItem: HeroMediaItem) => {
-    setSecondaryHeroMediaList((prev) => prev.map((item) => (item.id === updatedItem.id ? updatedItem : item)));
   };
 
   // Sub Media List (PIP Mini Player Photo/Video list) state
@@ -475,7 +471,14 @@ export default function App() {
   const handleClearCart = () => {
     setCartItems([]);
   };
-
+// 서브 히어로 미디어 카드 업데이트 전용 핸들러
+  const handleUpdateSecondaryHeroMedia = (updatedItem: HeroMediaItem) => {
+    setSecondaryHeroMediaList((prevList) => {
+      // id가 같으면 수정된 객체로 교체, 없으면 기존 유지
+      return prevList.map((item) => (item.id === updatedItem.id ? { ...item, ...updatedItem } : item));
+    });
+  };
+  
   // Find currently active product details from dynamic productsList
   const activeProduct = productsList.find((p) => p.id === activeProductId);
   // Default featured hero product (LuxPhone Alpha)
@@ -631,7 +634,7 @@ export default function App() {
               isDev={Boolean((import.meta as any).env?.DEV)}
             />
 
-            {/* 2. 새로 추가할 똑같은 크기의 하단 배경 섹션 (Secondary Hero Section - key: secondary_hero_media_list) */}
+            {/* 2. 하단 서브 비주얼 섹션 (Secondary Hero Section - 2열 와이드 메인 카드 + 2열 서브 카드) */}
             <SecondaryHeroSection
               heroMediaList={secondaryHeroMediaList}
               activeMediaId={activeSecondaryHeroMediaId}
@@ -651,6 +654,14 @@ export default function App() {
               t={t}
               currentLang={currentLang}
               onScrollToProducts={handleScrollToProducts}
+              onViewProduct={(productId) => {
+                setActiveProductId(productId);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }}
+              products={productsList}
+              onAddHeroMedia={handleAddSecondaryHeroMedia}
+              onDeleteHeroMedia={handleDeleteSecondaryHeroMedia}
+              onUpdateHeroMedia={handleUpdateSecondaryHeroMedia}
               onBannerClick={handleGoToTop}
               isAdmin={isAdminMode}
               isDev={Boolean((import.meta as any).env?.DEV)}

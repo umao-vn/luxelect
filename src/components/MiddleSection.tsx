@@ -1,9 +1,16 @@
 import { motion } from 'motion/react';
-import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X, Lock, Unlock } from 'lucide-react';
+import { Sparkles, Eye, ShoppingCart, SlidersHorizontal, ArrowUpDown, Plus, Edit, Trash2, FolderPlus, X, Lock, Unlock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product, CategoryType, CategoryItem, UserSession } from '../types';
 import { DEFAULT_FALLBACK_IMAGE, cleanAndConvertImageUrl } from '../utils';
 import { TranslationSet } from '../translations';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+
+// Swiper.js slider imports
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import type { Swiper as SwiperClass } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 interface MiddleSectionProps {
   products: Product[];
@@ -57,6 +64,11 @@ export default function MiddleSection({
 
   const [sortBy, setSortBy] = useState<'default' | 'priceAsc' | 'priceDesc' | 'rating'>('default');
 
+  // Swiper slider state & ref
+  const swiperRef = useRef<SwiperClass | null>(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
   const isDevEnv = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || Boolean((import.meta as any).env?.DEV);
   const showAdminUI = Boolean(isAdminMode && isDevEnv);
 
@@ -101,104 +113,49 @@ export default function MiddleSection({
     <section id="middle-products-section" className="w-full bg-[#f7f7f7] py-16 sm:py-24 border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          {showAdminUI && (
-            <div className="inline-block text-[10px] font-mono font-black tracking-widest text-[#0066FF] mb-2 uppercase px-3 py-1 bg-[#0066FF]/5 border border-[#0066FF]/20 rounded-md">
-              [ 02. MIDDLE SECTION / PRODUCT COLLECTIONS ]
-            </div>
-          )}
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-sans">
-            {t.middleSectionTitle}
-          </h3>
-          <p className="text-slate-600 text-sm sm:text-base font-sans leading-relaxed">
-            {t.middleSectionDesc}
-          </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#0066FF] to-[#00D1FF] mx-auto rounded-full mt-4" />
-        </div>
-
-        {/* Filter and Categorization controls bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 mb-6">
-          {/* Integrated Active Category Status Badge (Admin Mode Only) */}
-          {isAdminMode ? (
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700">
-                <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
-                <span>
-                  {currentLang === 'ko' ? '선택된 카테고리:' : 'Danh mục đã chọn:'}{' '}
-                  <strong className="text-[#0066FF] font-extrabold">
-                    {allCategoryTabs.find((c) => c.id === selectedCategory)?.[currentLang === 'ko' ? 'labelKO' : 'labelVI'] || (currentLang === 'ko' ? '전체 상품' : 'Tất cả')}
-                  </strong>
-                </span>
-                <span className="text-xs text-slate-400 font-mono ml-1">
-                  ({filteredProducts.length}{currentLang === 'ko' ? '개 모델' : ' sản phẩm'})
-                </span>
-              </div>
-
-              {/* Reset button if filtered */}
-              {selectedCategory !== 'all' && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory('all')}
-                  className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
-                >
-                  {currentLang === 'ko' ? '전체 보기 ✕' : 'Xem tất cả ✕'}
-                </button>
-              )}
-            </div>
-          ) : <div />}
-
-          {/* Right Controls: Sort Selector + Admin Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end ml-auto">
-            {/* Admin Buttons (Shown in development + admin mode) */}
+        {/* Xiaomi Homepage Style Section Header (Centered Title + Top-Right Nav Controls) */}
+        <div className="relative flex items-center justify-between gap-4 mb-8 sm:mb-12">
+          <div className="hidden sm:block flex-1">
             {showAdminUI && (
-              <>
-                <button
-                  onClick={onOpenAddCategoryModal}
-                  className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-dashed border-[#0066FF]/50 text-[#0066FF] hover:bg-[#0066FF]/5 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-                  id="add-category-btn"
-                  title={currentLang === 'ko' ? '새 제품 카테고리 추가' : 'Thêm danh mục mới'}
-                >
-                  <FolderPlus className="w-3.5 h-3.5" />
-                  <span>{currentLang === 'ko' ? '+ 카테고리 추가' : '+ Thêm danh mục'}</span>
-                </button>
-
-                <button
-                  onClick={onAddProduct}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF] hover:bg-blue-700 text-white shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
-                  id="add-product-btn"
-                  title={currentLang === 'ko' ? '새 제품 등록' : 'Đăng ký sản phẩm mới'}
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>{currentLang === 'ko' ? '+ 제품 등록' : '+ Đăng ký'}</span>
-                </button>
-              </>
+              <div className="inline-block text-[10px] font-mono font-black tracking-widest text-[#0066FF] mb-2 uppercase px-3 py-1 bg-[#0066FF]/5 border border-[#0066FF]/20 rounded-md">
+                [ 02. MIDDLE SECTION / PRODUCT COLLECTIONS ]
+              </div>
             )}
+          </div>
 
-            {/* Sort selector */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-              </div>
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-slate-700 hover:text-slate-900 focus:outline-none focus:border-[#0066FF] transition-colors cursor-pointer"
-                  id="product-sort-select"
-                >
-                  <option value="default">{currentLang === 'ko' ? '추천 제품순' : 'Sản phẩm gợi ý'}</option>
-                  <option value="priceAsc">{currentLang === 'ko' ? '낮은 가격순' : 'Giá thấp đến cao'}</option>
-                  <option value="priceDesc">{currentLang === 'ko' ? '높은 가격순' : 'Giá cao đến thấp'}</option>
-                  <option value="rating">{currentLang === 'ko' ? '최고 평점순' : 'Đánh giá cao nhất'}</option>
-                </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                  <ArrowUpDown className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
+          {/* Centered Explore Product Title (28px ~ 32px, Bold 700) */}
+          <div className="text-center mx-auto">
+            <h3 className="text-[28px] sm:text-[32px] font-bold text-slate-900 tracking-tight font-sans">
+              Explore Product
+            </h3>
+          </div>
+
+          {/* Xiaomi Style Top-Right Swiper Navigation Arrow Buttons */}
+          <div className="flex-1 flex items-center justify-end gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => swiperRef.current?.slidePrev()}
+              disabled={isBeginning}
+              aria-label="Previous slide"
+              className="w-10 h-10 rounded-full bg-slate-200/70 hover:bg-[#0066FF] text-slate-700 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-200/70 disabled:hover:text-slate-700 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm border border-slate-300/60"
+              id="swiper-prev-btn"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => swiperRef.current?.slideNext()}
+              disabled={isEnd}
+              aria-label="Next slide"
+              className="w-10 h-10 rounded-full bg-slate-200/70 hover:bg-[#0066FF] text-slate-700 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-200/70 disabled:hover:text-slate-700 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm border border-slate-300/60"
+              id="swiper-next-btn"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
+
+
 
         {/* Category Pills Navigation & Admin Controls Bar (Admin Mode Only) */}
         {isAdminMode && (
@@ -280,169 +237,177 @@ export default function MiddleSection({
           </div>
         )}
 
-        {/* Products Grid */}
+        {/* Swiper.js Product Slider Section (Xiaomi Homepage Style) */}
         {sortedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {sortedProducts.map((product) => {
-              const name = currentLang === 'ko' ? product.nameKO : product.nameVI;
-              const tag = currentLang === 'ko' ? product.tagKO : product.tagVI;
-              
-              // Calculate member discounted price if logged in
-              const finalPrice = userSession.isLoggedIn ? Math.round(product.price * 0.9) : product.price;
-              const hasDiscount = userSession.isLoggedIn;
+          <div className="relative">
+            <Swiper
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                setIsBeginning(swiper.isBeginning);
+                setIsEnd(swiper.isEnd);
+              }}
+              onSlideChange={(swiper) => {
+                setIsBeginning(swiper.isBeginning);
+                setIsEnd(swiper.isEnd);
+              }}
+              modules={[Navigation, Autoplay]}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 24 },
+                1280: { slidesPerView: 4, spaceBetween: 24 },
+              }}
+              grabCursor={true}
+              speed={500}
+              className="w-full !py-2 [&_.swiper-wrapper]:flex [&_.swiper-slide]:flex [&_.swiper-slide]:h-auto"
+            >
+              {sortedProducts.map((product) => {
+                const name = currentLang === 'ko' ? product.nameKO : product.nameVI;
+                const tag = currentLang === 'ko' ? product.tagKO : product.tagVI;
+                
+                // Calculate member discounted price if logged in
+                const finalPrice = userSession.isLoggedIn ? Math.round(product.price * 0.9) : product.price;
+                const hasDiscount = userSession.isLoggedIn;
 
-              return (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4 }}
-                  onClick={() => onViewProduct(product.id)}
-                  className="group relative flex flex-col justify-between bg-white border border-slate-200/80 hover:border-[#0066FF] hover:bg-white rounded-2xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg cursor-pointer"
-                  id={`product-card-${product.id}`}
-                >
-                  {/* Badges */}
-                  <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
-                    {product.isNew && (
-                      <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-white bg-[#0066FF] rounded-md font-mono shadow-sm">
-                        NEW
-                      </span>
-                    )}
-                    {product.isBest && (
-                      <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-black bg-[#00D1FF] rounded-md font-mono shadow-sm">
-                        BEST
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Edit & Delete controls (Shown only in development + admin mode) */}
-                  {showAdminUI && (
-                    <div className="absolute top-4 right-4 z-20 flex gap-1.5 transition-opacity opacity-100">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditProduct?.(product);
-                        }}
-                        className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-blue-50 transition-colors shadow-sm cursor-pointer"
-                        title={currentLang === 'ko' ? '제품 정보 수정' : 'Sửa thông tin sản phẩm'}
-                        id={`edit-prod-${product.id}`}
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                            onDeleteProduct?.(product.id);
-                          }
-                        }}
-                        className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
-                        title={currentLang === 'ko' ? '상품 삭제' : 'Xóa sản phẩm'}
-                        id={`delete-prod-${product.id}`}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Favorite background visual glow */}
-                  <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#0066FF]/5 rounded-full blur-xl group-hover:bg-[#0066FF]/10 transition-colors pointer-events-none" />
-
-                  {/* Product Image Frame */}
-                  <div className="relative aspect-square w-full rounded-xl bg-white border border-slate-100 overflow-hidden mb-5 flex items-center justify-center cursor-pointer"
-                    onClick={() => onViewProduct(product.id)}
-                  >
-                    <img
-                      src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
-                      alt={name}
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
-                      }}
-                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-60" />
-                    
-                    {/* Quick hover visualizer */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="flex items-center gap-2 px-4 py-2 bg-[#0066FF] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#0066FF]/20 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                        <Eye className="w-4 h-4" /> {currentLang === 'ko' ? '상세 정보 단독 보기' : 'Xem chi tiết riêng biệt'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Text details */}
-                  <div className="space-y-2 text-left flex-1 flex flex-col justify-between">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-mono text-[#0066FF] uppercase tracking-widest block font-bold">
-                        {product.category}
-                      </span>
-                      <h4
-                        onClick={() => onViewProduct(product.id)}
-                        className="text-base font-bold text-slate-800 group-hover:text-[#0066FF] transition-colors cursor-pointer line-clamp-1 font-sans"
-                      >
-                        {name}
-                      </h4>
-                      <p className="text-xs text-slate-500 line-clamp-1 font-sans">{tag}</p>
-                    </div>
-
-                    <div className="pt-4 border-t border-slate-200">
-                      {/* Rating and count */}
-                      <div className="flex items-center gap-1 mb-2">
-                        <span className="text-xs text-amber-500 font-mono">★</span>
-                        <span className="text-xs font-bold text-slate-700 font-mono">{product.rating.toFixed(1)}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">({product.reviewsCount})</span>
-                      </div>
-
-                      {/* Price structure */}
-                      <div className="flex flex-col">
-                        {hasDiscount && (
-                          <span className="text-xs text-slate-400 line-through font-mono">
-                            {product.price.toLocaleString()} KRW
+                return (
+                  <SwiperSlide key={product.id} className="!h-auto flex">
+                    <div
+                      onClick={() => onViewProduct(product.id)}
+                      className="group relative w-full h-full flex flex-col justify-between bg-white border border-slate-200/80 hover:border-[#0066FF] rounded-3xl p-5 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl cursor-pointer"
+                      id={`product-card-${product.id}`}
+                    >
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+                        {product.isNew && (
+                          <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-white bg-[#0066FF] rounded-md font-mono shadow-sm">
+                            NEW
                           </span>
                         )}
-                        <div className="flex items-center gap-2">
-                          <span className="text-base font-black text-slate-900 font-mono">
-                            {finalPrice.toLocaleString()} KRW
+                        {product.isBest && (
+                          <span className="px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase text-black bg-[#00D1FF] rounded-md font-mono shadow-sm">
+                            BEST
                           </span>
-                          {hasDiscount && (
-                            <span className="text-[10px] font-bold text-[#0066FF] font-mono">
-                              -10% VIP
-                            </span>
-                          )}
+                        )}
+                      </div>
+
+                      {/* Edit & Delete controls (Shown only in development + admin mode) */}
+                      {showAdminUI && (
+                        <div className="absolute top-4 right-4 z-20 flex gap-1.5 transition-opacity opacity-100">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEditProduct?.(product);
+                            }}
+                            className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 hover:text-[#0066FF] hover:border-[#0066FF] hover:bg-blue-50 transition-colors shadow-sm cursor-pointer"
+                            title={currentLang === 'ko' ? '제품 정보 수정' : 'Sửa 정보'}
+                            id={`edit-prod-${product.id}`}
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm(currentLang === 'ko' ? '이 상품을 정말 삭제하시겠습니까?' : 'Xóa sản phẩm này?')) {
+                                onDeleteProduct?.(product.id);
+                              }
+                            }}
+                            className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm cursor-pointer"
+                            title={currentLang === 'ko' ? '상품 삭제' : 'Xóa'}
+                            id={`delete-prod-${product.id}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Product Image Frame with rounded corners (16:9 wide aspect ratio) */}
+                      <div
+                        className="relative aspect-[16/9] w-full rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden mb-4 flex items-center justify-center cursor-pointer shrink-0"
+                        onClick={() => onViewProduct(product.id)}
+                      >
+                        <img
+                          src={cleanAndConvertImageUrl(product.imageUrl) || DEFAULT_FALLBACK_IMAGE}
+                          alt={name}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = DEFAULT_FALLBACK_IMAGE;
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-60" />
+                        
+                        {/* Quick hover visualizer */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="flex items-center gap-2 px-4 py-2 bg-[#0066FF] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#0066FF]/20">
+                            <Eye className="w-4 h-4" /> {currentLang === 'ko' ? '상세 정보 보기' : 'Xem chi tiết'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Text details (Product Name & Short Tagline/Description with fixed heights) */}
+                      <div className="space-y-2 text-center flex-1 flex flex-col justify-between">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-mono text-[#0066FF] uppercase tracking-widest block font-bold">
+                            {product.category}
+                          </span>
+                          {/* Card Title (18px ~ 20px, Bold 700, Fixed line height) */}
+                          <div className="h-12 flex items-center justify-center">
+                            <h4
+                              onClick={() => onViewProduct(product.id)}
+                              className="text-[18px] sm:text-[20px] font-bold text-slate-800 group-hover:text-[#0066FF] transition-colors cursor-pointer line-clamp-2 font-sans text-center leading-snug"
+                            >
+                              {name}
+                            </h4>
+                          </div>
+                          {/* Card Description (13px ~ 14px, Regular 400, Fixed height container for uniform cards) */}
+                          <div className="h-10 flex items-center justify-center">
+                            <p className="text-[13px] sm:text-[14px] font-normal text-slate-500 line-clamp-2 font-sans leading-relaxed text-center">
+                              {tag}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-100 shrink-0">
+                          {/* Price structure (18px ~ 20px, Bold 700) & Quick Cart button */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex flex-col text-left">
+                              {hasDiscount && (
+                                <span className="text-[11px] text-slate-400 line-through font-mono">
+                                  {product.price.toLocaleString()} KRW
+                                </span>
+                              )}
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[18px] sm:text-[20px] font-bold text-slate-900 font-mono">
+                                  {finalPrice.toLocaleString()} KRW
+                                </span>
+                                {hasDiscount && (
+                                  <span className="text-[9px] font-bold text-[#0066FF] font-mono bg-blue-50 px-1 py-0.5 rounded">
+                                    -10% VIP
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onAddToCart(product, product.colors[0]);
+                              }}
+                              className="p-2.5 rounded-xl bg-slate-900 hover:bg-[#0066FF] text-white transition-all cursor-pointer shadow-sm shrink-0"
+                              title={t.addToCart}
+                              id={`middle-add-${product.id}`}
+                            >
+                              <ShoppingCart className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Actions bottom */}
-                  <div className="grid grid-cols-2 gap-2 mt-5">
-                    <button
-                      onClick={() => onViewProduct(product.id)}
-                      className="flex items-center justify-center gap-1 py-2.5 rounded-xl border border-slate-200 hover:border-[#0066FF] text-xs text-slate-600 hover:text-[#0066FF] transition-colors bg-white hover:bg-[#0066FF]/5 cursor-pointer"
-                      title="View Details"
-                      id={`middle-view-${product.id}`}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>{currentLang === 'ko' ? '제품 상세' : 'Chi tiết'}</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onAddToCart(product, product.colors[0]);
-                      }}
-                      className="flex items-center justify-center gap-1 py-2.5 rounded-xl bg-slate-900 hover:bg-[#0066FF] text-white hover:text-white transition-all text-xs font-bold cursor-pointer"
-                      title="Add to Cart"
-                      id={`middle-add-${product.id}`}
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" />
-                      <span>{t.addToCart.split(' ')[0]}</span>
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
         ) : (
           <div className="p-12 text-center text-slate-400 text-base bg-slate-50 rounded-2xl border border-dashed border-slate-200 font-bold my-8">
