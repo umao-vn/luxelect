@@ -521,7 +521,7 @@ export default function HeroSection({
       {/* 📍 [복원] 화면 안의 작은 동영상/사진 카드 (PIP 섹션 / Mini Player - 서브 메인 비주얼 사진/동영상 추가·삭제·수정·선택) */}
       {subMediaList && subMediaList.length > 0 && (
         <div 
-          className="absolute left-4 sm:left-8 lg:left-12 bottom-12 z-20 w-[280px] sm:w-80 lg:w-88 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/30 bg-black/60 backdrop-blur-md p-3 transition-all duration-300 hover:scale-[1.02] hover:border-blue-400/60 hover:bg-black/70 group"
+          className="absolute left-10 top-[15%] z-20 w-1/3 min-w-[260px] max-w-[420px] rounded-2xl overflow-hidden shadow-2xl border border-blue-500/30 bg-black/60 backdrop-blur-md p-3 transition-all duration-300 hover:scale-[1.02] hover:border-blue-400/60 hover:bg-black/70 group"
           onClick={(e) => e.stopPropagation()}
           id="sub-main-visual-container"
         >
