@@ -114,20 +114,20 @@ export default function SecondaryHeroSection({
     onUpdateHeroMedia(updated);
     setEditingItem(null);
   };
-  // Helper to accurately resolve the matching product ID for each card
-  const getMatchingProductId = (item?: HeroMediaItem, defaultIdx: number = 0): string => {
-    if (!products || products.length === 0) return '';
+  // Helper to accurately resolve the matching product for each card
+  const getMatchingProduct = (item?: HeroMediaItem, defaultIdx: number = 0): Product | undefined => {
+    if (!products || products.length === 0) return undefined;
 
     // 1. If explicit targetProductId exists and matches a product
     if (item?.targetProductId) {
       const match = products.find((p) => p.id === item.targetProductId);
-      if (match) return match.id;
+      if (match) return match;
     }
 
     // 2. Direct item.id match if item.id equals a product id
     if (item?.id) {
       const match = products.find((p) => p.id === item.id);
-      if (match) return match.id;
+      if (match) return match;
     }
 
     // 3. Match by image URL (if card image matches product imageUrl)
@@ -137,7 +137,7 @@ export default function SecondaryHeroSection({
         const pImgClean = cleanAndConvertImageUrl(p.imageUrl);
         return pImgClean === cardImgClean || p.imageUrl === item.url;
       });
-      if (match) return match.id;
+      if (match) return match;
     }
 
     // 4. Match by Title / Name / Subtitle text similarity
@@ -157,30 +157,33 @@ export default function SecondaryHeroSection({
           (pVi && titleText.includes(pVi))
         );
       });
-      if (nameMatch) return nameMatch.id;
+      if (nameMatch) return nameMatch;
 
       if (combined.includes('bud') || combined.includes('이어폰') || combined.includes('버즈') || combined.includes('드라이어')) {
         const match = products.find((p) => p.id === 'smarthome-dryer' || p.category === 'audio');
-        if (match) return match.id;
+        if (match) return match;
       }
       if (combined.includes('sound') || combined.includes('스피커') || combined.includes('사운드') || combined.includes('공기청정기')) {
         const match = products.find((p) => p.id === 'lux-sound-aura' || p.id === 'smarthome-air' || p.category === 'audio');
-        if (match) return match.id;
+        if (match) return match;
       }
     }
 
     // 5. Default position fallback
     if (defaultIdx === 0) {
-      return products.find((p) => p.id === 'smarthome-dryer')?.id || products[0]?.id || '';
+      return products.find((p) => p.id === 'lux-sound-aura') || products.find((p) => p.id === 'smarthome-dryer') || products[0];
     } else {
       return (
-        products.find((p) => p.id === 'lux-sound-aura')?.id ||
-        products.find((p) => p.id === 'smarthome-air')?.id ||
-        products[1]?.id ||
-        products[0]?.id ||
-        ''
+        products.find((p) => p.id === 'lux-book-pro-16') ||
+        products.find((p) => p.id === 'smarthome-air') ||
+        products[1] ||
+        products[0]
       );
     }
+  };
+
+  const getMatchingProductId = (item?: HeroMediaItem, defaultIdx: number = 0): string => {
+    return getMatchingProduct(item, defaultIdx)?.id || '';
   };
 
   return (
@@ -231,8 +234,9 @@ export default function SecondaryHeroSection({
               : item.subtitleVI || item.subtitle || item.subtitleKO || defaultSub
             : defaultSub;
 
-          const cardImage = item?.url ? cleanAndConvertImageUrl(item.url) : defaultImage;
-          const cardTargetProduct = getMatchingProductId(item, idx);
+          const matchedProduct = getMatchingProduct(item, idx);
+          const cardTargetProduct = matchedProduct?.id || item?.targetProductId || 'smarthome-dryer';
+          const cardImage = matchedProduct?.imageUrl ? cleanAndConvertImageUrl(matchedProduct.imageUrl) : (item?.url ? cleanAndConvertImageUrl(item.url) : defaultImage);
 
           return (
             <div
