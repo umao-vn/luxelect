@@ -100,7 +100,7 @@ export default function App() {
 
   // Run auto resync once to update restored imgbb product photos and fix product URLs
   useEffect(() => {
-    const STORAGE_VERSION_KEY = 'lux_media_v12_sec_hero_resync';
+    const STORAGE_VERSION_KEY = 'lux_media_v13_products_data_sync';
     const isSynced = localStorage.getItem(STORAGE_VERSION_KEY);
 
     if (!isSynced) {

@@ -178,7 +178,7 @@ export const RAW_PRODUCTS: Product[] = [
     price: 490000,
     rating: 4.9,
     reviewsCount: 56,
-    imageUrl: "https://i.ibb.co/DHXZ2TvR/1.png",
+    imageUrl: "https://i.ibb.co/3mFB7J96/element5-digital-yutg-Pvm-Hx-YQ-unsplash.jpg",
     videoUrl: "",
     specsKO: {
       "모터": "11만 RPM 고속 디지털 모터",
