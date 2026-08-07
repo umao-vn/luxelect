@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "users": {
+      "title": "Users",
+      "description": "User profiles and account details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "provider": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "products": {
+      "title": "Products",
+      "description": "Store items and inventory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nameKO": { "type": "string" },
+        "nameVI": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "description": { "type": "string" },
+        "stock": { "type": "number" }
+      },
+      "required": ["id", "nameKO", "price"]
+    },
+    "carts": {
+      "title": "Carts",
+      "description": "User shopping cart state",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId"]
+    },
+    "orders": {
+      "title": "Orders",
+      "description": "Purchase orders and payment records",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string" },
+        "recipientName": { "type": "string" },
+        "recipientPhone": { "type": "string" },
+        "shippingAddress": { "type": "string" },
+        "paymentKey": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "approvedAt": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["orderId", "userId", "totalAmount", "status"]
+    }
+  }
+}

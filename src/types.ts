@@ -10,6 +10,7 @@ export interface HeroMediaItem {
   url: string;
   targetProductId?: string;
 }
+
 export interface SplitBgPanel {
   id: 'panel-1' | 'panel-2' | 'panel-3';
   type: 'photo' | 'video';
@@ -18,7 +19,7 @@ export interface SplitBgPanel {
   titleVI?: string;
   tagKO?: string;
   tagVI?: string;
-  targetProductId?: string; //
+  targetProductId?: string;
 }
 
 export interface SplitBgConfig {
@@ -60,11 +61,11 @@ export interface Product {
   nameVI: string;
   tagKO: string;
   tagVI: string;
-  price: number; // in KRW (South Korean Won) or converted to USD / VND
+  price: number; // in KRW
   rating: number;
   reviewsCount: number;
-  imageUrl: string; // User can replace this with their ImgBB URL
-  videoUrl?: string; // User can replace this with their direct MP4 URL
+  imageUrl: string;
+  videoUrl?: string;
   specsKO: Record<string, string>;
   specsVI: Record<string, string>;
   featuresKO: string[];
@@ -74,6 +75,7 @@ export interface Product {
   colors: { nameKO: string; nameVI: string; hex: string }[];
   isNew?: boolean;
   isBest?: boolean;
+  stock?: number;
 }
 
 export interface CartItem {
@@ -82,21 +84,49 @@ export interface CartItem {
   selectedColor: { nameKO: string; nameVI: string; hex: string };
 }
 
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL?: string;
+  provider: 'email' | 'kakao' | 'naver' | 'google' | 'guest';
+  phone?: string;
+  address?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface UserSession {
   isLoggedIn: boolean;
   userType: 'member' | 'guest';
+  uid?: string;
   name?: string;
   email?: string;
   phone?: string;
   address?: string;
+  provider?: string;
+  photoURL?: string;
 }
+
+export type OrderStatus = 'PENDING' | 'PAID' | 'CANCELLED' | 'FAILED' | 'SHIPPED' | 'DELIVERED';
 
 export interface OrderDetails {
   id: string;
-  userSession: UserSession;
+  orderId: string;
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userPhone?: string;
+  userAddress?: string;
   items: CartItem[];
   totalAmount: number;
-  paymentMethod: string;
-  orderDate: string;
-  status: 'pending' | 'completed';
+  status: OrderStatus;
+  paymentMethod?: string;
+  paymentKey?: string;
+  orderName: string;
+  approvedAt?: string;
+  cancelledAt?: string;
+  cancelReason?: string;
+  createdAt: string;
+  updatedAt: string;
 }
